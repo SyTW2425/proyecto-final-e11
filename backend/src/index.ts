@@ -10,6 +10,10 @@
 
 import { connect } from 'mongoose';
 import express from 'express';
+import dotenv from 'dotenv';
+
+// Load environment variables from .env file
+dotenv.config({ path: './config/dev.env' });
 
 // Initialize the express server
 export const app = express();
@@ -21,12 +25,13 @@ app.use(express.json());
 // app.use(compraRouter);
 // app.use(ventaRouter);
 console.log('[server_initiation] Server started!');
-app.listen(3000);
+console.log('MONGO_URL:', process.env.MONGO_URL);
+app.listen(process.env.PORT || 27017);
 
 // Connect to Database
-connect(process.env.MONGODB_URL!).then(() => {
+connect(process.env.MONGO_URL!).then(() => {
   console.log('Connected to the database');
-}).catch(() => {
-  console.log('Something went wrong when conecting to the database');
+}).catch((error) => {
+  console.error('Something went wrong when connecting to the database', error);
   process.exit(-1);
 });

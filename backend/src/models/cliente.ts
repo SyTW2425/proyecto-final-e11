@@ -16,7 +16,7 @@ export interface ClienteDocumentInterface extends Document {
   id_: string,
   nombre_: string,
   contacto_: number,
-  compras_: Array<[number, number]>,
+  compras_: [number, number][],
   membresia_: boolean
 }
 
@@ -74,7 +74,7 @@ const ClienteSchema = new Schema<ClienteDocumentInterface>({
     }
   },
   compras_: {
-    type: Array<[number, number]>,
+    type: [[Number, Number]],
     required: true,
     validate: (value: Array<[number, number]>) => {
       if (value.length === 0) {
