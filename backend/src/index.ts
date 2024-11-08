@@ -12,6 +12,11 @@ import { connect } from 'mongoose';
 import express from 'express';
 import dotenv from 'dotenv';
 import { usuarioRouter } from './routers/usuario.js';
+import { clienteRouter } from './routers/cliente.js';
+import { proveedorRouter } from './routers/proveedor.js';
+import { productoRouter } from './routers/producto.js';
+import { compraRouter } from './routers/compra.js';
+import { ventaRouter } from './routers/ventas.js';
 // import { usuarioModel } from './models/usuario.js';
 
 // Load environment variables from .env file
@@ -20,12 +25,12 @@ dotenv.config({ path: './config/dev.env' });
 // Initialize the express server
 export const app = express();
 app.use(express.json());
-// app.use(productoRouter);
-// app.use(proveedorRouter);
+app.use(productoRouter);
+app.use(proveedorRouter);
 app.use(usuarioRouter);
-// app.use(clienteRouter);
-// app.use(compraRouter);
-// app.use(ventaRouter);
+app.use(clienteRouter);
+app.use(compraRouter);
+app.use(ventaRouter);
 console.log('[server_initiation] Server started!');
 console.log('MONGO_URL:', process.env.MONGO_URL);
 app.listen(process.env.PORT || 27017);

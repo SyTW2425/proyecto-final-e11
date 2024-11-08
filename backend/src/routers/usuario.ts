@@ -13,28 +13,28 @@ import { usuarioModel } from '../models/usuario.js'
 export const usuarioRouter = Express.Router();
 
 
-// usuarioRouter.get('/customers', async (req, res) => {
-//   req.query = { ...req.query };
-//   try {
-//     let clientesEncontrados: PersonaDocumentInterface[] = [await clienteModel.find(req.query)];
-//     clientesEncontrados = clientesEncontrados.flat().filter(x => x !== null);
-//     let condition: boolean = clientesEncontrados.length === 0;
-//     res.status(condition ? 404 : 200).send(condition ? { msg: 'No se encontró el cliente' } : clientesEncontrados);
-//   } catch (error) {
-//     res.status(500).send({ msg: 'Error al buscar el cliente', error: error });
-//   }
-// });
+usuarioRouter.get('/usuarios', async (req, res) => {
+  req.query = { ...req.query };
+  try {
+    let usuariosEncontrados = await usuarioModel.find(req.query);
+    usuariosEncontrados = usuariosEncontrados.filter(x => x !== null);
+    let condition: boolean = usuariosEncontrados.length === 0;
+    res.status(condition ? 404 : 200).send(condition ? { msg: 'No se encontró a los usuarios' } : usuariosEncontrados);
+  } catch (error) {
+    res.status(500).send({ msg: 'Error al buscar los usuarios', error: error });
+  }
+});
 
 
-// customersRouter.get('/customers/:id', async (req, res) => {
-//   try {
-//     let clienteEncontrado = await clienteModel.findOne({ id_: req.params.id });
-//     let condition: boolean = clienteEncontrado === null;
-//     res.status(condition ? 404 : 200).send(condition ? { msg: 'No se encontró el cliente' } : clienteEncontrado);
-//   } catch (error) {
-//     res.status(500).send({ msg: 'Error al buscar el cliente', error: error });
-//   }
-// });
+usuarioRouter.get('/usuarios/:id', async (req, res) => {
+  try {
+    let usuarioEncontrado = await usuarioModel.findOne({ id_: req.params.id });
+    let condition: boolean = usuarioEncontrado === null;
+    res.status(condition ? 404 : 200).send(condition ? { msg: 'No se encontró al usuario' } : usuarioEncontrado);
+  } catch (error) {
+    res.status(500).send({ msg: 'Error al buscar al usuario', error: error });
+  }
+});
 
 
 /**
@@ -53,68 +53,23 @@ usuarioRouter.post('/usuarios', async (req, res) => {
   }
 });
 
-// /**
-//  * Actualiza un cliente de la base de datos haciendo uso de la QueryString
-//  * @param {Object} req - Objeto de petición
-//  * @param {Object} res - Objeto de respuesta
-//  * @returns {Object} - Objeto JSON con el cliente actualizado o un mensaje de error
-//  */
-// customersRouter.patch('/customers', async (req, res) => {
-//   req.query = { ...req.query };
-//   try {
-//     const clienteActualizado = await clienteModel.findOneAndUpdate(req.query, req.body, { new: true, runValidators: true});
-//     let condition: boolean = clienteActualizado === null;
-//     res.status(condition ? 404 : 200).send(condition ? { msg: 'No se encontró el cliente' } : clienteActualizado);
-//   } catch (error) {
-//     res.status(500).send({ msg: 'Error al actualizar el cliente', error: error });
-//   }
-// });
 
-// /**
-//  * Actualiza un cliente de la base de datos haciendo uso del ID de manera dinámica
-//  * @param {Object} req - Objeto de petición
-//  * @param {Object} res - Objeto de respuesta
-//  * @returns {Object} - Objeto JSON con el cliente actualizado o un mensaje de error
-//  */
-// customersRouter.patch('/customers/:id', async (req, res) => {
-//   try {
-//     const clienteActualizado = await clienteModel.findOneAndUpdate({ id_: req.params.id }, req.body , { new: true, runValidators: true});
-//     let condition: boolean = clienteActualizado === null;
-//     res.status(condition ? 404 : 200).send(condition ? { msg: 'No se encontró el cliente' } : clienteActualizado);
-//   } catch (error) {
-//     res.status(500).send({ msg: 'Error al actualizar el cliente', error: error });
-//   }
-// });
+usuarioRouter.patch('/usuarios/:id', async (req, res) => {
+  try {
+    const usuarioActualizado = await usuarioModel.findOneAndUpdate({ id_: req.params.id }, req.body , { new: true, runValidators: true});
+    let condition: boolean = usuarioActualizado === null;
+    res.status(condition ? 404 : 200).send(condition ? { msg: 'No se encontró al usuario' } : usuarioActualizado);
+  } catch (error) {
+    res.status(500).send({ msg: 'Error al actualizar al usuario', error: error });
+  }
+});
 
-// /**
-//  * Elimina un cliente de la base de datos haciendo uso de la QueryString
-//  * @param {Object} req - Objeto de petición
-//  * @param {Object} res - Objeto de respuesta
-//  * @returns {Object} - Objeto JSON con el cliente eliminado o un mensaje de error
-//  */
-// customersRouter.delete('/customers', async (req, res) => {
-//   req.query = { ...req.query };
-//   try {
-//     const clienteEliminado = await clienteModel.findOneAndDelete(req.query);
-//     let condition: boolean = clienteEliminado === null;
-//     res.status(condition ? 404 : 200).send(condition ? { msg: 'No se encontró el cliente' } : clienteEliminado);
-//   } catch (error) {
-//     res.status(500).send({ msg: 'Error al eliminar el cliente', error: error });
-//   }
-// });
-
-// /**
-//  * Elimina un cliente de la base de datos haciendo uso del ID de manera dinámica
-//  * @param {Object} req - Objeto de petición
-//  * @param {Object} res - Objeto de respuesta
-//  * @returns {Object} - Objeto JSON con el cliente eliminado o un mensaje de error
-//  */
-// customersRouter.delete('/customers/:id', async (req, res) => {
-//   try {
-//     const clienteEliminado = await clienteModel.findOneAndDelete({ id_: req.params.id });
-//     let condition: boolean = clienteEliminado === null;
-//     res.status(condition ? 404 : 200).send(condition ? { msg: 'No se encontró el cliente' } : clienteEliminado);
-//   } catch (error) {
-//     res.status(500).send({ msg: 'Error al eliminar el cliente', error: error });
-//   }
-// });
+usuarioRouter.delete('/usuarios/:id', async (req, res) => {
+  try {
+    const usuarioEliminado = await usuarioModel.findOneAndDelete({ id_: req.params.id });
+    let condition: boolean = usuarioEliminado === null;
+    res.status(condition ? 404 : 200).send(condition ? { msg: 'No se encontró al usuario' } : usuarioEliminado);
+  } catch (error) {
+    res.status(500).send({ msg: 'Error al eliminar al usuario', error: error });
+  }
+});

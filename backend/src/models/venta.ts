@@ -32,6 +32,7 @@ export interface VentaDocumentInterface extends Document {
 const ProductoSchema = new Schema({
   productoId: Schema.Types.ObjectId,
   cantidad: Number,
+  precio: Number
 });
 
 /**

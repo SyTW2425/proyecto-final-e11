@@ -32,6 +32,7 @@ export interface CompraDocumentInterface extends Document {
 const ProductoSchema = new Schema({
   productoId: Schema.Types.ObjectId,
   cantidad: Number,
+  precio: Number
 });
 
 /**
@@ -85,7 +86,21 @@ const CompraSchema = new Schema<CompraDocumentInterface>({
       }
     }
   },
-  productos_: [ProductoSchema]
+  productos_: {
+    type: [ProductoSchema],
+    required: true,
+    validate: (value: { productoId: Schema.Types.ObjectId, cantidad: number, precio: number }[]) => {
+      if (value.length === 0) {
+        throw new Error('Una transacción debe tener al menos un producto.');
+      }
+      if (value.some(x => x.cantidad < 0)) {
+        throw new Error('La cantidad de un producto no puede ser negativa.');
+      }
+      if (value.some(x => x.precio < 0)) {
+        throw new Error('El precio de un producto no puede ser negativo.');
+      }
+    }
+  }
 });
 
    
