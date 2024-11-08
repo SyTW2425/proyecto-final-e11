@@ -22,7 +22,7 @@ export interface UsuarioDocumentInterface extends Document {
 /**
  * Esquema de la colección de Usuarios
  */
-const UsuarioSchema = new Schema<UsuarioDocumentInterface>({
+export const UsuarioSchema = new Schema<UsuarioDocumentInterface>({
   id_: {
     type: String,
     unique: true,
