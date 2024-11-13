@@ -45,10 +45,10 @@ const VentaSchema = new Schema<VentaDocumentInterface>({
     required: true,
     validate: (value: number) => {
       if (value < 0) {
-        throw new Error('El id de una transacción no puede ser negativo.');
+        throw new Error('El id de una venta no puede ser negativo.');
       }
       if (value % 1 !== 0) {
-        throw new Error('El id de una transacción no puede ser un número decimal.');
+        throw new Error('El id de una venta no puede ser un número decimal.');
       }
     }
   },
@@ -57,10 +57,10 @@ const VentaSchema = new Schema<VentaDocumentInterface>({
     required: true,
     validate: (value: Date) => {
       if (value > new Date()) {
-        throw new Error('La fecha de una transacción no puede ser futura.');
+        throw new Error('La fecha de una venta no puede ser futura.');
       }
       if (value === new Date('Invalid Date')) {
-        throw new Error('La fecha de una transacción no puede ser inválida.');
+        throw new Error('La fecha de una venta no puede ser inválida.');
       }    
     }
   },
@@ -82,7 +82,7 @@ const VentaSchema = new Schema<VentaDocumentInterface>({
     type: Number,
     validate: (value: number) => {
       if (value < 0) {
-        throw new Error('El importe de una transacción no puede ser negativo.');
+        throw new Error('El importe de una venta no puede ser negativo.');
       }
     }
   },

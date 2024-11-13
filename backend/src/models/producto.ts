@@ -13,7 +13,7 @@ import { Document, model, Schema } from 'mongoose';
  * Interfaz que representa un producto
  */
 export interface ProductoDocumentInterface extends Document {
-  id_: string,
+  id_: number,
   nombre_: string,
   stock_: number,
   precio_venta_: number
@@ -24,15 +24,12 @@ export interface ProductoDocumentInterface extends Document {
  */
 const ProductoSchema = new Schema<ProductoDocumentInterface>({
   id_: {
-    type: String,
+    type: Number,
     unique: true,
     required: true,
     validate: (value: string) => {
       if (value.length === 0) {
         throw new Error('El ID de un producto no puede ser vacío.');
-      }
-      if (/[a-zA-Z]/.test(value)) {
-        throw new Error('El ID de un producto no puede contener letras.');
       }
     }
   },

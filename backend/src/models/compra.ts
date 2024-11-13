@@ -45,10 +45,10 @@ const CompraSchema = new Schema<CompraDocumentInterface>({
     required: true,
     validate: (value: number) => {
       if (value < 0) {
-        throw new Error('El id de una transacción no puede ser negativo.');
+        throw new Error('El id de una compra no puede ser negativo.');
       }
       if (value % 1 !== 0) {
-        throw new Error('El id de una transacción no puede ser un número decimal.');
+        throw new Error('El id de una compra no puede ser un número decimal.');
       }
     }
   },
@@ -57,10 +57,10 @@ const CompraSchema = new Schema<CompraDocumentInterface>({
     required: true,
     validate: (value: Date) => {
       if (value > new Date()) {
-        throw new Error('La fecha de una transacción no puede ser futura.');
+        throw new Error('La fecha de una compra no puede ser futura.');
       }
       if (value === new Date('Invalid Date')) {
-        throw new Error('La fecha de una transacción no puede ser inválida.');
+        throw new Error('La fecha de una compra no puede ser inválida.');
       }    
     }
   },
@@ -82,7 +82,7 @@ const CompraSchema = new Schema<CompraDocumentInterface>({
     type: Number,
     validate: (value: number) => {
       if (value < 0) {
-        throw new Error('El importe de una transacción no puede ser negativo.');
+        throw new Error('El importe de una compra no puede ser negativo.');
       }
     }
   },
@@ -91,7 +91,7 @@ const CompraSchema = new Schema<CompraDocumentInterface>({
     required: true,
     validate: (value: { productoId: Schema.Types.ObjectId, cantidad: number, precio: number }[]) => {
       if (value.length === 0) {
-        throw new Error('Una transacción debe tener al menos un producto.');
+        throw new Error('Una compra debe tener al menos un producto.');
       }
       if (value.some(x => x.cantidad < 0)) {
         throw new Error('La cantidad de un producto no puede ser negativa.');
