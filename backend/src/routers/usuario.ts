@@ -36,6 +36,16 @@ usuarioRouter.get('/usuarios/:id', async (req, res) => {
   }
 });
 
+usuarioRouter.get('/usuarios/clave/:clave', async (req, res) => {
+  try {
+    let usuarioEncontrado = await usuarioModel.findOne({ "claves_.0": req.params.clave });
+    let condition: boolean = usuarioEncontrado === null;
+    res.status(condition ? 404 : 200).send(condition ? { msg: 'No se encontró al usuario' } : usuarioEncontrado);
+  } catch (error) {
+    res.status(500).send({ msg: 'Error al buscar al usuario', error: error });
+  }
+});
+
 
 /**
  * Guarda un cliente en la base de datos
