@@ -40,9 +40,6 @@ const ProductoSchema = new Schema<ProductoDocumentInterface>({
       if (value.length === 0) {
         throw new Error('El nombre de un producto no puede ser vacío.');
       }
-      if (/\d/.test(value)) {
-        throw new Error('El nombre de un producto no puede contener números.');
-      }
     } 
   },
   stock_: {
