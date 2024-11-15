@@ -17,24 +17,10 @@ import { proveedorRouter } from './routers/proveedor.js';
 import { productoRouter } from './routers/producto.js';
 import { compraRouter } from './routers/compra.js';
 import { ventaRouter } from './routers/ventas.js';
-// import { usuarioModel } from './models/usuario.js';
+import cors from 'cors';
 
 // Load environment variables from .env file
 dotenv.config({ path: './config/dev.env' });
-
-// Initialize the express server
-export const app = express();
-app.use(express.json());
-app.use(productoRouter);
-app.use(proveedorRouter);
-app.use(usuarioRouter);
-app.use(clienteRouter);
-app.use(compraRouter);
-app.use(ventaRouter);
-console.log('[server_initiation] Server started!');
-console.log('MONGO_URL:', process.env.MONGO_URL);
-app.listen(process.env.PORT || 27017);
-
 
 // Connect to Database
 connect(process.env.MONGO_URL!).then(() => {
@@ -44,3 +30,16 @@ connect(process.env.MONGO_URL!).then(() => {
   console.error('Something went wrong when connecting to the database', error);
   process.exit(-1);
 });
+
+export const app = express();
+app.listen(process.env.PORT || 27017);
+app.use(cors({ origin: 'http://localhost:3000' }));
+app.use(express.json());
+app.use(productoRouter);
+app.use(proveedorRouter);
+app.use(usuarioRouter);
+app.use(clienteRouter);
+app.use(compraRouter);
+app.use(ventaRouter);
+console.log('[server_initiation] Server started!');
+console.log('MONGO_URL:', process.env.MONGO_URL);

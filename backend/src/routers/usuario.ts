@@ -57,7 +57,7 @@ usuarioRouter.post('/usuarios', async (req, res) => {
   try {
     const usuario = new usuarioModel(req.body);
     await usuario.save();
-    res.send(usuario);
+    res.status(201).send(usuario);
   } catch (error) {
     res.status(500).send({ msg: 'Error al guardar el usuario', error: error });
   }
