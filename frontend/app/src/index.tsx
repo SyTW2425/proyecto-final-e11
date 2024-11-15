@@ -1,9 +1,12 @@
 // src/index.tsx
 
+// src/index.tsx
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import App from './App'; // Componente principal de la aplicación
-import './index.css'; // Estilos globales, si los tienes
+import App from './App';
+import { Provider } from 'react-redux'; // Importamos el Provider de react-redux
+import store  from './redux/store'; // Importamos el store que configuraste
+import './index.css';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -11,6 +14,8 @@ const root = ReactDOM.createRoot(
 
 root.render(
   <React.StrictMode>
-    <App /> {/* Renderiza el componente raíz */}
+    <Provider store={store}> {/* Aquí envolvemos la aplicación con el Provider */}
+      <App />
+    </Provider>
   </React.StrictMode>
 );

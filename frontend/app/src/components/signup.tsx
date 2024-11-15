@@ -1,19 +1,14 @@
 import React, { useState } from 'react';
-import styles from './signup.module.css'; // Importar el módulo CSS
-import axios from 'axios';
-
-// Define una interfaz para el estado del formulario
-interface SignUpForm {
-  id_: string;
-  nombre_: string;
-  contacto_: number;
-  claves_: [string, string];
-  rol_: string;
-}
+import { useDispatch } from 'react-redux';
+import { registerUser } from '../redux/actions/userActions';
+import { User } from '../types/userTypes';  // Asegúrate de que el tipo User esté importado
+import styles from '../assets/styles/signup.module.css';
+import { AppDispatch } from '../redux/store';  // Importa el tipo AppDispatch
 
 const SignUp: React.FC = () => {
-  // Define el estado con el tipo SignUpForm
-  const [formData, setFormData] = useState<SignUpForm>({
+  const dispatch = useDispatch<AppDispatch>();  // Usa AppDispatch para tipar dispatch
+  
+  const [formData, setFormData] = useState<User>({
     id_: '',
     nombre_: '',
     contacto_: 0,
@@ -21,23 +16,20 @@ const SignUp: React.FC = () => {
     rol_: '',
   });
 
-  // Manejador de cambios de entrada
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    console.log(name, value);
-    // Verificar si el campo pertenece a "claves"
+
     if (name === 'nombre_usuario') {
       setFormData((prevData) => ({
         ...prevData,
-        claves_: [value, prevData.claves_[1]], // Actualizar el primer elemento de la tupla
+        claves_: [value, prevData.claves_[1]],  // Actualizar el primer valor de la tupla
       }));
     } else if (name === 'contraseña') {
       setFormData((prevData) => ({
         ...prevData,
-        claves_: [prevData.claves_[0], value], // Actualizar el segundo elemento de la tupla
+        claves_: [prevData.claves_[0], value],  // Actualizar el segundo valor de la tupla
       }));
     } else {
-      // Para otros campos que no sean "claves"
       setFormData((prevData) => ({
         ...prevData,
         [name]: value,
@@ -46,12 +38,11 @@ const SignUp: React.FC = () => {
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();  // Previene el comportamiento predeterminado del formulario (recarga de la página)
-    alert('Formulario enviado con los datos: ' + JSON.stringify(formData));
+    e.preventDefault();
+    alert('Form data: ' + JSON.stringify(formData));
     try {
-      // Realizar solicitud POST a la API usando axios
-      const response = await axios.post('http://localhost:5000/usuarios', formData);
-      console.log('Respuesta del servidor:', response.data);
+      // Llamar a la acción `registerUser` y pasar `formData`
+      await dispatch(registerUser(formData));
       alert('¡Registro exitoso!');
     } catch (error) {
       console.error('Error al enviar los datos', error);
@@ -114,7 +105,7 @@ const SignUp: React.FC = () => {
               onChange={handleChange}
               required
             />
-          </div>
+             </div>
           <div className={styles.inputContainer}>
             <input
               type="text"
