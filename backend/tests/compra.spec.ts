@@ -38,7 +38,7 @@ after(async () => {
 let newCompra: any;
 
 
-describe('Compra API', () => {
+describe('Model Compra', () => {
 
   describe('POST /compras', () => {
     it('should create a new purchase', async () => {
