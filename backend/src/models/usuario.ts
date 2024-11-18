@@ -76,6 +76,7 @@ export const UsuarioSchema = new Schema<UsuarioDocumentInterface>({
   claves_: {
     type: [String, String],
     required: true,
+    unique: true,
     validate: (value: [string, string]) => {
       if (value[0].length === 0 || value[1].length === 0) {
         throw new Error('Las claves de un usuario no pueden ser vacías.');

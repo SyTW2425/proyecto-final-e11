@@ -17,6 +17,16 @@ export const userReducer = (state = initialState, action: any) => {
         ...state,
         error: action.payload,
       };
+    case UserActionTypes.LOGIN_USER_SUCCESS:
+      return {
+        ...state,
+        userData: action.payload,
+      };
+    case UserActionTypes.LOGIN_USER_FAIL:
+      return {
+        ...state,
+        error: action.payload,
+      };
     default:
       return state;
   }

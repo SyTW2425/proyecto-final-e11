@@ -4,9 +4,11 @@ import { registerUser } from '../redux/actions/userActions';
 import { User } from '../types/userTypes';  // Asegúrate de que el tipo User esté importado
 import styles from '../assets/styles/signup.module.css';
 import { AppDispatch } from '../redux/store';  // Importa el tipo AppDispatch
+import { useNavigate } from 'react-router-dom';  // Importar el hook useNavigate
 
 const SignUp: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();  // Usa AppDispatch para tipar dispatch
+  const navigate = useNavigate();
   
   const [formData, setFormData] = useState<User>({
     id_: '',
@@ -37,13 +39,21 @@ const SignUp: React.FC = () => {
     }
   };
 
+  const goToLogin = () => {
+    navigate('/login');  // Redirige a la ruta /login
+  };
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     alert('Form data: ' + JSON.stringify(formData));
     try {
       // Llamar a la acción `registerUser` y pasar `formData`
-      await dispatch(registerUser(formData));
-      alert('¡Registro exitoso!');
+      const isSignUpSuccessful = await dispatch(registerUser(formData));
+      if (isSignUpSuccessful) {
+        alert('¡SignUP exitoso!');
+      } else {
+        alert('Parámetros no válidos.');
+      }
     } catch (error) {
       console.error('Error al enviar los datos', error);
       alert('Hubo un error al registrar el usuario');
@@ -117,7 +127,7 @@ const SignUp: React.FC = () => {
             />
           </div>
           <button type="submit" className={styles.signupButton}>Sign Up</button>
-          <p className={styles.loginLink}>Already have an account? <a href="/login">Login</a></p>
+          <p className={styles.loginLink}>Already have an account? <span onClick={goToLogin} className={styles.loginRedirect}>Login</span></p>
         </div>
       </div>
     </form>
