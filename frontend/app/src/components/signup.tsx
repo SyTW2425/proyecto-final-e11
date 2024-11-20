@@ -1,10 +1,17 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { registerUser } from '../redux/actions/userActions';
-import { User } from '../types/userTypes';  // Asegúrate de que el tipo User esté importado
 import styles from '../assets/styles/signup.module.css';
 import { AppDispatch } from '../redux/store';  // Importa el tipo AppDispatch
 import { useNavigate } from 'react-router-dom';  // Importar el hook useNavigate
+
+export interface User {
+  id_: string;
+  nombre_: string;
+  contacto_: number;
+  claves_: [string, string];
+  rol_: string;
+}
 
 const SignUp: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();  // Usa AppDispatch para tipar dispatch
@@ -61,6 +68,7 @@ const SignUp: React.FC = () => {
   };
 
   return (
+    <div className={styles.backgroundContainer}>
     <form onSubmit={handleSubmit}>
       <div className={styles.signupContainer}>
         <h1>Connectory</h1>
@@ -131,6 +139,7 @@ const SignUp: React.FC = () => {
         </div>
       </div>
     </form>
+    </div>
   );
 };
 

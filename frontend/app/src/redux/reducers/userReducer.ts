@@ -1,28 +1,34 @@
-import { UserActionTypes } from '../../types/userTypes';
+// src/reducers/authReducer.ts
+import { AuthState, AuthActionTypes, LOGIN_SUCCESS, LOGOUT, LOGIN_FAILURE, REGISTER_SUCCESS, REGISTER_FAILURE } from '../../types/userTypes';
 
-const initialState = {
-  userData: null,
+const initialState: AuthState = {
+  isAuthenticated: false,
+  token: null,
+  user: null,
   error: null,
 };
 
-export const userReducer = (state = initialState, action: any) => {
+export const authReducer = (state = initialState, action: AuthActionTypes): AuthState => {
   switch (action.type) {
-    case UserActionTypes.REGISTER_USER_SUCCESS:
+    case LOGIN_SUCCESS:
+    case REGISTER_SUCCESS:
       return {
         ...state,
-        userData: action.payload,
+        isAuthenticated: true,
+        token: action.payload.token,
+        user: action.payload.user,
+        error: null,
       };
-    case UserActionTypes.REGISTER_USER_FAIL:
+    case LOGOUT:
       return {
         ...state,
-        error: action.payload,
+        isAuthenticated: false,
+        token: null,
+        user: null,
+        error: null,
       };
-    case UserActionTypes.LOGIN_USER_SUCCESS:
-      return {
-        ...state,
-        userData: action.payload,
-      };
-    case UserActionTypes.LOGIN_USER_FAIL:
+    case LOGIN_FAILURE:
+    case REGISTER_FAILURE:
       return {
         ...state,
         error: action.payload,
@@ -31,3 +37,5 @@ export const userReducer = (state = initialState, action: any) => {
       return state;
   }
 };
+
+export default authReducer;

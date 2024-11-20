@@ -1,6 +1,6 @@
 import { Dispatch } from 'redux';
 import axios from 'axios';
-import { UserActionTypes } from '../../types/userTypes';
+import { REGISTER_SUCCESS, REGISTER_FAILURE, LOGIN_FAILURE, LOGIN_SUCCESS, LOGOUT} from '../../types/userTypes';
 
 export const validateToken = () => async (dispatch: Dispatch) => {
     try {
@@ -15,7 +15,7 @@ export const validateToken = () => async (dispatch: Dispatch) => {
   
       if (response.status === 200 && response.data) {
         dispatch({
-          type: UserActionTypes.LOGIN_USER_SUCCESS,
+          type: typeof LOGIN_SUCCESS,
           payload: response.data.user, // Supongamos que el backend devuelve el usuario
         });
         return true;
@@ -24,7 +24,7 @@ export const validateToken = () => async (dispatch: Dispatch) => {
       }
     } catch (error: any) {
       dispatch({
-        type: UserActionTypes.LOGIN_USER_FAIL,
+        type: typeof LOGIN_FAILURE,
         payload: error.response?.data?.msg || error.message,
       });
       localStorage.removeItem('token'); // Elimina el token si no es válido
@@ -32,7 +32,12 @@ export const validateToken = () => async (dispatch: Dispatch) => {
     }
   };
 
-  export const logout = () => (dispatch: Dispatch) => {
-    localStorage.removeItem('token'); // Elimina el JWT del almacenamiento
-    dispatch({ type: UserActionTypes.LOGIN_USER_FAIL });
-  };
+  
+export const logoutUser = () => (dispatch: Dispatch) => {
+  localStorage.removeItem('token');
+  alert('SE VE BORROOOOO')
+  dispatch({ 
+    type: LOGOUT
+  });
+};
+  

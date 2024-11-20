@@ -9,6 +9,8 @@
  */
 import Express from 'express';
 import { usuarioModel } from '../models/usuario.js'
+import { hashPassword, comparePassword } from '../utils/hash.js';
+import jwt from 'jsonwebtoken';
 
 export const usuarioRouter = Express.Router();
 
@@ -77,17 +79,59 @@ usuarioRouter.get('/usuarios/:id', async (req, res) => {
  */
 usuarioRouter.post('/usuarios', async (req: any, res : any) => {
   try {
-    const usuario = new usuarioModel(req.body);
+    //const {id_, nombre_, contacto_, rol_} = new usuarioModel(req.body);
     const usuarioExistente = await usuarioModel.findOne({ 'claves_.0': req.body.claves_[0] });
 
     if (usuarioExistente) {
       return res.status(400).send({ msg: 'El nombre de usuario ya está en uso.' });
     }
+
+    const contrasena_cifrada = await hashPassword(req.body.claves_[1]);
+
+    let id_ = req.body.id_;
+    let nombre_ = req.body.nombre_;
+    let contacto_ = req.body.contacto_;
+    let rol_ = req.body.rol_;
+
+    const usuario = new usuarioModel({
+      id_,
+      nombre_,
+      contacto_,
+      claves_: [req.body.claves_[0], contrasena_cifrada],
+      rol_
+    });
+
+
     await usuario.save();
     res.status(201).send(usuario);
   } catch (error) {
     res.status(500).send({ msg: 'Error al guardar el usuario', error: error });
   }
+});
+
+// Login de usuario
+usuarioRouter.post('/login', async (req: any, res: any) => {
+  const { nombre_usuario, contrasena } = req.body;
+
+  if (!nombre_usuario || !contrasena) {
+    return res.status(400).json({ msg: 'Faltan datos' });
+  }
+
+  const user = await usuarioModel.findOne({ 'claves_.0': nombre_usuario });
+  if (!user) {
+    return res.status(401).json({ msg: 'Credenciales inválidas Usuario' });
+  }
+
+  const isPasswordValid = await comparePassword(contrasena, user.claves_[1]);
+  if (!isPasswordValid) {
+    return res.status(401).json({ msg: 'Credenciales inválidas Contraseña' });
+  }
+
+  const token = jwt.sign({ nombre_usuario: user.claves_[0], contrasena: user.claves_[1] }, process.env.JWT_SECRET as string, {
+    expiresIn: '1h',
+  });
+
+  res.status(200).json({ token, user: { nombre_usuario: user.claves_[0], contrasena: user.claves_[1]} });
 });
 
 

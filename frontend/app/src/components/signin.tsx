@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { verifyUser } from '../redux/actions/userActions';
-import { UserLogIn } from '../types/userTypes';  // Asegúrate de que el tipo User esté importado
 import styles from '../assets/styles/signup.module.css';
 import { AppDispatch } from '../redux/store';  // Importa el tipo AppDispatch
 import { useNavigate } from 'react-router-dom';  // Importar el hook useNavigate
 
+export interface UserLogIn {
+  nombre_usuario: string;
+  contrasena: string;
+}
 
 const SignIn: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();  // Usa AppDispatch para tipar dispatch
@@ -50,7 +53,7 @@ const SignIn: React.FC = () => {
   
       if (isLoginSuccessful) {
         alert('¡Login exitoso!');
-        navigate('/dashboard');
+        navigate('/logout');
       } else {
         alert('Usuario o contraseña incorrectos.');
       }
@@ -62,6 +65,7 @@ const SignIn: React.FC = () => {
   
 
   return (
+    <div className={styles.backgroundContainer}>
     <form onSubmit={handleSubmit}>
       <div className={styles.signupContainer}>
         <h1>Connectory</h1>
@@ -92,6 +96,7 @@ const SignIn: React.FC = () => {
         </div>
       </div>
     </form>
+    </div>
   );
 };
 
