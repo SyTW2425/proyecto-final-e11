@@ -6,6 +6,7 @@ import styles from '../assets/styles/signup.module.css';
 import { AppDispatch } from '../redux/store';  // Importa el tipo AppDispatch
 import { useNavigate } from 'react-router-dom';  // Importar el hook useNavigate
 
+
 const SignIn: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();  // Usa AppDispatch para tipar dispatch
   const navigate = useNavigate();
@@ -49,6 +50,7 @@ const SignIn: React.FC = () => {
   
       if (isLoginSuccessful) {
         alert('¡Login exitoso!');
+        navigate('/dashboard');
       } else {
         alert('Usuario o contraseña incorrectos.');
       }

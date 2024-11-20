@@ -41,9 +41,12 @@ export const verifyUser = (formData: UserLogIn) => async (dispatch: Dispatch) =>
     );
 
     if (response.status === 200 && response.data) {
+      const {token, user} = response.data;
+      localStorage.setItem('token', token);
+
       dispatch({
         type: UserActionTypes.LOGIN_USER_SUCCESS,
-        payload: response.data,
+        payload: user,
       });
       return true; // Login exitoso
     } else {
