@@ -78,7 +78,7 @@ const SignUp: React.FC = () => {
             <input
               type="text"
               name="id_"
-              placeholder="id_"
+              placeholder="DNI"
               value={formData.id_}
               onChange={handleChange}
               required
@@ -88,7 +88,7 @@ const SignUp: React.FC = () => {
             <input
               type="text"
               name="nombre_"
-              placeholder="nombre_"
+              placeholder="Nombre"
               value={formData.nombre_}
               onChange={handleChange}
               required
@@ -98,7 +98,7 @@ const SignUp: React.FC = () => {
             <input
               type="number"
               name="contacto_"
-              placeholder="contacto_"  
+              placeholder="Número de teléfono"  
               value={formData.contacto_}
               onChange={handleChange}
               required
@@ -108,7 +108,7 @@ const SignUp: React.FC = () => {
             <input
               type="text"
               name="nombre_usuario"
-              placeholder="nombre de usuario"
+              placeholder="Nombre de usuario"
               value={formData.claves_[0]}
               onChange={handleChange}
               required
@@ -128,7 +128,7 @@ const SignUp: React.FC = () => {
             <input
               type="text"
               name="rol_"
-              placeholder="rol_"
+              placeholder="Rol"
               value={formData.rol_}
               onChange={handleChange}
               required

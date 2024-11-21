@@ -1,7 +1,7 @@
 import { Dispatch } from 'redux';
 import axios from 'axios';
 import { UserLogIn } from '../../components/signin';  // Asegúrate de importar el tipo UserLogIn
-import { REGISTER_SUCCESS, REGISTER_FAILURE, LOGIN_FAILURE, LOGIN_SUCCESS, LOGOUT} from '../../types/userTypes';
+import { REGISTER_SUCCESS, REGISTER_FAILURE, LOGIN_FAILURE, LOGIN_SUCCESS} from '../../types/userTypes';
 import { User } from '../../components/signup';  // Asegúrate de importar el tipo User
 
 // Definir la acción para registrar un usuario

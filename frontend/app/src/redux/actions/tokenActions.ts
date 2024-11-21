@@ -1,6 +1,6 @@
 import { Dispatch } from 'redux';
 import axios from 'axios';
-import { REGISTER_SUCCESS, REGISTER_FAILURE, LOGIN_FAILURE, LOGIN_SUCCESS, LOGOUT} from '../../types/userTypes';
+import { LOGIN_FAILURE, LOGIN_SUCCESS, LOGOUT} from '../../types/userTypes';
 
 export const validateToken = () => async (dispatch: Dispatch) => {
     try {
