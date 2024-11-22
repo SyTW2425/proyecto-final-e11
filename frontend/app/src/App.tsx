@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-d
 import store from './redux/store';
 import SignUp from './components/signup';
 import SignIn from './components/signin';
-import LogoutButton from './components/logout';
+import Template from './components/template';
 
 const App: React.FC = () => {
   return (
@@ -17,7 +17,9 @@ const App: React.FC = () => {
 
           {/* Rutas protegidas */}
           <Route path="/dashboard" element={<ProtectedRoute component={<Dashboard />} />} />
-          <Route path="/logout" element={<ProtectedRoute component={<LogoutButton />} />} />
+          <Route path="/template" element={<ProtectedRoute component={<Template />} />} />
+        
+        
 
 
           {/* Ruta de ejemplo protegida */}

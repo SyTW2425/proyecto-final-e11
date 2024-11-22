@@ -1,0 +1,81 @@
+/* Contenedor principal */
+.container {
+    display: flex;
+    height: 100vh;
+  }
+  
+  /* Menú lateral */
+  .sidebar {
+    width: 250px;
+    background-color: #2d2d62;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px 0;
+  }
+  
+  .logo {
+    font-size: 1.8rem;
+    margin-bottom: 30px;
+  }
+  
+  .menu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+  }
+  
+  .menuItem {
+    padding: 15px 20px;
+    cursor: pointer;
+    text-align: left;
+    color: #ffffff;
+  }
+  
+  .menuItem:hover {
+    background-color: #1e1e45;
+  }
+  
+  /* Contenido principal */
+  .main {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  /* Barra de navegación */
+  .navbar {
+    background-color: #1e1e45;
+    padding: 10px 20px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+  }
+  
+  .navContent {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+  }
+  
+  /* Título en la barra de navegación */
+  .title {
+    font-size: 1.2rem;
+    color: #ffffff;
+    font-weight: bold;
+  }
+  .content {
+    font-size: 1.2rem;
+    color: #1e1e45;
+    font-weight: bold;
+  }
+  
+  /* Contenedor del botón de cerrar sesión */
+  .logoutButtonContainer {
+    display: flex;
+    align-items: center;
+  }
+  

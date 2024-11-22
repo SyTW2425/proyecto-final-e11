@@ -35,7 +35,6 @@ export const validateToken = () => async (dispatch: Dispatch) => {
   
 export const logoutUser = () => (dispatch: Dispatch) => {
   localStorage.removeItem('token');
-  alert('SE VE BORROOOOO')
   dispatch({ 
     type: LOGOUT
   });

@@ -53,7 +53,7 @@ const SignIn: React.FC = () => {
   
       if (isLoginSuccessful) {
         alert('¡Login exitoso!');
-        navigate('/logout');
+        navigate('/template');
       } else {
         alert('Usuario o contraseña incorrectos.');
       }
