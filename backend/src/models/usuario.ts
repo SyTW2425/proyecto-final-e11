@@ -16,6 +16,7 @@ export interface UsuarioDocumentInterface extends Document {
   id_: string,
   nombre_: string,
   contacto_: number,
+  claves_: [string, string], // nombre de usuario y contraseña
   rol_: string
 }
 
@@ -69,6 +70,19 @@ export const UsuarioSchema = new Schema<UsuarioDocumentInterface>({
       }
       if (!/^[6-9]/.test(value.toString())) {
         throw new Error('El contacto de un usuario debe empezar por 6,7,8 9.');
+      }
+    }
+  },
+  claves_: {
+    type: [String, String],
+    required: true,
+    unique: true,
+    validate: (value: [string, string]) => {
+      if (value[0].length === 0 || value[1].length === 0) {
+        throw new Error('Las claves de un usuario no pueden ser vacías.');
+      }
+      if (value[0] === value[1]) {
+        throw new Error('Las claves de un usuario NO deben coincidir.');
       }
     }
   },

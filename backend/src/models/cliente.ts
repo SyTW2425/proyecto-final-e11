@@ -8,6 +8,8 @@
  *  > Valerio Luis Cabrera   (alu0101476049@ull.edu.es)
  */
 import { Document, model, Schema } from 'mongoose';
+import { ventaModel } from './venta.js';
+
 
 /**
  * Interfaz que representa un cliente
@@ -16,7 +18,7 @@ export interface ClienteDocumentInterface extends Document {
   id_: string,
   nombre_: string,
   contacto_: number,
-  compras_: [number, number][],
+  compras_: [Schema.Types.ObjectId],  // Compras hechas por clientes, referido a nuestras ventas
   membresia_: boolean
 }
 
@@ -74,22 +76,21 @@ const ClienteSchema = new Schema<ClienteDocumentInterface>({
     }
   },
   compras_: {
-    type: [[Number, Number]],
+    type: [Schema.Types.ObjectId],
+    ref: 'Ventas',
     required: true,
-    validate: (value: Array<[number, number]>) => {
-      if (value.length === 0) {
-        throw new Error('Las compras de un cliente no pueden ser vacías.');
-      }
-      if (value.length > 0) {
-        for (let i = 0; i < value.length; i++) {
-          if (value[i][1] < 0) {
-            throw new Error('La cantidad de producto de una compra de un cliente no puede ser negativa.');
-          }
-          if (value[i][0] < 0) {
-            throw new Error('El id de producto de una compra de un cliente no puede ser negativa.');
-          }
+    validate: {
+      validator: async function(value: Schema.Types.ObjectId[]): Promise<boolean> {
+        // Si compras_ está vacío, return true
+        if (value.length === 0) {
+          return true;
         }
-      }
+        // Busca la persona en la base de datos
+        const venta = await ventaModel.findById(value);
+        // Devuelve true si la persona existe, false si no
+        return !!venta;
+      },
+      message: props => `La venta asociada con ID ${props.value} no existe en la base de datos.`
     }
   },
   membresia_: {
