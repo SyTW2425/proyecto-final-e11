@@ -79,4 +79,64 @@
     display: flex;
     align-items: center;
   }
+
+
+/* Tabla estilizada */
+.tableContainer {
+  margin: 20px auto;
+  overflow-x: auto;
+  border-radius: 8px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.styledTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: Arial, sans-serif;
+  text-align: left;
+}
+
+.styledTable thead {
+  background-color: #2d2d62;
+  color: #ffffff;
+}
+
+.styledTable td {
+  font-size: 0.9rem;
+  word-break: break-word; /* Permite que el texto largo se ajuste en varias líneas */
+  max-width: 200px; /* Opcional: controla el ancho máximo */
+}
+
+.styledTable th, .styledTable td {
+  text-align: center; /* Opcional: centra el texto */
+}
+.styledTable th,
+.styledTable td {
+  padding: 12px 15px;
+  border: 1px solid #ddd;
+}
+
+.styledTable tbody tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.styledTable tbody tr:hover {
+  background-color: #f1f1f1;
+}
+
+.styledTable tbody tr td {
+  font-size: 0.9rem;
+}
+
+.styledTable th {
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.styledTable tbody tr td:first-child {
+  font-weight: bold;
+  color: #2d2d62;
+}
+
   

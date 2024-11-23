@@ -18,7 +18,7 @@ export interface ClienteDocumentInterface extends Document {
   id_: string,
   nombre_: string,
   contacto_: number,
-  compras_: [Schema.Types.ObjectId],  // Compras hechas por clientes, referido a nuestras ventas
+  compras_: [number],  // Compras hechas por clientes, referido a nuestras ventas
   membresia_: boolean
 }
 
@@ -76,17 +76,16 @@ const ClienteSchema = new Schema<ClienteDocumentInterface>({
     }
   },
   compras_: {
-    type: [Schema.Types.ObjectId],
-    ref: 'Ventas',
+    type: [Number],
     required: true,
     validate: {
-      validator: async function(value: Schema.Types.ObjectId[]): Promise<boolean> {
+      validator: async function(value: number[]): Promise<boolean> {
         // Si compras_ está vacío, return true
         if (value.length === 0) {
           return true;
         }
         // Busca la persona en la base de datos
-        const venta = await ventaModel.findById(value);
+        const venta = await ventaModel.find({ id_: { $in: value } });
         // Devuelve true si la persona existe, false si no
         return !!venta;
       },
