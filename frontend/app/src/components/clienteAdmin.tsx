@@ -17,6 +17,10 @@ const ClienteAdmin: React.FC = () => {
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
   const [mostrarFormularioEliminar, setMostrarFormularioEliminar] = useState(false); 
   const [dniEliminar, setDniEliminar] = useState<string>(''); // Estado para almacenar el DNI
+  const [mostrarFormularioBuscar, setMostrarFormularioBuscar] = useState(false); // Visibilidad del formulario de búsqueda
+const [dniBuscar, setDniBuscar] = useState<string>(''); // DNI del cliente a buscar
+const [clienteEncontrado, setClienteEncontrado] = useState<any | null>(null); // Datos del cliente encontrado
+
   // Estado para controlar la visibilidad del formulario
   const [nuevoCliente, setNuevoCliente] = useState({
     id_: '',
@@ -117,24 +121,27 @@ const ClienteAdmin: React.FC = () => {
     // Aquí puedes implementar lógica para buscar clientes
   };
 
-  const handleEliminarCliente = () => {
-    // Pedir al usuario el DNI del cliente que quiere eliminar
-    const dniCliente = prompt('Introduce el DNI del cliente que deseas eliminar:');
+  const manejarEnvioBuscarCliente = (e: React.FormEvent) => {
+    e.preventDefault();
+  
+    if (!dniBuscar) {
+      alert('Por favor, ingresa un DNI válido.');
+      return;
+    }
+  
+    // Hacer la solicitud al backend para buscar el cliente
     axios
-      .delete(`http://localhost:5000/clientes/${dniCliente}`)
-      .then(() => {
-        // Filtrar el cliente eliminado del estado
-        setClientes((prevClientes) =>
-          prevClientes.filter((cliente) => cliente.id_ !== dniCliente)
-        );
-        alert('Cliente eliminado correctamente');
+      .get(`http://localhost:5000/clientes/${dniBuscar}`)
+      .then((response) => {
+        setClienteEncontrado(response.data); // Guardar los datos del cliente encontrado
       })
       .catch((error) => {
-        console.error('Error al eliminar el cliente:', error);
-        alert('Hubo un error al eliminar el cliente');
+        console.error('Error al buscar el cliente:', error);
+        setClienteEncontrado(null); // Si no se encuentra, vaciar el cliente
+        alert('Cliente no encontrado');
       });
   };
-
+  
 
   return (
     <div className={styles.container}>
@@ -175,9 +182,10 @@ const ClienteAdmin: React.FC = () => {
             Eliminar cliente
           </button>
 
-          <button className={styles.actionButton} onClick={handleBuscarCliente}>
-            Buscar cliente
-          </button>
+          <button
+            className={styles.actionButton}
+            onClick={() => setMostrarFormularioBuscar(true)}
+          > Buscar cliente</button>
         </div>
 
         {mostrarFormularioEliminar && (
@@ -283,6 +291,55 @@ const ClienteAdmin: React.FC = () => {
             </div>
           </form>
         )}
+
+{mostrarFormularioBuscar && (
+  <form onSubmit={manejarEnvioBuscarCliente} className={styles.formularioContainer}>
+    <h2 className={styles.formTitle}>Buscar Cliente</h2>
+    <div className={styles.formGroup}>
+      <label className={styles.formLabel}>DNI del Cliente:</label>
+      <input
+        type="text"
+        name="dniBuscar"
+        value={dniBuscar}
+        onChange={(e) => setDniBuscar(e.target.value)}
+        className={styles.formInput}
+        required
+      />
+    </div>
+    <div className={styles.formButtonGroup}>
+      <button type="submit" className={styles.formButton}>
+        Buscar Cliente
+      </button>
+      <button
+        type="button"
+        onClick={() => {
+          setMostrarFormularioBuscar(false);
+          setClienteEncontrado(null);
+        }}
+        className={styles.formButtonCancel}
+      >
+        Cancelar
+      </button>
+    </div>
+  </form>
+)}
+{clienteEncontrado && (
+  <div className={styles.resultContainer}>
+    <h2 className={styles.resultTitle}>Cliente Encontrado</h2>
+    <div className={styles.resultContent}>
+      <p><strong>DNI:</strong> {clienteEncontrado.id_}</p>
+      <p><strong>Nombre:</strong> {clienteEncontrado.nombre_}</p>
+      <p><strong>Contacto:</strong> {clienteEncontrado.contacto_}</p>
+      <p><strong>Compras:</strong> {clienteEncontrado.compras_.length > 0 
+        ? clienteEncontrado.compras_.join(', ') 
+        : 'Sin compras'}
+      </p>
+      <p><strong>Membresía:</strong> {clienteEncontrado.membresia_ ? 'Sí' : 'No'}</p>
+    </div>
+  </div>
+)}
+
+
 
 
         {/* Contenido de la página */}

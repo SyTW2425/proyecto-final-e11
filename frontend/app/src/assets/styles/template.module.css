@@ -1,7 +1,7 @@
 /* Contenedor principal */
 .container {
     display: flex;
-    height: 100vh;
+    min-height: 100vh; 
   }
   
   /* Menú lateral */
@@ -13,6 +13,7 @@
     flex-direction: column;
     align-items: center;
     padding: 20px 0;
+    min-height: 100%;
   }
   
   .logo {
@@ -43,6 +44,7 @@
     flex-grow: 1;
     display: flex;
     flex-direction: column;
+    
   }
   
   /* Barra de navegación */
@@ -257,6 +259,36 @@
 
 .formButtonCancel:hover {
   background-color: #aaaaaa;
+}
+
+.resultContainer {
+  background-color: #ffffff;
+  border: 2px solid #ddd;
+  border-radius: 12px;
+  padding: 20px;
+  margin-top: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  max-width: 400px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.resultTitle {
+  font-size: 1.8rem;
+  font-weight: bold;
+  margin-bottom: 15px;
+  text-align: center;
+  color: #333;
+}
+
+.resultContent {
+  font-size: 1.1rem;
+  color: #555;
+  line-height: 1.6;
+}
+
+.resultContent p {
+  margin: 8px 0;
 }
 
 
