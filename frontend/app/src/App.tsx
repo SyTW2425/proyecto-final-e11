@@ -5,6 +5,8 @@ import store from './redux/store';
 import SignUp from './components/signup';
 import SignIn from './components/signin';
 import Template from './components/template';
+import ClienteUsuario from './components/clienteUsuario';
+import ClienteAdmin from './components/clienteAdmin';
 
 const App: React.FC = () => {
   return (
@@ -16,35 +18,28 @@ const App: React.FC = () => {
           <Route path="/login" Component={SignIn} />
 
           {/* Rutas protegidas */}
-          <Route path="/dashboard" element={<ProtectedRoute component={<Dashboard />} />} />
-          <Route path="/template" element={<ProtectedRoute component={<Template />} />} />
-        
-        
-
-
-          {/* Ruta de ejemplo protegida */}
-          <Route
-            path="/protected"
-            element={<ProtectedRoute component={<ProtectedComponent />} />}
-          />
+          <Route path="/template" element={<ProtectedRoute component={<Template />} adminComponent={<Template/>} />} />
+          <Route path="/clientesUsuario" element={<ProtectedRoute component={<ClienteUsuario />} adminComponent={<ClienteAdmin />} />} />
         </Routes>
       </Router>
     </Provider>
   );
 };
 
-const ProtectedRoute: React.FC<{ component: React.ReactElement }> = ({ component }) => {
-  const isAuthenticated = !!localStorage.getItem('token'); // Verifica el token
+const ProtectedRoute: React.FC<{ component: React.ReactElement; adminComponent: React.ReactElement }> = ({ component, adminComponent }) => {
+  const token = localStorage.getItem('token');
+  const user = JSON.parse(localStorage.getItem('user') || '{}');
+  const rol_ = (localStorage.getItem('rol') || '').replace(/^"|"$/g, '').trim();
 
-  return isAuthenticated ? component : <Navigate to="/login" replace />;
-};
+  if (!token || !user) {
+    return <Navigate to="/login" replace />;
+  }
+  
+  if (rol_ === "administrador") {
+    return adminComponent;
+  }
 
-const Dashboard: React.FC = () => {
-  return <h1>Dashboard</h1>;
-};
-
-const ProtectedComponent: React.FC = () => {
-  return <div>Esta es una página protegida. ¡Bienvenido!</div>;
+  return component;
 };
 
 export default App;

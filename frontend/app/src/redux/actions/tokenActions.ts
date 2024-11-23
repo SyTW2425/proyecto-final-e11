@@ -28,6 +28,7 @@ export const validateToken = () => async (dispatch: Dispatch) => {
         payload: error.response?.data?.msg || error.message,
       });
       localStorage.removeItem('token'); // Elimina el token si no es válido
+      localStorage.removeItem('user');
       return false;
     }
   };
@@ -35,6 +36,7 @@ export const validateToken = () => async (dispatch: Dispatch) => {
   
 export const logoutUser = () => (dispatch: Dispatch) => {
   localStorage.removeItem('token');
+  localStorage.removeItem('user');
   dispatch({ 
     type: LOGOUT
   });

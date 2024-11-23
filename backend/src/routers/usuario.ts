@@ -23,16 +23,17 @@ usuarioRouter.get('/usuarios/claves', async (req: any, res: any) => {
     if (!nombre_usuario || !contrasena) {
       return res.status(400).send({ msg: 'Faltan parámetros: nombre_usuario y/o contrasena' });
     }
-
     // Buscar el usuario con ambas condiciones en una sola consulta
     const usuarioEncontrado = await usuarioModel.findOne({
-      "claves_.0": nombre_usuario,
-      "claves_.1": contrasena,
+      "claves_.0": nombre_usuario
     });
+    const valid = comparePassword(contrasena, usuarioEncontrado!.claves_[1]);
 
     // Validar si el usuario fue encontrado
     if (!usuarioEncontrado) {
-      return res.status(404).send({ msg: 'Usuario no encontrado o credenciales incorrectas' });
+      return res.status(404).send({ msg: `Usuario no encontrado` });
+    } else if (!valid) {
+      return res.status(401).send({ msg: `Contraseña incorrecta` });
     }
 
     // Retornar el usuario si fue encontrado
@@ -127,11 +128,12 @@ usuarioRouter.post('/login', async (req: any, res: any) => {
     return res.status(401).json({ msg: 'Credenciales inválidas Contraseña' });
   }
 
-  const token = jwt.sign({ nombre_usuario: user.claves_[0], contrasena: user.claves_[1] }, process.env.JWT_SECRET as string, {
+
+  const token = jwt.sign({ rol: user.rol_, nombre_usuario: user.claves_[0], contrasena: user.claves_[1] }, process.env.JWT_SECRET as string, {
     expiresIn: '1h',
   });
 
-  res.status(200).json({ token, user: { nombre_usuario: user.claves_[0], contrasena: user.claves_[1]} });
+  res.status(200).json({ token, user: { nombre_usuario: user.claves_[0], contrasena: user.claves_[1]}, rol: user.rol_ });
 });
 
 
