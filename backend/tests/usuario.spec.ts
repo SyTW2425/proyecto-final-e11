@@ -111,12 +111,24 @@ describe('Model Usuario', () => {
       it('should delete a user', async () => {
         const res = await request(app).delete(`/usuarios/${primerUsuario.id_}`);
         expect(res.status).to.equal(200);
+        await usuarioModel.create(primerUsuario);
       });
   
       it('should return 404 if the user is not found', async () => {
         const res = await request(app).delete('/usuarios/12345678Z');
         expect(res.status).to.equal(404);
         expect(res.body).to.include({ msg: 'No se encontró al usuario' });
+      });
+    });
+
+    describe('POST /login', () => {
+      it('should return 400 if data is missing', async () => {
+        const res = await request(app)
+          .post('/login')
+          .send({
+            nombre_usuario: primerUsuario.claves_[0]
+          });
+        expect(res.status).to.equal(400);
       });
     });
 });
