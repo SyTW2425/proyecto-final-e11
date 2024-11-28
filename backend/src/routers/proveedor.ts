@@ -47,7 +47,7 @@ proveedorRouter.post('/proveedores', async (req, res) => {
   try {
     const proveedor = new proveedorModel(req.body);
     await proveedor.save();
-    res.send(proveedor);
+    res.send(proveedor)
   } catch (error) {
     res.status(500).send({ msg: 'Error al guardar el proveedor', error: error });
   }
