@@ -117,15 +117,12 @@ const VentasUsuario: React.FC = () => {
                       <td>{venta.fecha_}</td>
                       <td>{venta.cliente_}</td>
                       <td>{venta.importe_}</td>
-                      <td>
-                        <ul>
-                          {venta.productos_.map((producto) => (
-                            <li key={producto.productoID_}>
-                              {producto.cantidad_} x {producto.productoID_} (${producto.precio_})
-                            </li>
-                          ))}
-                        </ul>
-                      </td>
+                      <td>{venta.productos_.map((producto: any) => (
+                        <div key={producto.productoID_}>
+                          <p>{producto.productoId} - {producto.cantidad} - {producto.precio}</p>
+                        </div>
+                      ))}</td>
+                      
                     </tr>
                   ))
                 )}

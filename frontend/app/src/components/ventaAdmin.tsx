@@ -18,15 +18,16 @@ const VentasAdmin: React.FC = () => {
     id_: '',
     fecha_: '',
     cliente_: '',
-    importe_: 0,
-    productos: [
+    importe_: '',
+    productos_: [
       {
-        productoID: '',
-        cantidad: 0,
-        precio: 0,
+        productoID_: '',
+        cantidad_: '',
+        precio_: '',
       },
     ],
   });
+
 
 
   useEffect(() => {
@@ -50,11 +51,21 @@ const VentasAdmin: React.FC = () => {
 
   const manejarCambioFormulario = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    if (name === 'compras_') {
-      setNuevoVenta((prevState) => ({
-        ...prevState,
-        [name]: value.split(',').map((item) => parseInt(item.trim(), 10)).filter((item) => !isNaN(item)),
-      }));
+
+    if (name === 'productos_') {
+      try {
+        const productos = JSON.parse(value); // Si los datos llegan como JSON
+        if (Array.isArray(productos)) {
+          setNuevoVenta((prevState) => ({
+            ...prevState,
+            [name]: productos,
+          }));
+        } else {
+          alert('El campo productos debe ser un array válido en formato JSON');
+        }
+      } catch (error) {
+        alert('Error al parsear productos. Asegúrate de usar un formato JSON válido.');
+      }
     } else {
       setNuevoVenta((prevState) => ({
         ...prevState,
@@ -63,10 +74,11 @@ const VentasAdmin: React.FC = () => {
     }
   };
 
+
   const manejarEnvioFormulario = (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!nuevoVenta.id_ || !nuevoVenta.fecha_ || !nuevoVenta.cliente_ || !nuevoVenta.importe_ || nuevoVenta.productos.length === 0) {
+    if (!nuevoVenta.id_ || !nuevoVenta.fecha_ || !nuevoVenta.cliente_ || !nuevoVenta.importe_ || nuevoVenta.productos_.length === 0) {
       alert('Por favor, rellena todos los campos');
       return;
     }
@@ -76,7 +88,7 @@ const VentasAdmin: React.FC = () => {
       fecha_: nuevoVenta.fecha_,
       cliente_: nuevoVenta.cliente_,
       importe_: nuevoVenta.importe_,
-      productos: nuevoVenta.productos,
+      productos_: nuevoVenta.productos_,
     };
 
     alert(JSON.stringify(nuevoVenta2, null, 2))
@@ -86,7 +98,7 @@ const VentasAdmin: React.FC = () => {
         // Añadir el nuevo cliente al estado
         alert("Respuesta del backend:" + response.data);
         setVentas((prevVentas) => [...prevVentas, response.data]);
-        alert('Venta creada correctamente');
+        alert('Compra creada correctamente');
         setMostrarFormulario(false); // Ocultar el formulario después de enviar
       })
       .catch((error) => {
@@ -98,7 +110,7 @@ const VentasAdmin: React.FC = () => {
     e.preventDefault();
 
     if (!idEliminar) {
-      alert('Por favor, ingresa un ID de venta.');
+      alert('Por favor, ingresa un ID de compra.');
       return;
     }
 
@@ -120,7 +132,7 @@ const VentasAdmin: React.FC = () => {
 
 
   const handleEditarVenta = () => {
-    alert('Función para editar una venta existente');
+    alert('Función para editar una compra existente');
     // Aquí puedes implementar lógica para seleccionar y editar un cliente
   };
 
@@ -137,7 +149,7 @@ const VentasAdmin: React.FC = () => {
     axios
       .get(`http://localhost:5000/ventas/${idBuscar}`)
       .then((response) => {
-        setVentaEncontrado(response.data); // Guardar los datos del cliente encontrado
+        setVentaEncontrado(response.data); 
       })
       .catch((error) => {
         console.error('Error al buscar la venta:', error);
@@ -210,7 +222,7 @@ const VentasAdmin: React.FC = () => {
           <button
             className={styles.actionButton}
             onClick={() => setMostrarFormularioBuscar(true)}
-          > Buscar venta</button>
+          > Buscar compra</button>
         </div>
 
         {mostrarFormularioEliminar && (
@@ -288,12 +300,11 @@ const VentasAdmin: React.FC = () => {
                 <input
                   type="text"
                   name="productos_"
-                  value={nuevoVenta.productos.join(',')}
+                  value={JSON.stringify(nuevoVenta.productos_)}
                   onChange={(e) => manejarCambioFormulario(e)}
                   className={styles.formInput}
                 />
               </div>
-
             </div>
 
             <div className={styles.formButtonGroup}>
@@ -344,13 +355,13 @@ const VentasAdmin: React.FC = () => {
         )}
         {ventaEncontrado && (
           <div className={styles.resultContainer}>
-            <h2 className={styles.resultTitle}>Cliente Encontrado</h2>
+            <h2 className={styles.resultTitle}>Compra Encontrada</h2>
             <div className={styles.resultContent}>
               <p><strong>ID:</strong> {ventaEncontrado.id_}</p>
               <p><strong>Fecha:</strong> {ventaEncontrado.fecha_}</p>
               <p><strong>Cliente:</strong> {ventaEncontrado.cliente_}</p>
               <p><strong>Importe:</strong> {ventaEncontrado.importe_}</p>
-              <p><strong>Productos:</strong> {ventaEncontrado.productos.join(', ')}</p>
+              <p><strong>Productos:</strong> {ventaEncontrado.productos_.join(', ')}</p>
             </div>
           </div>
         )}
@@ -358,7 +369,7 @@ const VentasAdmin: React.FC = () => {
 
         {/* Contenido de la página */}
         <div className={styles.content}>
-          <h1>Página de ventas pa administradores</h1>
+          <h1>Página de Ventas para Administradores</h1>
           <p>Bienvenido</p>
         </div>
         {/* Tabla de clientes */}
@@ -387,7 +398,12 @@ const VentasAdmin: React.FC = () => {
                       <td>{venta.fecha_}</td>
                       <td>{venta.cliente_}</td>
                       <td>{venta.importe_}</td>
-                      <td>{venta.productos.join(', ')}</td>
+                      {/* Mostramos los productos teniendo en cuenta que es una array con productoID, cantidad y precio*/}
+                      <td>{venta.productos_.map((producto: any) => (
+                        <div key={producto.productoID_}>
+                          <p>{producto.productoId} - {producto.cantidad} - {producto.precio}</p>
+                        </div>
+                      ))}</td>
                     </tr>
                   ))
                 )}
