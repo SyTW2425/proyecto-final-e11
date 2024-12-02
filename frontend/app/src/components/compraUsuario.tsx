@@ -116,15 +116,11 @@ const ComprasUsuario: React.FC = () => {
                       <td>{compra.fecha_}</td>
                       <td>{compra.proveedor_}</td>
                       <td>{compra.importe_}</td>
-                      <td>
-                        <ul>
-                          {compra.productos_.map((producto) => (
-                            <li key={producto.productoID_}>
-                              {producto.cantidad_} x {producto.productoID_} (${producto.precio_})
-                            </li>
-                          ))}
-                        </ul>
-                      </td>
+                      <td>{compra.productos_.map((producto: any) => (
+                        <div key={producto.productoID_}>
+                          <p>{producto.productoId} - {producto.cantidad} - {producto.precio}</p>
+                        </div>
+                      ))}</td>
                     </tr>
                   ))
                 )}
