@@ -1,34 +1,38 @@
 import React, { useEffect, useState } from 'react';
 import styles from '../assets/styles/template.module.css';
 import LogoutButton from './logout';
-import { useNavigate } from 'react-router-dom';  // Importar el hook useNavigate
+import { useNavigate } from 'react-router-dom';
 
-interface Cliente {
+interface Compras {
   id_: string;
-  nombre_: string;
-  contacto_: number;
-  compras_: string[];
-  membresia_: boolean;
+  fecha_: string;
+  proveedor_: string;
+  importe_: number;
+  productos_: {
+    productoID_: string;
+    cantidad_: number;
+    precio_: number;
+  }[]
 }
 
-const ClienteUsuario: React.FC = () => {
-  const [clientes, setClientes] = useState<Cliente[]>([]);
+const ComprasUsuario: React.FC = () => {
+  const [compras, setCompras] = useState<Compras[]>([]);
   useEffect(() => {
     // Consumir API
-    fetch('http://localhost:5000/clientes')
+    fetch('http://localhost:5000/compras')
       .then((response) => response.json())
       .then((data) => {
         // Asegurarte de que los datos son un array
         if (Array.isArray(data)) {
-          setClientes(data);
+          setCompras(data);
         } else {
           console.error('El formato de los datos no es válido:', data);
-          setClientes([]); // Fallback a un array vacío
+          setCompras([]); // Fallback a un array vacío
         }
       })
       .catch((error) => {
         console.error('Error al cargar los datos:', error);
-        setClientes([]); // Fallback a un array vacío en caso de error
+        setCompras([]); // Fallback a un array vacío en caso de error
       });
   }, []);
 
@@ -73,7 +77,7 @@ const ClienteUsuario: React.FC = () => {
         {/* Barra de navegación superior */}
         <nav className={styles.navbar}>
           <div className={styles.navContent}>
-            <span className={styles.title}>Clientes</span>
+            <span className={styles.title}>Compras</span>
             <div className={styles.logoutButtonContainer}>
               <LogoutButton />
             </div>
@@ -82,41 +86,45 @@ const ClienteUsuario: React.FC = () => {
 
         {/* Contenido de la página */}
         <div className={styles.content}>
-          <h1>Página de clientes F</h1>
+          <h1>Página de compras Usuario</h1>
           <p>Bienvenido</p>
         </div>
 
         {/* Tabla de clientes */}
         <div className={styles.content}>
-          <h1>Lista de Clientes</h1>
+          <h1>Lista de compras</h1>
           <div className={styles.tableContainer}>
             <table className={styles.styledTable}>
               <thead>
                 <tr>
                   <th>ID</th>
-                  <th>Nombre</th>
-                  <th>Contacto</th>
-                  <th>Compras</th>
-                  <th>Membresía</th>
+                  <th>Fecha</th>
+                  <th>Proveedor</th>
+                  <th>Importe</th>
+                  <th>Productos</th>
                 </tr>
               </thead>
               <tbody>
-                {clientes.length === 0 ? (
+                {compras.length === 0 ? (
                   <tr>
-                    <td colSpan={5} style={{ textAlign: 'center' }}>No hay clientes</td>
+                    <td colSpan={5} style={{ textAlign: 'center' }}>No hay compras en la BBDD</td>
                   </tr>
                 ) : (
-                  clientes.map((cliente) => (
-                    <tr key={cliente.id_}>
-                      <td>{cliente.id_}</td>
-                      <td>{cliente.nombre_}</td>
-                      <td>{cliente.contacto_}</td>
+                  compras.map((compra) => (
+                    <tr key={compra.id_}>
+                      <td>{compra.id_}</td>
+                      <td>{compra.fecha_}</td>
+                      <td>{compra.proveedor_}</td>
+                      <td>{compra.importe_}</td>
                       <td>
-                        {cliente.compras_.length > 0
-                          ? cliente.compras_.join(', ') // Lista separada por comas
-                          : 'Sin compras'}
+                        <ul>
+                          {compra.productos_.map((producto) => (
+                            <li key={producto.productoID_}>
+                              {producto.cantidad_} x {producto.productoID_} (${producto.precio_})
+                            </li>
+                          ))}
+                        </ul>
                       </td>
-                      <td>{cliente.membresia_ ? 'Sí' : 'No'}</td>
                     </tr>
                   ))
                 )}
@@ -129,4 +137,4 @@ const ClienteUsuario: React.FC = () => {
   );
 };
 
-export default ClienteUsuario;
+export default ComprasUsuario;

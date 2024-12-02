@@ -3,32 +3,31 @@ import styles from '../assets/styles/template.module.css';
 import LogoutButton from './logout';
 import { useNavigate } from 'react-router-dom';  // Importar el hook useNavigate
 
-interface Cliente {
+interface Producto {
   id_: string;
   nombre_: string;
-  contacto_: number;
-  compras_: string[];
-  membresia_: boolean;
+  stock_: number;
+  precio_venta_: number;
 }
 
-const ClienteUsuario: React.FC = () => {
-  const [clientes, setClientes] = useState<Cliente[]>([]);
+const InventarioUsuario: React.FC = () => {
+  const [productos, setProductos] = useState<Producto[]>([]);
   useEffect(() => {
     // Consumir API
-    fetch('http://localhost:5000/clientes')
+    fetch('http://localhost:5000/productos')
       .then((response) => response.json())
       .then((data) => {
         // Asegurarte de que los datos son un array
         if (Array.isArray(data)) {
-          setClientes(data);
+          setProductos(data);
         } else {
           console.error('El formato de los datos no es válido:', data);
-          setClientes([]); // Fallback a un array vacío
+          setProductos([]); // Fallback a un array vacío
         }
       })
       .catch((error) => {
         console.error('Error al cargar los datos:', error);
-        setClientes([]); // Fallback a un array vacío en caso de error
+        setProductos([]); // Fallback a un array vacío en caso de error
       });
   }, []);
 
@@ -73,7 +72,7 @@ const ClienteUsuario: React.FC = () => {
         {/* Barra de navegación superior */}
         <nav className={styles.navbar}>
           <div className={styles.navContent}>
-            <span className={styles.title}>Clientes</span>
+            <span className={styles.title}>Productos</span>
             <div className={styles.logoutButtonContainer}>
               <LogoutButton />
             </div>
@@ -82,41 +81,35 @@ const ClienteUsuario: React.FC = () => {
 
         {/* Contenido de la página */}
         <div className={styles.content}>
-          <h1>Página de clientes F</h1>
+          <h1>Página de productos Usuario</h1>
           <p>Bienvenido</p>
         </div>
 
         {/* Tabla de clientes */}
         <div className={styles.content}>
-          <h1>Lista de Clientes</h1>
+          <h1>Lista de Productos</h1>
           <div className={styles.tableContainer}>
             <table className={styles.styledTable}>
               <thead>
                 <tr>
                   <th>ID</th>
                   <th>Nombre</th>
-                  <th>Contacto</th>
-                  <th>Compras</th>
-                  <th>Membresía</th>
+                  <th>Stock</th>
+                  <th>Precio venta</th>
                 </tr>
               </thead>
               <tbody>
-                {clientes.length === 0 ? (
+                {productos.length === 0 ? (
                   <tr>
-                    <td colSpan={5} style={{ textAlign: 'center' }}>No hay clientes</td>
+                    <td colSpan={5} style={{ textAlign: 'center' }}>No hay productos</td>
                   </tr>
                 ) : (
-                  clientes.map((cliente) => (
-                    <tr key={cliente.id_}>
-                      <td>{cliente.id_}</td>
-                      <td>{cliente.nombre_}</td>
-                      <td>{cliente.contacto_}</td>
-                      <td>
-                        {cliente.compras_.length > 0
-                          ? cliente.compras_.join(', ') // Lista separada por comas
-                          : 'Sin compras'}
-                      </td>
-                      <td>{cliente.membresia_ ? 'Sí' : 'No'}</td>
+                  productos.map((producto) => (
+                    <tr key={producto.id_}>
+                      <td>{producto.id_}</td>
+                      <td>{producto.nombre_}</td>
+                      <td>{producto.stock_}</td>
+                      <td>{producto.precio_venta_}</td>
                     </tr>
                   ))
                 )}
@@ -129,4 +122,4 @@ const ClienteUsuario: React.FC = () => {
   );
 };
 
-export default ClienteUsuario;
+export default InventarioUsuario;

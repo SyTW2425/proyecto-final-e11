@@ -2,155 +2,159 @@ import React, { useEffect, useState } from 'react';
 import styles from '../assets/styles/template.module.css';
 import LogoutButton from './logout';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';  // Importar el hook useNavigate
+import { useNavigate } from 'react-router-dom';
 
-
-/*interface Cliente {
-  id_: string;
-  nombre_: string;
-  contacto_: number;
-  compras_: string[];
-  membresia_: boolean;
-}*/
-
-const ClienteAdmin: React.FC = () => {
-  const [clientes, setClientes] = useState<any[]>([]);
+const ComprasAdmin: React.FC = () => {
+  const [compras, setCompras] = useState<any[]>([]);
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
   const [mostrarFormularioEliminar, setMostrarFormularioEliminar] = useState(false);
-  const [dniEliminar, setDniEliminar] = useState<string>(''); // Estado para almacenar el DNI
+  const [idEliminar, setIdEliminar] = useState<string>(''); // Estado para almacenar el DNI
   const [mostrarFormularioBuscar, setMostrarFormularioBuscar] = useState(false); // Visibilidad del formulario de búsqueda
-  const [dniBuscar, setDniBuscar] = useState<string>(''); // DNI del cliente a buscar
-  const [clienteEncontrado, setClienteEncontrado] = useState<any | null>(null); // Datos del cliente encontrado
+  const [idBuscar, setIdBuscar] = useState<string>(''); // DNI del cliente a buscar
+  const [compraEncontrado, setCompraEncontrado] = useState<any | null>(null); // Datos del cliente encontrado
 
   // Estado para controlar la visibilidad del formulario
-  const [nuevoCliente, setNuevoCliente] = useState({
+  const [nuevoCompra, setNuevoCompra] = useState({
     id_: '',
-    nombre_: '',
-    contacto_: '',
-    compras_: [] as number[],
-    membresia_: false,
+    fecha_: '',
+    proveedor_: '',
+    importe_: '',
+    productos_: [
+      {
+        productoID_: '',
+        cantidad_: '',
+        precio_: '',
+      },
+    ],
   });
-  //const [dniAEliminar, setDniAEliminar] = useState<string>(''); // Estado para almacenar el DNI a eliminar
+
 
 
   useEffect(() => {
     // Consumir API
-    fetch('http://localhost:5000/clientes')
+    fetch('http://localhost:5000/compras')
       .then((response) => response.json())
       .then((data) => {
         // Asegurarte de que los datos son un array
         if (Array.isArray(data)) {
-          setClientes(data);
+          setCompras(data);
         } else {
           console.error('El formato de los datos no es válido:', data);
-          setClientes([]); // Fallback a un array vacío
+          setCompras([]); // Fallback a un array vacío
         }
       })
       .catch((error) => {
         console.error('Error al cargar los datos:', error);
-        setClientes([]); // Fallback a un array vacío en caso de error
+        setCompras([]); // Fallback a un array vacío en caso de error
       });
   }, []);
 
   const manejarCambioFormulario = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    if (name === 'compras_') {
-      setNuevoCliente((prevState) => ({
-        ...prevState,
-        [name]: value.split(',').map((item) => parseInt(item.trim(), 10)).filter((item) => !isNaN(item)),
-      }));
+
+    if (name === 'productos_') {
+      try {
+        const productos = JSON.parse(value); // Si los datos llegan como JSON
+        if (Array.isArray(productos)) {
+          setNuevoCompra((prevState) => ({
+            ...prevState,
+            [name]: productos,
+          }));
+        } else {
+          alert('El campo productos debe ser un array válido en formato JSON');
+        }
+      } catch (error) {
+        alert('Error al parsear productos. Asegúrate de usar un formato JSON válido.');
+      }
     } else {
-      setNuevoCliente((prevState) => ({
+      setNuevoCompra((prevState) => ({
         ...prevState,
         [name]: value,
       }));
     }
   };
 
+
   const manejarEnvioFormulario = (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!nuevoCliente.id_ || !nuevoCliente.nombre_ || !nuevoCliente.contacto_) {
+    if (!nuevoCompra.id_ || !nuevoCompra.fecha_ || !nuevoCompra.proveedor_ || !nuevoCompra.importe_ || nuevoCompra.productos_.length === 0) {
       alert('Por favor, rellena todos los campos');
       return;
     }
 
-    const nuevoCliente2 = {
-      id_: nuevoCliente.id_,
-      nombre_: nuevoCliente.nombre_,
-      contacto_: nuevoCliente.contacto_,
-      compras_: nuevoCliente.compras_,
-      membresia_: nuevoCliente.membresia_,
+    const nuevoCompra2 = {
+      id_: nuevoCompra.id_,
+      fecha_: nuevoCompra.fecha_,
+      proveedor_: nuevoCompra.proveedor_,
+      importe_: nuevoCompra.importe_,
+      productos_: nuevoCompra.productos_,
     };
-    alert(JSON.stringify(nuevoCliente2, null, 2))
+
+    alert(JSON.stringify(nuevoCompra2, null, 2))
     // Enviar el nuevo cliente al servidor como json
-    axios.post('http://localhost:5000/clientes', nuevoCliente2)
+    axios.post('http://localhost:5000/compras', nuevoCompra2)
       .then((response) => {
         // Añadir el nuevo cliente al estado
         alert("Respuesta del backend:" + response.data);
-        setClientes((prevClientes) => [...prevClientes, response.data]);
-        alert('Cliente creado correctamente');
+        setCompras((prevVentas) => [...prevVentas, response.data]);
+        alert('Compra creada correctamente');
         setMostrarFormulario(false); // Ocultar el formulario después de enviar
       })
       .catch((error) => {
-        alert('Hubo un error al crear el cliente');
+        alert('Hubo un error al crear la compra' + error);
       });
   };
 
-  const manejarEnvioEliminarCliente = (e: React.FormEvent) => {
+  const manejarEnvioEliminarCompra = (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!dniEliminar) {
-      alert('Por favor, ingresa un DNI válido.');
+    if (!idEliminar) {
+      alert('Por favor, ingresa un ID de compra.');
       return;
     }
 
     axios
-      .delete(`http://localhost:5000/clientes/${dniEliminar}`)
+      .delete(`http://localhost:5000/compras/${idEliminar}`)
       .then(() => {
-        setClientes((prevClientes) =>
-          prevClientes.filter((cliente) => cliente.id_ !== dniEliminar)
+        setCompras((prevCompras) =>
+          prevCompras.filter((compra) => compra.id_ !== idEliminar)
         );
-        alert('Cliente eliminado correctamente');
+        alert('Compra eliminada correctamente');
         setMostrarFormularioEliminar(false); // Ocultar formulario tras la eliminación
-        setDniEliminar(''); // Limpiar el campo
+        setIdEliminar(''); // Limpiar el campo
       })
       .catch((error) => {
-        console.error('Error al eliminar el cliente:', error);
-        alert('Hubo un error al eliminar el cliente');
+        console.error('Error al eliminar la compra:', error);
+        alert('Hubo un error al eliminar la compra');
       });
   };
 
 
-  const handleEditarCliente = () => {
-    alert('Función para editar un cliente existente');
+  const handleEditarCompra = () => {
+    alert('Función para editar una compra existente');
     // Aquí puedes implementar lógica para seleccionar y editar un cliente
   };
 
 
-  const handleBuscarCliente = () => {
-    alert('Función para buscar un cliente');
-    // Aquí puedes implementar lógica para buscar clientes
-  };
-
-  const manejarEnvioBuscarCliente = (e: React.FormEvent) => {
+  const manejarEnvioBuscarCompra = (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!dniBuscar) {
-      alert('Por favor, ingresa un DNI válido.');
+    if (!idBuscar) {
+      alert('Por favor, ingresa un ID válido.');
       return;
     }
 
     // Hacer la solicitud al backend para buscar el cliente
     axios
-      .get(`http://localhost:5000/clientes/${dniBuscar}`)
+      .get(`http://localhost:5000/compras/${idBuscar}`)
       .then((response) => {
-        setClienteEncontrado(response.data); // Guardar los datos del cliente encontrado
+        setCompraEncontrado(response.data); // Guardar los datos del cliente encontrado
       })
       .catch((error) => {
-        console.error('Error al buscar el cliente:', error);
-        setClienteEncontrado(null); // Si no se encuentra, vaciar el cliente
-        alert('Cliente no encontrado');
+        console.error('Error al buscar la compra:', error);
+        setCompraEncontrado(null); // Si no se encuentra, vaciar el cliente
+        alert('Compra no encontrada');
       });
   };
 
@@ -196,7 +200,7 @@ const ClienteAdmin: React.FC = () => {
         {/* Barra de navegación superior */}
         <nav className={styles.navbar}>
           <div className={styles.navContent}>
-            <span className={styles.title}>Clientes</span>
+            <span className={styles.title}>Compras</span>
             <div className={styles.logoutButtonContainer}>
               <LogoutButton />
             </div>
@@ -204,40 +208,40 @@ const ClienteAdmin: React.FC = () => {
         </nav>
         {/* Sección de botones */}
         <div className={styles.buttonContainer}>
-          <button className={styles.actionButton} onClick={() => setMostrarFormulario(!mostrarFormulario)}>Crear nuevo cliente</button>
-          <button className={styles.actionButton} onClick={handleEditarCliente}>
-            Editar cliente existente
+          <button className={styles.actionButton} onClick={() => setMostrarFormulario(!mostrarFormulario)}>Crear nueva compra</button>
+          <button className={styles.actionButton} onClick={handleEditarCompra}>
+            Editar compra existente
           </button>
           <button
             className={styles.actionButton}
             onClick={() => setMostrarFormularioEliminar(true)}
           >
-            Eliminar cliente
+            Eliminar compra
           </button>
 
           <button
             className={styles.actionButton}
             onClick={() => setMostrarFormularioBuscar(true)}
-          > Buscar cliente</button>
+          > Buscar compra</button>
         </div>
 
         {mostrarFormularioEliminar && (
-          <form onSubmit={manejarEnvioEliminarCliente} className={styles.formularioContainer}>
-            <h2 className={styles.formTitle}>Eliminar Cliente</h2>
+          <form onSubmit={manejarEnvioEliminarCompra} className={styles.formularioContainer}>
+            <h2 className={styles.formTitle}>Eliminar compra</h2>
             <div className={styles.formGroup}>
-              <label className={styles.formLabel}>DNI del Cliente:</label>
+              <label className={styles.formLabel}>ID de la compra:</label>
               <input
                 type="text"
-                name="dniEliminar"
-                value={dniEliminar}
-                onChange={(e) => setDniEliminar(e.target.value)}
+                name="idEliminar"
+                value={idEliminar}
+                onChange={(e) => setIdEliminar(e.target.value)}
                 className={styles.formInput}
                 required
               />
             </div>
             <div className={styles.formButtonGroup}>
               <button type="submit" className={styles.formButton}>
-                Eliminar Cliente
+                Eliminar compra
               </button>
               <button
                 type="button"
@@ -251,68 +255,62 @@ const ClienteAdmin: React.FC = () => {
         )}
         {mostrarFormulario && (
           <form onSubmit={manejarEnvioFormulario} className={styles.formularioContainer}>
-            <h2 className={styles.formTitle}>Crear Nuevo Cliente</h2>
+            <h2 className={styles.formTitle}>Crear Nueva compra</h2>
             <div className={styles.formGroup}>
-              <label className={styles.formLabel}>DNI:</label>
+              <label className={styles.formLabel}>ID:</label>
               <input
                 type="text"
                 name="id_"
-                value={nuevoCliente.id_}
+                value={nuevoCompra.id_}
                 onChange={manejarCambioFormulario}
                 className={styles.formInput}
                 required
               />
             </div>
             <div className={styles.formGroup}>
-              <label className={styles.formLabel}>Nombre:</label>
+              <label className={styles.formLabel}>Fecha:</label>
               <input
                 type="text"
-                name="nombre_"
-                value={nuevoCliente.nombre_}
+                name="fecha_"
+                value={nuevoCompra.fecha_}
                 onChange={manejarCambioFormulario}
                 className={styles.formInput}
                 required
               />
-            </div>
-            <div className={styles.formGroup}>
-              <label className={styles.formLabel}>Contacto:</label>
-              <input
-                type="number"
-                name="contacto_"
-                value={nuevoCliente.contacto_}
-                onChange={manejarCambioFormulario}
-                className={styles.formInput}
-                required
-              />
-            </div>
-            <div className={styles.formGroup}>
-              <label className={styles.formLabel}>Compras:</label>
+              <label className={styles.formLabel}>Proveedor:</label>
               <input
                 type="text"
-                name="compras_"
-                value={nuevoCliente.compras_.join(',')}
-                onChange={(e) => manejarCambioFormulario(e)}
+                name="proveedor_"
+                value={nuevoCompra.proveedor_}
+                onChange={manejarCambioFormulario}
                 className={styles.formInput}
+                required
               />
-            </div>
-            <div className={styles.formGroupCheckbox}>
-              <label className={styles.formLabel}>Membresía:</label>
+              <label className={styles.formLabel}>Importe:</label>
               <input
-                type="checkbox"
-                name="membresia_"
-                checked={nuevoCliente.membresia_}
-                onChange={() =>
-                  setNuevoCliente((prevState) => ({
-                    ...prevState,
-                    membresia_: !prevState.membresia_,
-                  }))
-                }
-                className={styles.formCheckbox}
+                type="text"
+                name="importe_"
+                value={nuevoCompra.importe_}
+                onChange={manejarCambioFormulario}
+                className={styles.formInput}
+                required
               />
+              <div className={styles.formGroup}>
+                <label className={styles.formLabel}>Productos de la compra:</label>
+                <input
+                  type="text"
+                  name="productos_"
+                  value={JSON.stringify(nuevoCompra.productos_)}
+                  onChange={(e) => manejarCambioFormulario(e)}
+                  className={styles.formInput}
+                />
+              </div>
+
             </div>
+
             <div className={styles.formButtonGroup}>
               <button type="submit" className={styles.formButton}>
-                Crear Cliente
+                Crear Compra
               </button>
               <button
                 type="button"
@@ -326,28 +324,28 @@ const ClienteAdmin: React.FC = () => {
         )}
 
         {mostrarFormularioBuscar && (
-          <form onSubmit={manejarEnvioBuscarCliente} className={styles.formularioContainer}>
-            <h2 className={styles.formTitle}>Buscar Cliente</h2>
+          <form onSubmit={manejarEnvioBuscarCompra} className={styles.formularioContainer}>
+            <h2 className={styles.formTitle}>Buscar Compra</h2>
             <div className={styles.formGroup}>
-              <label className={styles.formLabel}>DNI del Cliente:</label>
+              <label className={styles.formLabel}>ID de la compra:</label>
               <input
                 type="text"
-                name="dniBuscar"
-                value={dniBuscar}
-                onChange={(e) => setDniBuscar(e.target.value)}
+                name="idBuscar"
+                value={idBuscar}
+                onChange={(e) => setIdBuscar(e.target.value)}
                 className={styles.formInput}
                 required
               />
             </div>
             <div className={styles.formButtonGroup}>
               <button type="submit" className={styles.formButton}>
-                Buscar Cliente
+                Buscar Compra
               </button>
               <button
                 type="button"
                 onClick={() => {
                   setMostrarFormularioBuscar(false);
-                  setClienteEncontrado(null);
+                  setCompraEncontrado(null);
                 }}
                 className={styles.formButtonCancel}
               >
@@ -356,61 +354,57 @@ const ClienteAdmin: React.FC = () => {
             </div>
           </form>
         )}
-        {clienteEncontrado && (
+        {compraEncontrado && (
           <div className={styles.resultContainer}>
-            <h2 className={styles.resultTitle}>Cliente Encontrado</h2>
+            <h2 className={styles.resultTitle}>Compra Encontrada</h2>
             <div className={styles.resultContent}>
-              <p><strong>DNI:</strong> {clienteEncontrado.id_}</p>
-              <p><strong>Nombre:</strong> {clienteEncontrado.nombre_}</p>
-              <p><strong>Contacto:</strong> {clienteEncontrado.contacto_}</p>
-              <p><strong>Compras:</strong> {clienteEncontrado.compras_.length > 0
-                ? clienteEncontrado.compras_.join(', ')
-                : 'Sin compras'}
-              </p>
-              <p><strong>Membresía:</strong> {clienteEncontrado.membresia_ ? 'Sí' : 'No'}</p>
+              <p><strong>ID:</strong> {compraEncontrado.id_}</p>
+              <p><strong>Fecha:</strong> {compraEncontrado.fecha_}</p>
+              <p><strong>Proveedor:</strong> {compraEncontrado.proveedor_}</p>
+              <p><strong>Importe:</strong> {compraEncontrado.importe_}</p>
+              <p><strong>Productos:</strong> {compraEncontrado.productos_.join(', ')}</p>
             </div>
           </div>
         )}
 
 
-
-
         {/* Contenido de la página */}
         <div className={styles.content}>
-          <h1>Página de clientes pa administradores</h1>
+          <h1>Página de compras pa administradores</h1>
           <p>Bienvenido</p>
         </div>
         {/* Tabla de clientes */}
         <div className={styles.content}>
-          <h1>Lista de Clientes</h1>
+          <h1>Lista de Compras</h1>
           <div className={styles.tableContainer}>
             <table className={styles.styledTable}>
               <thead>
                 <tr>
                   <th>ID</th>
-                  <th>Nombre</th>
-                  <th>Contacto</th>
-                  <th>Compras</th>
-                  <th>Membresía</th>
+                  <th>Fecha</th>
+                  <th>Proveedor</th>
+                  <th>Importe</th>
+                  <th>Productos</th>
                 </tr>
               </thead>
               <tbody>
-                {clientes.length === 0 ? (
+                {compras.length === 0 ? (
                   <tr>
-                    <td colSpan={5} style={{ textAlign: 'center' }}>No hay clientes</td>
+                    <td colSpan={5} style={{ textAlign: 'center' }}>No hay compras disponibles en la BBDD</td>
                   </tr>
                 ) : (
-                  clientes.map((cliente) => (
-                    <tr key={cliente.id_}>
-                      <td>{cliente.id_}</td>
-                      <td>{cliente.nombre_}</td>
-                      <td>{cliente.contacto_}</td>
-                      <td>
-                        {cliente.compras_.length > 0
-                          ? cliente.compras_.join(', ') // Lista separada por comas
-                          : 'Sin compras'}
-                      </td>
-                      <td>{cliente.membresia_ ? 'Sí' : 'No'}</td>
+                  compras.map((compra) => (
+                    <tr key={compra.id_}>
+                      <td>{compra.id_}</td>
+                      <td>{compra.fecha_}</td>
+                      <td>{compra.proveedor_}</td>
+                      <td>{compra.importe_}</td>
+                      {/* Mostramos los productos teniendo en cuenta que es una array con productoID, cantidad y precio*/}
+                      <td>{compra.productos_.map((producto: any) => (
+                        <div key={producto.productoID_}>
+                          <p>{producto.productoId} - {producto.cantidad} - {producto.precio}</p>
+                        </div>
+                      ))}</td>
                     </tr>
                   ))
                 )}
@@ -423,4 +417,4 @@ const ClienteAdmin: React.FC = () => {
   );
 };
 
-export default ClienteAdmin;
+export default ComprasAdmin;

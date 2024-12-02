@@ -4,63 +4,53 @@ import LogoutButton from './logout';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';  // Importar el hook useNavigate
 
-
-/*interface Cliente {
-  id_: string;
-  nombre_: string;
-  contacto_: number;
-  compras_: string[];
-  membresia_: boolean;
-}*/
-
-const ClienteAdmin: React.FC = () => {
-  const [clientes, setClientes] = useState<any[]>([]);
+const ProveedorAdmin: React.FC = () => {
+  const [proveedores, setProveedores] = useState<any[]>([]);
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
   const [mostrarFormularioEliminar, setMostrarFormularioEliminar] = useState(false);
   const [dniEliminar, setDniEliminar] = useState<string>(''); // Estado para almacenar el DNI
   const [mostrarFormularioBuscar, setMostrarFormularioBuscar] = useState(false); // Visibilidad del formulario de búsqueda
   const [dniBuscar, setDniBuscar] = useState<string>(''); // DNI del cliente a buscar
-  const [clienteEncontrado, setClienteEncontrado] = useState<any | null>(null); // Datos del cliente encontrado
+  const [proveedorEncontrado, setProveedorEncontrado] = useState<any | null>(null); // Datos del cliente encontrado
 
   // Estado para controlar la visibilidad del formulario
-  const [nuevoCliente, setNuevoCliente] = useState({
+  const [nuevoProveedor, setNuevoProveedor] = useState({
     id_: '',
     nombre_: '',
     contacto_: '',
-    compras_: [] as number[],
-    membresia_: false,
+    productos_: [] as number[]
   });
   //const [dniAEliminar, setDniAEliminar] = useState<string>(''); // Estado para almacenar el DNI a eliminar
 
 
   useEffect(() => {
     // Consumir API
-    fetch('http://localhost:5000/clientes')
+    fetch('http://localhost:5000/proveedores')
       .then((response) => response.json())
       .then((data) => {
         // Asegurarte de que los datos son un array
         if (Array.isArray(data)) {
-          setClientes(data);
+          setProveedores(data);
         } else {
           console.error('El formato de los datos no es válido:', data);
-          setClientes([]); // Fallback a un array vacío
+          setProveedores([]); // Fallback a un array vacío
         }
       })
       .catch((error) => {
         console.error('Error al cargar los datos:', error);
-        setClientes([]); // Fallback a un array vacío en caso de error
+        setProveedores([]); // Fallback a un array vacío en caso de error
       });
   }, []);
 
   const manejarCambioFormulario = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    if (name === 'compras_') {
-      setNuevoCliente((prevState) => ({
+    if (name === 'productos_') {
+      setNuevoProveedor((prevState) => ({
         ...prevState,
         [name]: value.split(',').map((item) => parseInt(item.trim(), 10)).filter((item) => !isNaN(item)),
       }));
     } else {
-      setNuevoCliente((prevState) => ({
+      setNuevoProveedor((prevState) => ({
         ...prevState,
         [name]: value,
       }));
@@ -70,87 +60,86 @@ const ClienteAdmin: React.FC = () => {
   const manejarEnvioFormulario = (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!nuevoCliente.id_ || !nuevoCliente.nombre_ || !nuevoCliente.contacto_) {
+    if (!nuevoProveedor.id_ || !nuevoProveedor.nombre_ || !nuevoProveedor.contacto_) {
       alert('Por favor, rellena todos los campos');
       return;
     }
 
-    const nuevoCliente2 = {
-      id_: nuevoCliente.id_,
-      nombre_: nuevoCliente.nombre_,
-      contacto_: nuevoCliente.contacto_,
-      compras_: nuevoCliente.compras_,
-      membresia_: nuevoCliente.membresia_,
+    const nuevoProveedor2 = {
+      id_: nuevoProveedor.id_,
+      nombre_: nuevoProveedor.nombre_,
+      contacto_: nuevoProveedor.contacto_,
+      productos_: nuevoProveedor.productos_
     };
-    alert(JSON.stringify(nuevoCliente2, null, 2))
+    alert(JSON.stringify(nuevoProveedor2, null, 2))
     // Enviar el nuevo cliente al servidor como json
-    axios.post('http://localhost:5000/clientes', nuevoCliente2)
+    axios.post('http://localhost:5000/proveedores', nuevoProveedor2)
       .then((response) => {
         // Añadir el nuevo cliente al estado
         alert("Respuesta del backend:" + response.data);
-        setClientes((prevClientes) => [...prevClientes, response.data]);
+        setProveedores((prevProveedores) => [...prevProveedores, response.data]);
         alert('Cliente creado correctamente');
         setMostrarFormulario(false); // Ocultar el formulario después de enviar
       })
       .catch((error) => {
-        alert('Hubo un error al crear el cliente');
+        alert('Hubo un error al crear el proveedor');
       });
   };
 
-  const manejarEnvioEliminarCliente = (e: React.FormEvent) => {
+  const manejarEnvioEliminarProveedor = (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!dniEliminar) {
-      alert('Por favor, ingresa un DNI válido.');
+      alert('Por favor, ingresa un Identificador válido.');
       return;
     }
 
     axios
-      .delete(`http://localhost:5000/clientes/${dniEliminar}`)
+      .delete(`http://localhost:5000/proveedores/${dniEliminar}`)
       .then(() => {
-        setClientes((prevClientes) =>
-          prevClientes.filter((cliente) => cliente.id_ !== dniEliminar)
+        setProveedores((prevProveedores) =>
+          prevProveedores.filter((proveedor) => proveedor.id_ !== dniEliminar)
         );
-        alert('Cliente eliminado correctamente');
+        alert('Proveedor eliminado correctamente');
         setMostrarFormularioEliminar(false); // Ocultar formulario tras la eliminación
         setDniEliminar(''); // Limpiar el campo
       })
       .catch((error) => {
-        console.error('Error al eliminar el cliente:', error);
-        alert('Hubo un error al eliminar el cliente');
+        console.error('Error al eliminar el proveedor:', error);
+        alert('Hubo un error al eliminar el proveedor');
       });
   };
 
 
-  const handleEditarCliente = () => {
-    alert('Función para editar un cliente existente');
+  const handleEditarProveedor = () => {
+    alert('Función para editar un proveedor existente');
     // Aquí puedes implementar lógica para seleccionar y editar un cliente
   };
 
 
-  const handleBuscarCliente = () => {
-    alert('Función para buscar un cliente');
-    // Aquí puedes implementar lógica para buscar clientes
-  };
+  // const handleBuscarProveedor = () => {
+  //   alert('Función para buscar un cliente');
+  //   // Aquí puedes implementar lógica para buscar clientes
+  // };
 
-  const manejarEnvioBuscarCliente = (e: React.FormEvent) => {
+  const manejarEnvioBuscarProveedor = (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!dniBuscar) {
-      alert('Por favor, ingresa un DNI válido.');
+      alert('Por favor, ingresa un Identificador válido.');
       return;
     }
 
-    // Hacer la solicitud al backend para buscar el cliente
+    // Hacer la solicitud al backend para buscar el proveedor
     axios
-      .get(`http://localhost:5000/clientes/${dniBuscar}`)
+      .get(`http://localhost:5000/proveedores/${dniBuscar}`)
       .then((response) => {
-        setClienteEncontrado(response.data); // Guardar los datos del cliente encontrado
+        setProveedorEncontrado(response.data); // Guardar los datos del proveedor encontrado
       })
       .catch((error) => {
-        console.error('Error al buscar el cliente:', error);
-        setClienteEncontrado(null); // Si no se encuentra, vaciar el cliente
-        alert('Cliente no encontrado');
+        console.error('Error al buscar el proveedor:', error);
+        setProveedorEncontrado(null); // Si no se encuentra, vaciar el proveedor
+        alert('Proveedor no encontrado');
       });
   };
 
@@ -196,7 +185,7 @@ const ClienteAdmin: React.FC = () => {
         {/* Barra de navegación superior */}
         <nav className={styles.navbar}>
           <div className={styles.navContent}>
-            <span className={styles.title}>Clientes</span>
+            <span className={styles.title}>Proveedores</span>
             <div className={styles.logoutButtonContainer}>
               <LogoutButton />
             </div>
@@ -204,31 +193,31 @@ const ClienteAdmin: React.FC = () => {
         </nav>
         {/* Sección de botones */}
         <div className={styles.buttonContainer}>
-          <button className={styles.actionButton} onClick={() => setMostrarFormulario(!mostrarFormulario)}>Crear nuevo cliente</button>
-          <button className={styles.actionButton} onClick={handleEditarCliente}>
-            Editar cliente existente
+          <button className={styles.actionButton} onClick={() => setMostrarFormulario(!mostrarFormulario)}>Crear nuevo proveedor</button>
+          <button className={styles.actionButton} onClick={handleEditarProveedor}>
+            Editar proveedor existente
           </button>
           <button
             className={styles.actionButton}
             onClick={() => setMostrarFormularioEliminar(true)}
           >
-            Eliminar cliente
+            Eliminar proveedor
           </button>
 
           <button
             className={styles.actionButton}
             onClick={() => setMostrarFormularioBuscar(true)}
-          > Buscar cliente</button>
+          > Buscar proveedor</button>
         </div>
 
         {mostrarFormularioEliminar && (
-          <form onSubmit={manejarEnvioEliminarCliente} className={styles.formularioContainer}>
-            <h2 className={styles.formTitle}>Eliminar Cliente</h2>
+          <form onSubmit={manejarEnvioEliminarProveedor} className={styles.formularioContainer}>
+            <h2 className={styles.formTitle}>Eliminar Proveedor</h2>
             <div className={styles.formGroup}>
-              <label className={styles.formLabel}>DNI del Cliente:</label>
+              <label className={styles.formLabel}>Identificador del proveedor:</label>
               <input
                 type="text"
-                name="dniEliminar"
+                name="identificadorEliminar"
                 value={dniEliminar}
                 onChange={(e) => setDniEliminar(e.target.value)}
                 className={styles.formInput}
@@ -237,7 +226,7 @@ const ClienteAdmin: React.FC = () => {
             </div>
             <div className={styles.formButtonGroup}>
               <button type="submit" className={styles.formButton}>
-                Eliminar Cliente
+                Eliminar Proveedor
               </button>
               <button
                 type="button"
@@ -251,13 +240,13 @@ const ClienteAdmin: React.FC = () => {
         )}
         {mostrarFormulario && (
           <form onSubmit={manejarEnvioFormulario} className={styles.formularioContainer}>
-            <h2 className={styles.formTitle}>Crear Nuevo Cliente</h2>
+            <h2 className={styles.formTitle}>Crear Nuevo Proveedor</h2>
             <div className={styles.formGroup}>
-              <label className={styles.formLabel}>DNI:</label>
+              <label className={styles.formLabel}>Identificador:</label>
               <input
                 type="text"
                 name="id_"
-                value={nuevoCliente.id_}
+                value={nuevoProveedor.id_}
                 onChange={manejarCambioFormulario}
                 className={styles.formInput}
                 required
@@ -268,7 +257,7 @@ const ClienteAdmin: React.FC = () => {
               <input
                 type="text"
                 name="nombre_"
-                value={nuevoCliente.nombre_}
+                value={nuevoProveedor.nombre_}
                 onChange={manejarCambioFormulario}
                 className={styles.formInput}
                 required
@@ -279,40 +268,25 @@ const ClienteAdmin: React.FC = () => {
               <input
                 type="number"
                 name="contacto_"
-                value={nuevoCliente.contacto_}
+                value={nuevoProveedor.contacto_}
                 onChange={manejarCambioFormulario}
                 className={styles.formInput}
                 required
               />
             </div>
             <div className={styles.formGroup}>
-              <label className={styles.formLabel}>Compras:</label>
+              <label className={styles.formLabel}>Productos:</label>
               <input
                 type="text"
-                name="compras_"
-                value={nuevoCliente.compras_.join(',')}
+                name="productos_"
+                value={nuevoProveedor.productos_.join(',')}
                 onChange={(e) => manejarCambioFormulario(e)}
                 className={styles.formInput}
               />
             </div>
-            <div className={styles.formGroupCheckbox}>
-              <label className={styles.formLabel}>Membresía:</label>
-              <input
-                type="checkbox"
-                name="membresia_"
-                checked={nuevoCliente.membresia_}
-                onChange={() =>
-                  setNuevoCliente((prevState) => ({
-                    ...prevState,
-                    membresia_: !prevState.membresia_,
-                  }))
-                }
-                className={styles.formCheckbox}
-              />
-            </div>
             <div className={styles.formButtonGroup}>
               <button type="submit" className={styles.formButton}>
-                Crear Cliente
+                Crear Proveedor
               </button>
               <button
                 type="button"
@@ -326,10 +300,10 @@ const ClienteAdmin: React.FC = () => {
         )}
 
         {mostrarFormularioBuscar && (
-          <form onSubmit={manejarEnvioBuscarCliente} className={styles.formularioContainer}>
-            <h2 className={styles.formTitle}>Buscar Cliente</h2>
+          <form onSubmit={manejarEnvioBuscarProveedor} className={styles.formularioContainer}>
+            <h2 className={styles.formTitle}>Buscar Proveedor</h2>
             <div className={styles.formGroup}>
-              <label className={styles.formLabel}>DNI del Cliente:</label>
+              <label className={styles.formLabel}>Identificador del proveedor:</label>
               <input
                 type="text"
                 name="dniBuscar"
@@ -341,13 +315,13 @@ const ClienteAdmin: React.FC = () => {
             </div>
             <div className={styles.formButtonGroup}>
               <button type="submit" className={styles.formButton}>
-                Buscar Cliente
+                Buscar Proveedor
               </button>
               <button
                 type="button"
                 onClick={() => {
                   setMostrarFormularioBuscar(false);
-                  setClienteEncontrado(null);
+                  setProveedorEncontrado(null);
                 }}
                 className={styles.formButtonCancel}
               >
@@ -356,33 +330,29 @@ const ClienteAdmin: React.FC = () => {
             </div>
           </form>
         )}
-        {clienteEncontrado && (
+        {proveedorEncontrado && (
           <div className={styles.resultContainer}>
-            <h2 className={styles.resultTitle}>Cliente Encontrado</h2>
+            <h2 className={styles.resultTitle}>Proveedor Encontrado</h2>
             <div className={styles.resultContent}>
-              <p><strong>DNI:</strong> {clienteEncontrado.id_}</p>
-              <p><strong>Nombre:</strong> {clienteEncontrado.nombre_}</p>
-              <p><strong>Contacto:</strong> {clienteEncontrado.contacto_}</p>
-              <p><strong>Compras:</strong> {clienteEncontrado.compras_.length > 0
-                ? clienteEncontrado.compras_.join(', ')
-                : 'Sin compras'}
+              <p><strong>DNI:</strong> {proveedorEncontrado.id_}</p>
+              <p><strong>Nombre:</strong> {proveedorEncontrado.nombre_}</p>
+              <p><strong>Contacto:</strong> {proveedorEncontrado.contacto_}</p>
+              <p><strong>Compras:</strong> {proveedorEncontrado.productos_.length > 0
+                ? proveedorEncontrado.productos_.join(', ')
+                : 'Sin productos'}
               </p>
-              <p><strong>Membresía:</strong> {clienteEncontrado.membresia_ ? 'Sí' : 'No'}</p>
             </div>
           </div>
         )}
 
-
-
-
         {/* Contenido de la página */}
         <div className={styles.content}>
-          <h1>Página de clientes pa administradores</h1>
+          <h1>Página de Proveedores para administradores</h1>
           <p>Bienvenido</p>
         </div>
         {/* Tabla de clientes */}
         <div className={styles.content}>
-          <h1>Lista de Clientes</h1>
+          <h1>Lista de Proveedores</h1>
           <div className={styles.tableContainer}>
             <table className={styles.styledTable}>
               <thead>
@@ -390,27 +360,25 @@ const ClienteAdmin: React.FC = () => {
                   <th>ID</th>
                   <th>Nombre</th>
                   <th>Contacto</th>
-                  <th>Compras</th>
-                  <th>Membresía</th>
+                  <th>Productos</th>
                 </tr>
               </thead>
               <tbody>
-                {clientes.length === 0 ? (
+                {proveedores.length === 0 ? (
                   <tr>
-                    <td colSpan={5} style={{ textAlign: 'center' }}>No hay clientes</td>
+                    <td colSpan={5} style={{ textAlign: 'center' }}>No hay proveedores</td>
                   </tr>
                 ) : (
-                  clientes.map((cliente) => (
-                    <tr key={cliente.id_}>
-                      <td>{cliente.id_}</td>
-                      <td>{cliente.nombre_}</td>
-                      <td>{cliente.contacto_}</td>
+                  proveedores.map((proveedor) => (
+                    <tr key={proveedor.id_}>
+                      <td>{proveedor.id_}</td>
+                      <td>{proveedor.nombre_}</td>
+                      <td>{proveedor.contacto_}</td>
                       <td>
-                        {cliente.compras_.length > 0
-                          ? cliente.compras_.join(', ') // Lista separada por comas
-                          : 'Sin compras'}
+                        {proveedor.productos_.length > 0
+                          ? proveedor.productos_.join(', ') // Lista separada por comas
+                          : 'Sin productos'}
                       </td>
-                      <td>{cliente.membresia_ ? 'Sí' : 'No'}</td>
                     </tr>
                   ))
                 )}
@@ -423,4 +391,4 @@ const ClienteAdmin: React.FC = () => {
   );
 };
 
-export default ClienteAdmin;
+export default ProveedorAdmin;

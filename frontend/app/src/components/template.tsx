@@ -7,10 +7,26 @@ import { useNavigate } from 'react-router-dom';  // Importar el hook useNavigate
 
 
 const Template: React.FC = () => {
-    const navigate = useNavigate();
-    const goToClientes = () => {
-        navigate('/clientesUsuario');  
-    };
+  const navigate = useNavigate();
+
+  const goToClientes = () => {
+    navigate('/cliente');
+  }
+  const goToProveedores = () => {
+    navigate('/proveedor');
+  }
+  const goToInventario = () => {
+    navigate('/inventario');
+  }
+  const goToVentas = () => {
+    navigate('/venta');
+  }
+  const goToCompras = () => {
+    navigate('/compra');
+  }
+  const goToCalendario = () => {
+    navigate('/calendario');
+  }
   return (
     <div className={styles.container}>
       {/* Menú lateral */}
@@ -18,11 +34,11 @@ const Template: React.FC = () => {
         <h2 className={styles.logo}>Connectory</h2>
         <ul className={styles.menu}>
           <li onClick={goToClientes} className={styles.menuItem}>Clientes</li>
-          <li className={styles.menuItem}>Proveedores</li>
-          <li className={styles.menuItem}>Ventas</li>
-          <li className={styles.menuItem}>Compras</li>
-          <li className={styles.menuItem}>Productos</li>
-          <li className={styles.menuItem}>Calendario</li>
+          <li onClick={goToProveedores} className={styles.menuItem}>Proveedores</li>
+          <li onClick={goToVentas} className={styles.menuItem}>Ventas</li>
+          <li onClick={goToCompras} className={styles.menuItem}>Compras</li>
+          <li onClick={goToInventario} className={styles.menuItem}>Productos</li>
+          <li onClick={goToCalendario} className={styles.menuItem}>Calendario</li>
         </ul>
       </aside>
 
