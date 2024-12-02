@@ -17,7 +17,7 @@ const Template: React.FC = () => {
       <aside className={styles.sidebar}>
         <h2 className={styles.logo}>Connectory</h2>
         <ul className={styles.menu}>
-          <li onClick={goToClientes} className={styles.menuItem}>CLientes</li>
+          <li onClick={goToClientes} className={styles.menuItem}>Clientes</li>
           <li className={styles.menuItem}>Proveedores</li>
           <li className={styles.menuItem}>Ventas</li>
           <li className={styles.menuItem}>Compras</li>

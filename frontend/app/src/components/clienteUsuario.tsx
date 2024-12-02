@@ -14,10 +14,21 @@ const ClienteUsuario: React.FC = () => {
   const [clientes, setClientes] = useState<Cliente[]>([]);
   useEffect(() => {
     // Consumir API
-    fetch('http://localhost:5000/clientes') 
+    fetch('http://localhost:5000/clientes')
       .then((response) => response.json())
-      .then((data) => setClientes(data))
-      .catch((error) => console.error('Error al cargar los datos:', error));
+      .then((data) => {
+        // Asegurarte de que los datos son un array
+        if (Array.isArray(data)) {
+          setClientes(data);
+        } else {
+          console.error('El formato de los datos no es válido:', data);
+          setClientes([]); // Fallback a un array vacío
+        }
+      })
+      .catch((error) => {
+        console.error('Error al cargar los datos:', error);
+        setClientes([]); // Fallback a un array vacío en caso de error
+      });
   }, []);
 
   return (
@@ -46,15 +57,15 @@ const ClienteUsuario: React.FC = () => {
             </div>
           </div>
         </nav>
-            
-            {/* Contenido de la página */}
-            <div className={styles.content}>
-              <h1>Página de clientes F</h1>
-              <p>Bienvenido</p>
-            </div>
 
-         {/* Tabla de clientes */}
-         <div className={styles.content}>
+        {/* Contenido de la página */}
+        <div className={styles.content}>
+          <h1>Página de clientes F</h1>
+          <p>Bienvenido</p>
+        </div>
+
+        {/* Tabla de clientes */}
+        <div className={styles.content}>
           <h1>Lista de Clientes</h1>
           <div className={styles.tableContainer}>
             <table className={styles.styledTable}>
@@ -68,19 +79,25 @@ const ClienteUsuario: React.FC = () => {
                 </tr>
               </thead>
               <tbody>
-                {clientes.map((cliente) => (
-                  <tr key={cliente.id_}>
-                    <td>{cliente.id_}</td>
-                    <td>{cliente.nombre_}</td>
-                    <td>{cliente.contacto_}</td>
-                    <td>
-                      {cliente.compras_.length > 0
-                        ? cliente.compras_.join(', ') // Lista separada por comas
-                        : 'Sin compras'}
-                    </td>
-                    <td>{cliente.membresia_ ? 'Sí' : 'No'}</td>
+                {clientes.length === 0 ? (
+                  <tr>
+                    <td colSpan={5} style={{ textAlign: 'center' }}>No hay clientes</td>
                   </tr>
-                ))}
+                ) : (
+                  clientes.map((cliente) => (
+                    <tr key={cliente.id_}>
+                      <td>{cliente.id_}</td>
+                      <td>{cliente.nombre_}</td>
+                      <td>{cliente.contacto_}</td>
+                      <td>
+                        {cliente.compras_.length > 0
+                          ? cliente.compras_.join(', ') // Lista separada por comas
+                          : 'Sin compras'}
+                      </td>
+                      <td>{cliente.membresia_ ? 'Sí' : 'No'}</td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
           </div>

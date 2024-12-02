@@ -15,11 +15,11 @@ import axios from 'axios';
 const ClienteAdmin: React.FC = () => {
   const [clientes, setClientes] = useState<any[]>([]);
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
-  const [mostrarFormularioEliminar, setMostrarFormularioEliminar] = useState(false); 
+  const [mostrarFormularioEliminar, setMostrarFormularioEliminar] = useState(false);
   const [dniEliminar, setDniEliminar] = useState<string>(''); // Estado para almacenar el DNI
   const [mostrarFormularioBuscar, setMostrarFormularioBuscar] = useState(false); // Visibilidad del formulario de búsqueda
-const [dniBuscar, setDniBuscar] = useState<string>(''); // DNI del cliente a buscar
-const [clienteEncontrado, setClienteEncontrado] = useState<any | null>(null); // Datos del cliente encontrado
+  const [dniBuscar, setDniBuscar] = useState<string>(''); // DNI del cliente a buscar
+  const [clienteEncontrado, setClienteEncontrado] = useState<any | null>(null); // Datos del cliente encontrado
 
   // Estado para controlar la visibilidad del formulario
   const [nuevoCliente, setNuevoCliente] = useState({
@@ -36,8 +36,19 @@ const [clienteEncontrado, setClienteEncontrado] = useState<any | null>(null); //
     // Consumir API
     fetch('http://localhost:5000/clientes')
       .then((response) => response.json())
-      .then((data) => setClientes(data))
-      .catch((error) => console.error('Error al cargar los datos:', error));
+      .then((data) => {
+        // Asegurarte de que los datos son un array
+        if (Array.isArray(data)) {
+          setClientes(data);
+        } else {
+          console.error('El formato de los datos no es válido:', data);
+          setClientes([]); // Fallback a un array vacío
+        }
+      })
+      .catch((error) => {
+        console.error('Error al cargar los datos:', error);
+        setClientes([]); // Fallback a un array vacío en caso de error
+      });
   }, []);
 
   const manejarCambioFormulario = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -123,12 +134,12 @@ const [clienteEncontrado, setClienteEncontrado] = useState<any | null>(null); //
 
   const manejarEnvioBuscarCliente = (e: React.FormEvent) => {
     e.preventDefault();
-  
+
     if (!dniBuscar) {
       alert('Por favor, ingresa un DNI válido.');
       return;
     }
-  
+
     // Hacer la solicitud al backend para buscar el cliente
     axios
       .get(`http://localhost:5000/clientes/${dniBuscar}`)
@@ -141,7 +152,7 @@ const [clienteEncontrado, setClienteEncontrado] = useState<any | null>(null); //
         alert('Cliente no encontrado');
       });
   };
-  
+
 
   return (
     <div className={styles.container}>
@@ -189,33 +200,33 @@ const [clienteEncontrado, setClienteEncontrado] = useState<any | null>(null); //
         </div>
 
         {mostrarFormularioEliminar && (
-            <form onSubmit={manejarEnvioEliminarCliente} className={styles.formularioContainer}>
-              <h2 className={styles.formTitle}>Eliminar Cliente</h2>
-              <div className={styles.formGroup}>
-                <label className={styles.formLabel}>DNI del Cliente:</label>
-                <input
-                  type="text"
-                  name="dniEliminar"
-                  value={dniEliminar}
-                  onChange={(e) => setDniEliminar(e.target.value)}
-                  className={styles.formInput}
-                  required
-                />
-              </div>
-              <div className={styles.formButtonGroup}>
-                <button type="submit" className={styles.formButton}>
-                  Eliminar Cliente
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setMostrarFormularioEliminar(false)}
-                  className={styles.formButtonCancel}
-                >
-                  Cancelar
-                </button>
-              </div>
-            </form>
-          )}
+          <form onSubmit={manejarEnvioEliminarCliente} className={styles.formularioContainer}>
+            <h2 className={styles.formTitle}>Eliminar Cliente</h2>
+            <div className={styles.formGroup}>
+              <label className={styles.formLabel}>DNI del Cliente:</label>
+              <input
+                type="text"
+                name="dniEliminar"
+                value={dniEliminar}
+                onChange={(e) => setDniEliminar(e.target.value)}
+                className={styles.formInput}
+                required
+              />
+            </div>
+            <div className={styles.formButtonGroup}>
+              <button type="submit" className={styles.formButton}>
+                Eliminar Cliente
+              </button>
+              <button
+                type="button"
+                onClick={() => setMostrarFormularioEliminar(false)}
+                className={styles.formButtonCancel}
+              >
+                Cancelar
+              </button>
+            </div>
+          </form>
+        )}
         {mostrarFormulario && (
           <form onSubmit={manejarEnvioFormulario} className={styles.formularioContainer}>
             <h2 className={styles.formTitle}>Crear Nuevo Cliente</h2>
@@ -292,52 +303,52 @@ const [clienteEncontrado, setClienteEncontrado] = useState<any | null>(null); //
           </form>
         )}
 
-{mostrarFormularioBuscar && (
-  <form onSubmit={manejarEnvioBuscarCliente} className={styles.formularioContainer}>
-    <h2 className={styles.formTitle}>Buscar Cliente</h2>
-    <div className={styles.formGroup}>
-      <label className={styles.formLabel}>DNI del Cliente:</label>
-      <input
-        type="text"
-        name="dniBuscar"
-        value={dniBuscar}
-        onChange={(e) => setDniBuscar(e.target.value)}
-        className={styles.formInput}
-        required
-      />
-    </div>
-    <div className={styles.formButtonGroup}>
-      <button type="submit" className={styles.formButton}>
-        Buscar Cliente
-      </button>
-      <button
-        type="button"
-        onClick={() => {
-          setMostrarFormularioBuscar(false);
-          setClienteEncontrado(null);
-        }}
-        className={styles.formButtonCancel}
-      >
-        Cancelar
-      </button>
-    </div>
-  </form>
-)}
-{clienteEncontrado && (
-  <div className={styles.resultContainer}>
-    <h2 className={styles.resultTitle}>Cliente Encontrado</h2>
-    <div className={styles.resultContent}>
-      <p><strong>DNI:</strong> {clienteEncontrado.id_}</p>
-      <p><strong>Nombre:</strong> {clienteEncontrado.nombre_}</p>
-      <p><strong>Contacto:</strong> {clienteEncontrado.contacto_}</p>
-      <p><strong>Compras:</strong> {clienteEncontrado.compras_.length > 0 
-        ? clienteEncontrado.compras_.join(', ') 
-        : 'Sin compras'}
-      </p>
-      <p><strong>Membresía:</strong> {clienteEncontrado.membresia_ ? 'Sí' : 'No'}</p>
-    </div>
-  </div>
-)}
+        {mostrarFormularioBuscar && (
+          <form onSubmit={manejarEnvioBuscarCliente} className={styles.formularioContainer}>
+            <h2 className={styles.formTitle}>Buscar Cliente</h2>
+            <div className={styles.formGroup}>
+              <label className={styles.formLabel}>DNI del Cliente:</label>
+              <input
+                type="text"
+                name="dniBuscar"
+                value={dniBuscar}
+                onChange={(e) => setDniBuscar(e.target.value)}
+                className={styles.formInput}
+                required
+              />
+            </div>
+            <div className={styles.formButtonGroup}>
+              <button type="submit" className={styles.formButton}>
+                Buscar Cliente
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setMostrarFormularioBuscar(false);
+                  setClienteEncontrado(null);
+                }}
+                className={styles.formButtonCancel}
+              >
+                Cancelar
+              </button>
+            </div>
+          </form>
+        )}
+        {clienteEncontrado && (
+          <div className={styles.resultContainer}>
+            <h2 className={styles.resultTitle}>Cliente Encontrado</h2>
+            <div className={styles.resultContent}>
+              <p><strong>DNI:</strong> {clienteEncontrado.id_}</p>
+              <p><strong>Nombre:</strong> {clienteEncontrado.nombre_}</p>
+              <p><strong>Contacto:</strong> {clienteEncontrado.contacto_}</p>
+              <p><strong>Compras:</strong> {clienteEncontrado.compras_.length > 0
+                ? clienteEncontrado.compras_.join(', ')
+                : 'Sin compras'}
+              </p>
+              <p><strong>Membresía:</strong> {clienteEncontrado.membresia_ ? 'Sí' : 'No'}</p>
+            </div>
+          </div>
+        )}
 
 
 
@@ -362,19 +373,25 @@ const [clienteEncontrado, setClienteEncontrado] = useState<any | null>(null); //
                 </tr>
               </thead>
               <tbody>
-                {clientes.map((cliente) => (
-                  <tr key={cliente.id_}>
-                    <td>{cliente.id_}</td>
-                    <td>{cliente.nombre_}</td>
-                    <td>{cliente.contacto_}</td>
-                    <td>
-                      {cliente.compras_.length > 0
-                        ? cliente.compras_.join(', ') // Lista separada por comas
-                        : 'Sin compras'}
-                    </td>
-                    <td>{cliente.membresia_ ? 'Sí' : 'No'}</td>
+                {clientes.length === 0 ? (
+                  <tr>
+                    <td colSpan={5} style={{ textAlign: 'center' }}>No hay clientes</td>
                   </tr>
-                ))}
+                ) : (
+                  clientes.map((cliente) => (
+                    <tr key={cliente.id_}>
+                      <td>{cliente.id_}</td>
+                      <td>{cliente.nombre_}</td>
+                      <td>{cliente.contacto_}</td>
+                      <td>
+                        {cliente.compras_.length > 0
+                          ? cliente.compras_.join(', ') // Lista separada por comas
+                          : 'Sin compras'}
+                      </td>
+                      <td>{cliente.membresia_ ? 'Sí' : 'No'}</td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
           </div>
