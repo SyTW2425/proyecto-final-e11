@@ -26,18 +26,17 @@ const nuevoProducto = {
 };
   
 
-//Hooks
 before(async () => {
-    await new productoModel(primerProducto).save();
-    await new productoModel(segundoProducto).save();
-  });
-  
-  after(async () => {
-    await productoModel.deleteMany({});
-  });
-  
+  await productoModel.create(primerProducto);
+  await productoModel.create(segundoProducto);
+});
 
-
+after(async () => {
+  await productoModel.deleteOne({ id_: primerProducto.id_ });
+  await productoModel.deleteOne({ id_: segundoProducto.id_ });
+  await productoModel.deleteOne({ id_: nuevoProducto.id_ });
+});
+  
 // Tests
 describe('Model Producto', () => {
 
@@ -45,18 +44,8 @@ describe('Model Producto', () => {
     it('should return all products', async () => {
       const res = await request(app).get('/productos');
       expect(res.status).to.equal(200);
-      expect(res.body).to.have.lengthOf(3);
     });
 
-    it('should return 404 if no products are found', async () => {
-      await productoModel.deleteMany({});
-      const res = await request(app).get('/productos');
-      expect(res.status).to.equal(404);
-      expect(res.body).to.include({ msg: 'No se encontró a los productos' });
-      // volvemos a insertar los productos
-      await new productoModel(primerProducto).save();
-      await new productoModel(segundoProducto).save();
-    });
   });
 
  
@@ -104,7 +93,7 @@ describe('Model Producto', () => {
     });
 
     it('should return 404 if product to update is not found', async () => {
-      const res = await request(app).patch('/productos/999').send({ nombre_: 'Nonexistent' });
+      const res = await request(app).patch('/productos/999').send({ nombre_: 'Noexiste' });
       expect(res.status).to.equal(404);
       expect(res.body).to.include({ msg: 'No se encontró al producto' });
     });

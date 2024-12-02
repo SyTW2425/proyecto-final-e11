@@ -46,14 +46,13 @@ const SignIn: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    alert('Form data: ' + JSON.stringify(formData));
     try {
       // Llamar a la acción `verifyUser` y verificar el resultado
       const isLoginSuccessful = await dispatch(verifyUser(formData));
   
       if (isLoginSuccessful) {
         alert('¡Login exitoso!');
-        navigate('/logout');
+        navigate('/template');
       } else {
         alert('Usuario o contraseña incorrectos.');
       }

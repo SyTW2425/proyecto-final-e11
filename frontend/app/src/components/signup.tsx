@@ -52,7 +52,7 @@ const SignUp: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    alert('Form data: ' + JSON.stringify(formData));
+
     try {
       // Llamar a la acción `registerUser` y pasar `formData`
       const isSignUpSuccessful = await dispatch(registerUser(formData));

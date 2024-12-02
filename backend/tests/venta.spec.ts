@@ -2,7 +2,7 @@ import request from 'supertest';
 import { app } from '../src/index.js';
 import { expect } from 'chai';
 import { describe, it, before, after } from 'mocha';
-//import { ventaModel } from '../src/models/venta.js';
+import { ventaModel } from '../src/models/venta.js';
 import { clienteModel } from '../src/models/cliente.js';
 import { productoModel } from '../src/models/producto.js';
 
@@ -28,8 +28,9 @@ before(async () => {
 });
 
 after(async () => {
-  await clienteModel.deleteMany({});
-  await productoModel.deleteMany({});
+  await clienteModel.deleteOne({ id_: sampleCliente.id_ });
+  await productoModel.deleteOne({ id_: sampleProducto.id_ });
+  await ventaModel.deleteOne({ id_: 5 });
 });
 
 let newVenta: any;
@@ -40,10 +41,10 @@ describe('Model Venta', () => {
     it('should create a new sell', async () => {
       newVenta = {
         id_: 5,
-        fecha_: new Date("2021-02-01"),
-        cliente_: sampleCliente.id_,
+        fecha_: new Date("2001-02-21"),
+        cliente_: "11111144A",
         importe_: 2000,
-        productos_: [{ productoID_: sampleProducto.id_, cantidad_: 5, precio_: 40 }]
+        productos_: [{ productoID_: "16", cantidad_: 5, precio_: 40 }]
       };
       const res = await request(app).post('/ventas').send(newVenta);
       expect(res.status).to.equal(200);
@@ -78,45 +79,46 @@ describe('Model Venta', () => {
     });
   });
 
-  // describe('GET /compras/:id', () => {
-  //   it('should return a purchase by specific ID', async () => {
-  //     const res = await request(app).get('/compras/3');
-  //     expect(res.status).to.equal(200);
-  //     expect(res.body).to.have.property('importe_', newCompra.importe_);
-  //   });
+  describe('GET /ventas/:id', () => {
+    it('should return a venta by specific ID', async () => {
+      const res = await request(app).get('/ventas/5');
+      expect(res.status).to.equal(200);
+    });
 
-  //   it('should return 404 if purchase does not exist', async () => {
-  //     const res = await request(app).get('/compras/999');
-  //     expect(res.status).to.equal(404);
-  //     expect(res.body).to.include({ msg: 'No se encontró la compra' });
-  //   });
-  // });
+    it('should return 404 if venta does not exist', async () => {
+      const res = await request(app).get('/ventas/999');
+      expect(res.status).to.equal(404);
+    });
+  });
 
-  // describe('DELETE /compras/:id', () => {
-  //   it('should delete a purchase by ID', async () => {
-  //     const res = await request(app).delete('/compras/3');
-  //     expect(res.status).to.equal(200);
-  //     expect(res.body).to.have.property('id_', newCompra.id_);
-  //   });
+  describe('DELETE /ventas/:id', () => {
+    it('should delete a venta by ID', async () => {
+      const res = await request(app).delete('/ventas/5');
+      expect(res.status).to.equal(200);
+    });
 
-  //   it('should return 404 if purchase to delete is not found', async () => {
-  //     const res = await request(app).delete('/compras/8');
-  //     expect(res.status).to.equal(404);
-  //     expect(res.body).to.include({ msg: 'No se encontró la compra' });
-  //   });
-  // });
+    it('should return 404 if ventas to delete is not found', async () => {
+      const res = await request(app).delete('/ventas/8');
+      expect(res.status).to.equal(404);
+    });
+  });
 
-  // describe('GET /compras', () => {
-  //   it('should return all purchases', async () => {
-  //     const res = await request(app).get('/compras');
-  //     expect(res.status).to.equal(404);
-  //   });
+  describe('GET /ventas', () => {
+    it('should return 404 if no ventas are found', async () => {
+      const res = await request(app).get('/ventas');
+      expect(res.status).to.equal(404);
+    });
+    it('should return all ventas', async () => {
+      await request(app).post('/ventas').send(newVenta);
+      const res = await request(app).get('/compras');
+      expect(res.status).to.equal(200);
+    });   
+  });
 
-  //   it('should return 404 if no purchases are found', async () => {
-  //     await compraModel.deleteMany({});
-  //     const res = await request(app).get('/compras');
-  //     expect(res.status).to.equal(404);
-  //     expect(res.body).to.include({ msg: 'No se encontró las compras' });
-  //   });
-  // });
+  describe('stock update', () => {
+    it('should update the stock of a product after a sale', async () => {
+      const res = await request(app).get('/productos/16');
+      expect(res.body).to.have.property('stock_', 95);
+    });
+  });
 });

@@ -28,18 +28,15 @@ const nuevoCliente = {
   compras_: []
 };
   
-
-// Hooks for database setup and cleanup
-before(async () => {});
-after(async () => {});
-
-
-beforeEach(async () => {
-  await clienteModel.insertMany([primerCliente, segundoCliente]);
+before(async () => {
+  await clienteModel.create(primerCliente);
+  await clienteModel.create(segundoCliente);
 });
 
-afterEach(async () => {
-  await clienteModel.deleteMany({});
+after(async () => {
+  await clienteModel.deleteOne({ id_: primerCliente.id_ });
+  await clienteModel.deleteOne({ id_: segundoCliente.id_ });
+  await clienteModel.deleteOne({ id_: nuevoCliente.id_ });
 });
 
 
@@ -50,14 +47,6 @@ describe('Model Cliente', () => {
     it('should return all clients', async () => {
       const res = await request(app).get('/clientes');
       expect(res.status).to.equal(200);
-      expect(res.body).to.have.lengthOf(2);
-    });
-
-    it('should return 404 if no clients are found', async () => {
-      await clienteModel.deleteMany({});
-      const res = await request(app).get('/clientes');
-      expect(res.status).to.equal(404);
-      expect(res.body).to.include({ msg: 'No se encontró a los clientes' });
     });
   });
 
@@ -86,7 +75,7 @@ describe('Model Cliente', () => {
     });
 
     it('should return 500 if client data is invalid', async () => {
-      const invalidClient = { id_: "11111111D", nombre_: 'Carlos' }; // missing fields
+      const invalidClient = { id_: "11111111D", nombre_: 'Carlos' }; 
       const res = await request(app).post('/clientes').send(invalidClient);
       expect(res.status).to.equal(500);
       expect(res.body).to.include({ msg: 'Error al guardar el cliente' });

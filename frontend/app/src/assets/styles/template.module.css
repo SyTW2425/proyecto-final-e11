@@ -1,0 +1,296 @@
+/* Contenedor principal */
+.container {
+    display: flex;
+    min-height: 100vh; 
+  }
+  
+  /* Menú lateral */
+  .sidebar {
+    width: 250px;
+    background-color: #2d2d62;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px 0;
+    min-height: 100%;
+  }
+  
+  .logo {
+    font-size: 1.8rem;
+    margin-bottom: 30px;
+  }
+  
+  .menu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+  }
+  
+  .menuItem {
+    padding: 15px 20px;
+    cursor: pointer;
+    text-align: left;
+    color: #ffffff;
+  }
+  
+  .menuItem:hover {
+    background-color: #1e1e45;
+  }
+  
+  /* Contenido principal */
+  .main {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    
+  }
+  
+  /* Barra de navegación */
+  .navbar {
+    background-color: #1e1e45;
+    padding: 30px 30px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+  }
+  
+  .navContent {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+  }
+  
+  /* Título en la barra de navegación */
+  .title {
+    font-size: 1.2rem;
+    color: #ffffff;
+    font-weight: bold;
+  }
+  .content {
+    font-size: 1.2rem;
+    color: #1e1e45;
+    font-weight: bold;
+    align-items: center;
+  }
+  
+  /* Contenedor del botón de cerrar sesión */
+  .logoutButtonContainer {
+    display: flex;
+    align-items: center;
+  }
+
+
+/* Tabla estilizada */
+.tableContainer {
+  margin: 20px auto;
+  overflow-x: auto;
+  border-radius: 8px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.styledTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: Arial, sans-serif;
+  text-align: left;
+}
+
+.styledTable thead {
+  background-color: #2d2d62;
+  color: #ffffff;
+}
+
+.styledTable td {
+  font-size: 0.9rem;
+  word-break: break-word; /* Permite que el texto largo se ajuste en varias líneas */
+  max-width: 200px; /* Opcional: controla el ancho máximo */
+}
+
+.styledTable th, .styledTable td {
+  text-align: center; /* Opcional: centra el texto */
+}
+.styledTable th,
+.styledTable td {
+  padding: 12px 15px;
+  border: 1px solid #ddd;
+}
+
+.styledTable tbody tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.styledTable tbody tr:hover {
+  background-color: #f1f1f1;
+}
+
+.styledTable tbody tr td {
+  font-size: 0.9rem;
+}
+
+.styledTable th {
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.styledTable tbody tr td:first-child {
+  font-weight: bold;
+  color: #2d2d62;
+}
+
+/* Contenedor de los botones */
+.buttonContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 20px 30px;
+  padding: 10px;
+  background-color: #f7f7f7;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Botones de acción */
+.actionButton {
+  padding: 10px 20px;
+  font-size: 1rem;
+  color: #ffffff;
+  background-color: #2d2d62;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.actionButton:hover {
+  background-color: #1e1e45;
+}
+
+/* Contenedor del formulario */
+.formularioContainer {
+  width: 400px;
+  margin: 50px auto;
+  padding: 20px 30px;
+  background-color: #ffffff;
+  border: 2px solid #2d2d62;
+  border-radius: 12px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+/* Título del formulario */
+.formTitle {
+  font-size: 1.5rem;
+  color: #2d2d62;
+  margin-bottom: 20px;
+}
+
+/* Grupos de formulario */
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 15px;
+  text-align: left;
+}
+
+.formLabel {
+  font-weight: bold;
+  margin-bottom: 8px;
+  color: #2d2d62;
+}
+
+.formInput {
+  padding: 10px;
+  font-size: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  outline: none;
+  transition: border-color 0.3s;
+}
+
+.formInput:focus {
+  border-color: #2d2d62;
+}
+
+/* Checkbox */
+.formGroupCheckbox {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.formCheckbox {
+  transform: scale(1.3);
+}
+
+/* Botones del formulario */
+.formButtonGroup {
+  display: flex;
+  justify-content: space-between;
+}
+
+.formButton,
+.formButtonCancel {
+  padding: 10px 20px;
+  font-size: 1rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.formButton {
+  background-color: #2d2d62;
+  color: #ffffff;
+}
+
+.formButton:hover {
+  background-color: #1e1e45;
+}
+
+.formButtonCancel {
+  background-color: #cccccc;
+  color: #ffffff;
+}
+
+.formButtonCancel:hover {
+  background-color: #aaaaaa;
+}
+
+.resultContainer {
+  background-color: #ffffff;
+  border: 2px solid #ddd;
+  border-radius: 12px;
+  padding: 20px;
+  margin-top: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  max-width: 400px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.resultTitle {
+  font-size: 1.8rem;
+  font-weight: bold;
+  margin-bottom: 15px;
+  text-align: center;
+  color: #333;
+}
+
+.resultContent {
+  font-size: 1.1rem;
+  color: #555;
+  line-height: 1.6;
+}
+
+.resultContent p {
+  margin: 8px 0;
+}
+
+
+
+  

@@ -35,16 +35,21 @@ export const registerUser = (formData: User) => async (dispatch: Dispatch) => {
 
 export const verifyUser = (formData: UserLogIn) => async (dispatch: Dispatch) => {
   try {
-    alert('ENTROOOOOOOOOOOOOOO');
-    const response = await axios.post('http://localhost:5000/login', {nombre_usuario: formData.nombre_usuario, contrasena: formData.contrasena});
+    const response = await axios.post('http://localhost:5000/login', { nombre_usuario: formData.nombre_usuario, contrasena: formData.contrasena});
+    // buscar el usuario en la base de datos y sacar el rol
+
+    const nuevo = await axios.get(`http://localhost:5000/usuarios/claves?nombre_usuario=${formData.nombre_usuario}&contrasena=${formData.contrasena}`);
 
     if (response.status === 200 && response.data) {
       const {token, user} = response.data;
+      const {rol_} = nuevo.data;
       localStorage.setItem('token', token);
+      localStorage.setItem('user', JSON.stringify(user));
+      localStorage.setItem('rol', JSON.stringify(rol_));
 
       dispatch({
         type: typeof LOGIN_SUCCESS,
-        payload: { token, user },
+        payload: { token, user, rol_ },
       });
 
       return true; // Login exitoso
