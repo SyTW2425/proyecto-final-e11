@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react';
 import styles from '../assets/styles/template.module.css';
 import LogoutButton from './logout';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
+
 
 
 /*interface Cliente {
@@ -271,9 +272,18 @@ const ClienteAdmin: React.FC = () => {
         {/* Barra de navegación superior */}
         <nav className={styles.navbar}>
           <div className={styles.navContent}>
-            <span className={styles.title}>Clientes</span>
+            <span className={styles.title}>Clientes: Administrador</span>
+            {/* Botón con imagen */}
+            <Link to="/template" className={styles.navButton}>
+              <img
+                src="home.png"
+                alt="Template"
+                className={styles.navImage}
+              />
+            </Link>
           </div>
         </nav>
+
 
 
         {/* Sección de botones */}

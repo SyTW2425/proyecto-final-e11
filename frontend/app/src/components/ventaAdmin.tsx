@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import styles from '../assets/styles/template.module.css';
 import LogoutButton from './logout';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 const VentasAdmin: React.FC = () => {
   const [ventas, setVentas] = useState<any[]>([]);
@@ -27,8 +27,6 @@ const VentasAdmin: React.FC = () => {
       },
     ],
   });
-
-
 
   useEffect(() => {
     // Consumir API
@@ -193,6 +191,9 @@ const VentasAdmin: React.FC = () => {
           <li onClick={goToInventario} className={styles.menuItem}>Productos</li>
           <li onClick={goToCalendario} className={styles.menuItem}>Calendario</li>
         </ul>
+        <div className={styles.logoutButtonContainer}>
+          <LogoutButton />
+        </div>
       </aside>
 
       {/* Contenido principal */}
@@ -200,10 +201,15 @@ const VentasAdmin: React.FC = () => {
         {/* Barra de navegación superior */}
         <nav className={styles.navbar}>
           <div className={styles.navContent}>
-            <span className={styles.title}>Ventas</span>
-            <div className={styles.logoutButtonContainer}>
-              <LogoutButton />
-            </div>
+            <span className={styles.title}>Ventas: Administrador</span>
+            {/* Botón con imagen */}
+            <Link to="/template" className={styles.navButton}>
+              <img
+                src="home.png"
+                alt="Template"
+                className={styles.navImage}
+              />
+            </Link>
           </div>
         </nav>
         {/* Sección de botones */}
@@ -366,12 +372,6 @@ const VentasAdmin: React.FC = () => {
           </div>
         )}
 
-
-        {/* Contenido de la página */}
-        <div className={styles.content}>
-          <h1>Página de Ventas para Administradores</h1>
-          <p>Bienvenido</p>
-        </div>
         {/* Tabla de clientes */}
         <div className={styles.content}>
           <h1>Lista de Ventas</h1>

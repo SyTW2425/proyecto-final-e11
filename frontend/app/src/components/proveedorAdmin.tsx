@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import styles from '../assets/styles/template.module.css';
 import LogoutButton from './logout';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';  // Importar el hook useNavigate
+import { useNavigate, Link } from 'react-router-dom';  // Importar el hook useNavigate
 
 const ProveedorAdmin: React.FC = () => {
   const [proveedores, setProveedores] = useState<any[]>([]);
@@ -178,6 +178,9 @@ const ProveedorAdmin: React.FC = () => {
           <li onClick={goToInventario} className={styles.menuItem}>Productos</li>
           <li onClick={goToCalendario} className={styles.menuItem}>Calendario</li>
         </ul>
+        <div className={styles.logoutButtonContainer}>
+          <LogoutButton />
+        </div>
       </aside>
 
       {/* Contenido principal */}
@@ -185,10 +188,15 @@ const ProveedorAdmin: React.FC = () => {
         {/* Barra de navegación superior */}
         <nav className={styles.navbar}>
           <div className={styles.navContent}>
-            <span className={styles.title}>Proveedores</span>
-            <div className={styles.logoutButtonContainer}>
-              <LogoutButton />
-            </div>
+            <span className={styles.title}>Proveedores: Administrador</span>
+            {/* Botón con imagen */}
+            <Link to="/template" className={styles.navButton}>
+              <img
+                src="home.png"
+                alt="Template"
+                className={styles.navImage}
+              />
+            </Link>
           </div>
         </nav>
         {/* Sección de botones */}
@@ -345,11 +353,6 @@ const ProveedorAdmin: React.FC = () => {
           </div>
         )}
 
-        {/* Contenido de la página */}
-        <div className={styles.content}>
-          <h1>Página de Proveedores para administradores</h1>
-          <p>Bienvenido</p>
-        </div>
         {/* Tabla de clientes */}
         <div className={styles.content}>
           <h1>Lista de Proveedores</h1>

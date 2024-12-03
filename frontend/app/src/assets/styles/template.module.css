@@ -65,11 +65,27 @@
   margin-bottom: 20px;
 }
 
+.navButton {
+  margin-left: auto; /* Para posicionarlo a la derecha */
+  text-decoration: none;
+}
+
 .navContent {
   display: flex;
   justify-content: space-between;
   align-items: center;
   width: 100%;
+}
+
+.navImage {
+  width: 40px; /* Ajusta el tamaño de la imagen */
+  height: 40px;
+  cursor: pointer;
+  /* LO hacemos responsive */
+  @media (max-width: 768px) {
+    width: 30px;
+    height: 30px;
+  }
 }
 
 .title {
