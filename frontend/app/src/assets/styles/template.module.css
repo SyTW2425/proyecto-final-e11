@@ -290,3 +290,30 @@
   color: #6f579b; /* Color destacado */
   font-size: 2.5rem; /* Tamaño ligeramente mayor */
 }
+
+/* Summary.module.css */
+.summary {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.card {
+  flex: 1;
+  padding: 20px;
+  background-color: #f4f7fc;
+  border-radius: 12px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.card h3 {
+  font-size: 1.2rem;
+  color: #2d2d62;
+}
+
+.card p {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #1e1e45;
+}

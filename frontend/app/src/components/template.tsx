@@ -1,34 +1,45 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from '../assets/styles/template.module.css';
 import LogoutButton from './logout';
+import Statistics from './Statistics';
+import Summary from './Summary';
+import Table from './Table';
 
 import { useNavigate, Link } from 'react-router-dom';  // Importar el hook useNavigate
 
-// Recogemos el nombre de usuario de la sesión
-const user = JSON.parse(localStorage.getItem('user') || '{}'); // Parsear el objeto JSON
-const username = user.nombre_usuario; // Extraer el nombre de usuario
-
 const Template: React.FC = () => {
+  const [username, setUsername] = useState<string | null>(null); // Estado para el nombre de usuario
   const navigate = useNavigate();
+
+  useEffect(() => {
+    // Obtener el nombre de usuario del localStorage al cargar el componente
+    const usuario_almacenado = localStorage.getItem('user');
+    const storedUser = usuario_almacenado ? JSON.parse(usuario_almacenado) : null;
+    if (storedUser) {
+      const user = storedUser; // Parsear el JSON
+      setUsername(user.nombre_usuario); // Actualizar el estado
+    }
+  }, []); // Solo se ejecuta al cargar el componente
 
   const goToClientes = () => {
     navigate('/cliente');
-  }
+  };
   const goToProveedores = () => {
     navigate('/proveedor');
-  }
+  };
   const goToInventario = () => {
     navigate('/inventario');
-  }
+  };
   const goToVentas = () => {
     navigate('/venta');
-  }
+  };
   const goToCompras = () => {
     navigate('/compra');
-  }
+  };
   const goToCalendario = () => {
     navigate('/calendario');
-  }
+  };
+
   return (
     <div className={styles.container}>
       {/* Menú lateral */}
@@ -62,16 +73,24 @@ const Template: React.FC = () => {
             </Link>
           </div>
         </nav>
-            
-            {/* Contenido de la página */}
-            <div className={styles.content}>
-            <h1>Bienvenido, <span className={styles.username}>{username}</span></h1>
-            <p>Aquí tienes un resumen de las actividades pendientes del almacén.</p>
-            </div>
+
+        {/* Contenido de la página */}
+        <div className={styles.content}>
+          <h1>
+            Bienvenido, <span className={styles.username}>{username || 'Usuario'}</span>
+          </h1>
+          <p>Aquí tienes un resumen de las actividades pendientes del almacén.</p>
+        </div>
+
+        <div className={styles.content}>
+          <Summary />
+          <Statistics />
+          <Table />
+        </div>
       </main>
     </div>
   );
 };
 
-
 export default Template;
+
