@@ -23,6 +23,18 @@
   font-weight: bold;
   margin-bottom: 30px;
   text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.3);
+  color: #ffffff;
+  font-family: 'Poppins', sans-serif;
+  text-align: center;
+}
+
+.logo::after {
+  content: ''; /* Línea separadora */
+  display: block;
+  width: 80%;
+  height: 2px; /* Grosor de la línea */
+  background-color: #ffffff; /* Color blanco */
+  margin: 10px auto 30px; /* Separación superior e inferior */
 }
 
 .menu {
@@ -33,18 +45,21 @@
 }
 
 .menuItem {
-  padding: 15px 20px;
-  cursor: pointer;
-  text-align: left;
+  padding: 18px 25px; /* Espaciado interno */
+  font-size: 1.2rem; /* Tamaño de texto más grande */
+  font-weight: 500; /* Texto seminegrita */
+  text-align: left; /* Alineación a la izquierda */
   color: #ffffff;
-  font-size: 1rem;
-  transition: background-color 0.3s ease, transform 0.2s ease;
+  border-radius: 8px; /* Bordes redondeados */
+  cursor: pointer;
+  transition: all 0.3s ease; /* Animación suave */
 }
 
 .menuItem:hover {
-  background-color: rgba(255, 255, 255, 0.2);
-  transform: scale(1.05); /* Efecto de ampliación */
+  background-color: rgba(255, 255, 255, 0.3); /* Fondo más claro al pasar el ratón */
+  transform: translateX(5px); /* Ligeramente a la derecha */
 }
+
 
 /* Contenido principal */
 .main {
@@ -63,6 +78,9 @@
   align-items: center;
   border-radius: 8px; /* Bordes redondeados */
   margin-bottom: 20px;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
 }
 
 .navButton {
@@ -109,6 +127,8 @@
   border-collapse: collapse;
   font-family: Arial, sans-serif;
   text-align: left;
+  border-radius: 16px; /* Más redondeada */
+  box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.15); /* Sombra más intensa */
 }
 
 .styledTable thead {
@@ -263,4 +283,10 @@
 .formButtonGroup {
   display: flex;
   justify-content: space-between;
+}
+
+.username {
+  font-weight: bold;
+  color: #6f579b; /* Color destacado */
+  font-size: 2.5rem; /* Tamaño ligeramente mayor */
 }
