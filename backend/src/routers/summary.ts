@@ -33,4 +33,37 @@ summaryRouter.get('/summary', async (_, res) => {
     }
   });
 
+export const obtenerDatosEstadisticas = async (_: Express.Request, res: Express.Response) => {
+    
+    try {
+      // Agrupar ventas por mes
+      const ventasPorMes = await ventaModel.aggregate([
+        {
+          $group: {
+            _id: { $dateToString: { format: '%Y-%m', date: '$fecha_' } }, // Agrupar por año y mes
+            importe_: { $sum: '$importe_' },
+          },
+        },
+        { $sort: { _id: 1 } } // Ordenar por fecha ascendente
+      ]);
+  
+      // Agrupar compras por mes
+      const comprasPorMes = await compraModel.aggregate([
+        {
+          $group: {
+            _id: { $dateToString: { format: '%Y-%m', date: '$fecha_' } }, // Agrupar por año y mes
+            importe_: { $sum: '$importe_' },
+          },
+        },
+        { $sort: { _id: 1 } } // Ordenar por fecha ascendente
+      ]);
+  
+      res.json({ ventas: ventasPorMes, compras: comprasPorMes });
+    } catch (error) {
+      res.status(500).json({ error: 'Error al obtener estadísticas' });
+    }
+  };
+  summaryRouter.get('/estadisticas', obtenerDatosEstadisticas);
+  
+
 

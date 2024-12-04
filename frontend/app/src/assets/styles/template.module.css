@@ -317,3 +317,17 @@
   font-weight: bold;
   color: #1e1e45;
 }
+
+.stockWarning {
+  background-color: #f8d7da;
+  color: #721c24;
+  padding: 15px;
+  margin-bottom: 20px;
+  border: 1px solid #f5c6cb;
+  border-radius: 5px;
+  font-weight: bold;
+}
+
+.stockWarning p {
+  margin: 0;
+}
