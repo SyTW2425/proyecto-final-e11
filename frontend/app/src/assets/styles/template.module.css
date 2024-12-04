@@ -331,3 +331,28 @@
 .stockWarning p {
   margin: 0;
 }
+/* Añadir esta clase para el contenedor del calendario */
+.calendarWrapper {
+  width: 80%; /* Ajusta el ancho según sea necesario */
+  margin: 0 auto; /* Centra el calendario */
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: white; /* Fondo blanco para el contenedor */
+}
+
+.customCalendar {
+  height: 500px; /* O ajusta la altura como prefieras */
+}
+
+/* Si deseas que sea responsivo y se ajuste bien en pantallas más pequeñas */
+@media (max-width: 768px) {
+  .calendarWrapper {
+    width: 95%; /* Aumenta el ancho en pantallas pequeñas */
+    padding: 10px;
+  }
+
+  .customCalendar {
+    height: 400px; /* Ajusta la altura en dispositivos más pequeños */
+  }
+}

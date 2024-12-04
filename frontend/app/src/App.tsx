@@ -16,6 +16,8 @@ import VentaUsuario from './components/ventaUsuario';
 import VentaAdmin from './components/ventaAdmin';
 import CompraUsuario from './components/compraUsuario';
 import CompraAdmin from './components/compraAdmin';
+import StockCalendarUsuario from './components/calendarioUsuario';
+import StockCalendarAdmin from './components/calendarioAdmin';
 
 const App: React.FC = () => {
   return (
@@ -33,6 +35,7 @@ const App: React.FC = () => {
           <Route path="/inventario" element={<ProtectedRoute component={<InventarioUsuario />} adminComponent={<InventarioAdmin />} />} />
           <Route path="/venta" element={<ProtectedRoute component={<VentaUsuario />} adminComponent={<VentaAdmin />} />} />
           <Route path="/compra" element={<ProtectedRoute component={<CompraUsuario />} adminComponent={<CompraAdmin />} />} />
+          <Route path="/calendario" element={<ProtectedRoute component={<StockCalendarUsuario />} adminComponent={<StockCalendarAdmin />} />} />
 
 
         </Routes>

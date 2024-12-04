@@ -18,6 +18,7 @@ import { productoRouter } from './routers/producto.js';
 import { compraRouter } from './routers/compra.js';
 import { ventaRouter } from './routers/ventas.js';
 import { summaryRouter } from './routers/summary.js';
+import { fechaRouter } from './routers/fecha.js';
 import cors from 'cors';
 
 // Load environment variables from .env file
@@ -43,5 +44,6 @@ app.use(clienteRouter);
 app.use(compraRouter);
 app.use(ventaRouter);
 app.use(summaryRouter);
+app.use(fechaRouter);
 console.log('[server_initiation] Server started!');
 console.log('MONGO_URL:', process.env.MONGO_URL);
