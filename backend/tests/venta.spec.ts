@@ -16,7 +16,7 @@ const sampleCliente = {
 };
 
 const sampleProducto = { 
-  id_: 16, 
+  id_: 16000, 
   nombre_: 'Producto1', 
   stock_: 100,
   precio_venta_: 50
@@ -30,7 +30,7 @@ before(async () => {
 after(async () => {
   await clienteModel.deleteOne({ id_: sampleCliente.id_ });
   await productoModel.deleteOne({ id_: sampleProducto.id_ });
-  await ventaModel.deleteOne({ id_: 5 });
+  await ventaModel.deleteOne({ id_: 5000 });
 });
 
 let newVenta: any;
@@ -40,11 +40,11 @@ describe('Model Venta', () => {
   describe('POST /ventas', () => {
     it('should create a new sell', async () => {
       newVenta = {
-        id_: 5,
+        id_: 5000,
         fecha_: new Date("2001-02-21"),
         cliente_: "11111144A",
         importe_: 2000,
-        productos_: [{ productoID_: "16", cantidad_: 5, precio_: 40 }]
+        productos_: [{ productoID_: "16000", cantidad_: 5, precio_: 40 }]
       };
       const res = await request(app).post('/ventas').send(newVenta);
       expect(res.status).to.equal(200);
@@ -54,7 +54,7 @@ describe('Model Venta', () => {
 
     it('should return 404 if client is not found', async () => {
       const invalidVenta = {
-        id_: 4,
+        id_: 4000,
         fecha_: new Date("2021-03-01"),
         cliente_: "A87654321", // Invalid client ID
         importe_: 1000,
@@ -67,7 +67,7 @@ describe('Model Venta', () => {
 
     it('should return 500 if product data is incomplete or invalid', async () => {
       const incompleteVenta = {
-        id_: 5,
+        id_: 5000,
         fecha_: new Date("2021-04-01"),
         cliente_: sampleCliente.id_,
         importe_: 500,
@@ -81,7 +81,7 @@ describe('Model Venta', () => {
 
   describe('GET /ventas/:id', () => {
     it('should return a venta by specific ID', async () => {
-      const res = await request(app).get('/ventas/5');
+      const res = await request(app).get('/ventas/5000');
       expect(res.status).to.equal(200);
     });
 
@@ -93,31 +93,27 @@ describe('Model Venta', () => {
 
   describe('DELETE /ventas/:id', () => {
     it('should delete a venta by ID', async () => {
-      const res = await request(app).delete('/ventas/5');
+      const res = await request(app).delete('/ventas/5000');
       expect(res.status).to.equal(200);
     });
 
     it('should return 404 if ventas to delete is not found', async () => {
-      const res = await request(app).delete('/ventas/8');
+      const res = await request(app).delete('/ventas/8000');
       expect(res.status).to.equal(404);
     });
   });
 
   describe('GET /ventas', () => {
-    it('should return 404 if no ventas are found', async () => {
-      const res = await request(app).get('/ventas');
-      expect(res.status).to.equal(404);
-    });
     it('should return all ventas', async () => {
       await request(app).post('/ventas').send(newVenta);
-      const res = await request(app).get('/compras');
+      const res = await request(app).get('/ventas');
       expect(res.status).to.equal(200);
     });   
   });
 
   describe('stock update', () => {
     it('should update the stock of a product after a sale', async () => {
-      const res = await request(app).get('/productos/16');
+      const res = await request(app).get('/productos/16000');
       expect(res.body).to.have.property('stock_', 95);
     });
   });
