@@ -1,6 +1,3 @@
-# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
-
 name: Tests
 
 on:
@@ -15,7 +12,8 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [21.x, 20.x]
+        node-version: [21.x, 20.x, 19.x, 18.x, 17.x]
+      max-parallel: 1 # Limita la ejecución a una versión de Node.js a la vez
 
     steps:
     - uses: actions/checkout@v4
@@ -28,9 +26,8 @@ jobs:
       with:
         mongodb-version: '5.0'
     - name: Install Dependencies
-      run: npm i
+      run: npm ci
       working-directory: ./backend
     - name: Test Backend
       run: npm test
       working-directory: ./backend
-  
