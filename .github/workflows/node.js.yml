@@ -12,7 +12,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [21.x, 20.x, 19.x, 18.x, 17.x]
+        node-version: [21.x, 20.x]
       max-parallel: 1 # Limita la ejecución a una versión de Node.js a la vez
 
     steps:
