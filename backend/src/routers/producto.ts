@@ -73,3 +73,17 @@ productoRouter.delete('/productos/:id', async (req, res) => {
     res.status(500).send({ msg: 'Error al eliminar al producto', error: error });
   }
 });
+
+const obtenerProductosMenorStock = async (_: Express.Request, res: Express.Response) => {
+  try {
+    const productos = await productoModel.find({})
+      .sort({ stock_: 1 }) // Ordenar por stock ascendente
+      .limit(3); // Limitar a 3 resultados
+    res.json(productos);
+  } catch (error) {
+    console.error('Error al obtener productos:', error);
+    res.status(500).json({ error: 'Error al obtener productos' });
+  }
+};
+
+productoRouter.get('/menorStock', obtenerProductosMenorStock);

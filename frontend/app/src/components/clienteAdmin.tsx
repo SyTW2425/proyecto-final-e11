@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import styles from '../assets/styles/template.module.css';
 import LogoutButton from './logout';
 import axios from 'axios';
+import { useNavigate, Link } from 'react-router-dom';
+
 
 
 /*interface Cliente {
@@ -20,6 +22,16 @@ const ClienteAdmin: React.FC = () => {
   const [mostrarFormularioBuscar, setMostrarFormularioBuscar] = useState(false); // Visibilidad del formulario de búsqueda
   const [dniBuscar, setDniBuscar] = useState<string>(''); // DNI del cliente a buscar
   const [clienteEncontrado, setClienteEncontrado] = useState<any | null>(null); // Datos del cliente encontrado
+  const [mostrarFormularioEditar, setMostrarFormularioEditar] = useState(false);
+  const [mostrarFormularioSolicitarDni, setMostrarFormularioSolicitarDni] = useState(false);
+  const [clienteAEditar, setClienteAEditar] = useState<any | null>({
+    id_: '',
+    nombre_: '',
+    contacto_: '',
+    compras_: [] as number[],
+    membresia_: false,
+  });
+  const [dniEditar, setDniEditar] = useState<string>('');
 
   // Estado para controlar la visibilidad del formulario
   const [nuevoCliente, setNuevoCliente] = useState({
@@ -125,11 +137,43 @@ const ClienteAdmin: React.FC = () => {
     alert('Función para editar un cliente existente');
     // Aquí puedes implementar lógica para seleccionar y editar un cliente
   };
+  const manejarCambioEdicion = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    if (name === 'compras_') {
+      setClienteAEditar((prevState: typeof clienteAEditar) => ({
+        ...prevState,
+        [name]: value.split(',').map((item) => parseInt(item.trim(), 10)).filter((item) => !isNaN(item)),
+      }));
+    } else if (name === 'membresia_') {
+      setClienteAEditar((prevState: typeof clienteAEditar) => ({
+        ...prevState,
+        [name]: e.target.checked,
+      }));
+    } else {
+      setClienteAEditar((prevState: typeof clienteAEditar) => ({
+        ...prevState,
+        [name]: value,
+      }));
+    }
+  };
 
 
-  const handleBuscarCliente = () => {
-    alert('Función para buscar un cliente');
-    // Aquí puedes implementar lógica para buscar clientes
+  const manejarEnvioSolicitarDni = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!dniEditar) {
+      alert('Por favor, ingresa un DNI válido.');
+      return;
+    }
+
+    const cliente = clientes.find((cliente) => cliente.id_ === dniEditar);
+    if (cliente) {
+      setClienteAEditar(cliente);
+      setMostrarFormularioSolicitarDni(false);
+      setMostrarFormularioEditar(true);
+    } else {
+      alert('Cliente no encontrado.');
+    }
   };
 
   const manejarEnvioBuscarCliente = (e: React.FormEvent) => {
@@ -154,19 +198,73 @@ const ClienteAdmin: React.FC = () => {
   };
 
 
+  const manejarEnvioEdicion = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (
+      !clienteAEditar.id_ ||
+      !clienteAEditar.nombre_ ||
+      !clienteAEditar.contacto_
+    ) {
+      alert('Por favor, rellena todos los campos');
+      return;
+    }
+
+    axios
+      .patch(`http://localhost:5000/clientes/${clienteAEditar.id_}`, clienteAEditar)
+      .then((response) => {
+        setClientes((prevClientes) =>
+          prevClientes.map((cliente) =>
+            cliente.id_ === clienteAEditar.id_ ? response.data : cliente
+          )
+        );
+        alert('Cliente actualizado correctamente');
+        setMostrarFormularioEditar(false);
+      })
+      .catch((error) => {
+        console.error('Error al editar el cliente:', error);
+        alert('Hubo un error al actualizar el cliente');
+      });
+  };
+
+  const navigate = useNavigate();
+
+  const goToClientes = () => {
+    navigate('/cliente');
+  }
+  const goToProveedores = () => {
+    navigate('/proveedor');
+  }
+  const goToInventario = () => {
+    navigate('/inventario');
+  }
+  const goToVentas = () => {
+    navigate('/venta');
+  }
+  const goToCompras = () => {
+    navigate('/compra');
+  }
+  const goToCalendario = () => {
+    navigate('/calendario');
+  }
+
+
   return (
     <div className={styles.container}>
       {/* Menú lateral */}
       <aside className={styles.sidebar}>
         <h2 className={styles.logo}>Connectory</h2>
         <ul className={styles.menu}>
-          <li className={styles.menuItem}>Clientes</li>
-          <li className={styles.menuItem}>Proveedores</li>
-          <li className={styles.menuItem}>Ventas</li>
-          <li className={styles.menuItem}>Compras</li>
-          <li className={styles.menuItem}>Productos</li>
-          <li className={styles.menuItem}>Calendario</li>
+          <li onClick={goToClientes} className={styles.menuItem}>Clientes</li>
+          <li onClick={goToProveedores} className={styles.menuItem}>Proveedores</li>
+          <li onClick={goToVentas} className={styles.menuItem}>Ventas</li>
+          <li onClick={goToCompras} className={styles.menuItem}>Compras</li>
+          <li onClick={goToInventario} className={styles.menuItem}>Productos</li>
+          <li onClick={goToCalendario} className={styles.menuItem}>Calendario</li>
         </ul>
+        <div className={styles.logoutButtonContainer}>
+          <LogoutButton />
+        </div>
       </aside>
 
       {/* Contenido principal */}
@@ -174,17 +272,28 @@ const ClienteAdmin: React.FC = () => {
         {/* Barra de navegación superior */}
         <nav className={styles.navbar}>
           <div className={styles.navContent}>
-            <span className={styles.title}>Clientes</span>
-            <div className={styles.logoutButtonContainer}>
-              <LogoutButton />
-            </div>
+            <span className={styles.title}>Clientes: Administrador</span>
+            {/* Botón con imagen */}
+            <Link to="/template" className={styles.navButton}>
+              <img
+                src="home.png"
+                alt="Template"
+                className={styles.navImage}
+              />
+            </Link>
           </div>
         </nav>
+
+
+
         {/* Sección de botones */}
         <div className={styles.buttonContainer}>
           <button className={styles.actionButton} onClick={() => setMostrarFormulario(!mostrarFormulario)}>Crear nuevo cliente</button>
-          <button className={styles.actionButton} onClick={handleEditarCliente}>
-            Editar cliente existente
+          <button
+            className={styles.actionButton}
+            onClick={() => setMostrarFormularioSolicitarDni(true)}
+          >
+            Editar cliente
           </button>
           <button
             className={styles.actionButton}
@@ -192,6 +301,7 @@ const ClienteAdmin: React.FC = () => {
           >
             Eliminar cliente
           </button>
+
 
           <button
             className={styles.actionButton}
@@ -303,6 +413,116 @@ const ClienteAdmin: React.FC = () => {
           </form>
         )}
 
+        {mostrarFormularioSolicitarDni && (
+          <form
+            onSubmit={manejarEnvioSolicitarDni}
+            className={styles.formularioContainer}
+          >
+            <h2 className={styles.formTitle}>Editar Cliente</h2>
+            <div className={styles.formGroup}>
+              <label className={styles.formLabel}>DNI del Cliente:</label>
+              <input
+                type="text"
+                name="dniEditar"
+                value={dniEditar}
+                onChange={(e) => setDniEditar(e.target.value)}
+                className={styles.formInput}
+                required
+              />
+            </div>
+            <div className={styles.formButtonGroup}>
+              <button type="submit" className={styles.formButton}>
+                Continuar
+              </button>
+              <button
+                type="button"
+                onClick={() => setMostrarFormularioSolicitarDni(false)}
+                className={styles.formButtonCancel}
+              >
+                Cancelar
+              </button>
+            </div>
+          </form>
+        )}
+        {mostrarFormularioEditar && clienteAEditar && (
+          <form
+            onSubmit={manejarEnvioEdicion}
+            className={styles.formularioContainer}
+          >
+            <h2 className={styles.formTitle}>Editar Cliente</h2>
+            <div className={styles.formGroup}>
+              <label className={styles.formLabel}>DNI:</label>
+              <input
+                type="text"
+                name="id_"
+                value={clienteAEditar.id_}
+                onChange={manejarCambioEdicion}
+                className={styles.formInput}
+                required
+                readOnly
+              />
+            </div>
+            <div className={styles.formGroup}>
+              <label className={styles.formLabel}>Nombre:</label>
+              <input
+                type="text"
+                name="nombre_"
+                value={clienteAEditar.nombre_}
+                onChange={manejarCambioEdicion}
+                className={styles.formInput}
+                required
+              />
+            </div>
+            <div className={styles.formGroup}>
+              <label className={styles.formLabel}>Contacto:</label>
+              <input
+                type="number"
+                name="contacto_"
+                value={clienteAEditar.contacto_}
+                onChange={manejarCambioEdicion}
+                className={styles.formInput}
+                required
+              />
+            </div>
+            <div className={styles.formGroup}>
+              <label className={styles.formLabel}>Compras:</label>
+              <input
+                type="text"
+                name="compras_"
+                value={clienteAEditar.compras_.join(',')}
+                onChange={manejarCambioEdicion}
+                className={styles.formInput}
+              />
+            </div>
+            <div className={styles.formGroupCheckbox}>
+              <label className={styles.formLabel}>Membresía:</label>
+              <input
+                type="checkbox"
+                name="membresia_"
+                checked={clienteAEditar.membresia_}
+                onChange={(e) =>
+                  setClienteAEditar((prevState: typeof clienteAEditar) => ({
+                    ...prevState,
+                    membresia_: e.target.checked,
+                  }))
+                }
+                className={styles.formCheckbox}
+              />
+            </div>
+            <div className={styles.formButtonGroup}>
+              <button type="submit" className={styles.formButton}>
+                Guardar Cambios
+              </button>
+              <button
+                type="button"
+                onClick={() => setMostrarFormularioEditar(false)}
+                className={styles.formButtonCancel}
+              >
+                Cancelar
+              </button>
+            </div>
+          </form>
+        )}
         {mostrarFormularioBuscar && (
           <form onSubmit={manejarEnvioBuscarCliente} className={styles.formularioContainer}>
             <h2 className={styles.formTitle}>Buscar Cliente</h2>
@@ -351,13 +571,6 @@ const ClienteAdmin: React.FC = () => {
         )}
 
 
-
-
-        {/* Contenido de la página */}
-        <div className={styles.content}>
-          <h1>Página de clientes pa administradores</h1>
-          <p>Bienvenido</p>
-        </div>
         {/* Tabla de clientes */}
         <div className={styles.content}>
           <h1>Lista de Clientes</h1>

@@ -5,21 +5,21 @@ import { describe, it, before, after } from 'mocha';
 import { productoModel } from '../src/models/producto.js';
 
 const primerProducto = {
-    id_: 1,
+    id_: 1000,
     nombre_: "Jabón",
     precio_venta_: 9.99,
     stock_: 100
 };
 
 const segundoProducto = {
-    id_: 2,
+    id_: 2000,
     nombre_: "Pinzas",
     precio_venta_: 14.99,
     stock_: 50
 };
 
 const nuevoProducto = {
-    id_: 3,
+    id_: 3000,
     nombre_: "Martillo",
     precio_venta_: 19.99,
     stock_: 20
@@ -51,7 +51,7 @@ describe('Model Producto', () => {
  
   describe('GET /productos/:id', () => {
     it('should return a product by specific ID', async () => {
-      const res = await request(app).get('/productos/1');
+      const res = await request(app).get('/productos/1000');
       expect(res.status).to.equal(200);
       expect(res.body).to.have.property('nombre_', primerProducto.nombre_);
     });
@@ -82,11 +82,11 @@ describe('Model Producto', () => {
   // Test for PATCH /clientes/:id (update a client by ID)
   describe('PATCH /productos/:id', () => {
     it('should update an existing product', async () => {
-        const updatedData = { id_: 1,
+        const updatedData = { id_: 1000,
             nombre_: 'Jabón de manos',
             precio_venta_: 9.99,
             stock_: 100};
-      const res = await request(app).patch('/productos/1').send(updatedData);
+      const res = await request(app).patch('/productos/1000').send(updatedData);
       expect(res.status).to.equal(200);
       expect(res.body).to.have.property('nombre_', updatedData.nombre_);
       expect(res.body).to.have.property('stock_', updatedData.stock_);
