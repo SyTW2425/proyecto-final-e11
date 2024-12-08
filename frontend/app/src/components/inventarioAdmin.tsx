@@ -335,12 +335,24 @@ const InventarioAdmin: React.FC = () => {
         )}
         {productoEncontrado && (
           <div className={styles.resultContainer}>
-            <h2 className={styles.resultTitle}>Cliente Encontrado</h2>
-            <div className={styles.resultContent}>
-              <p><strong>ID:</strong> {productoEncontrado.id_}</p>
-              <p><strong>Nombre:</strong> {productoEncontrado.nombre_}</p>
-              <p><strong>Stock:</strong> {productoEncontrado.stock_}</p>
-              <p><strong>Precio de venta:</strong> {productoEncontrado.precio_venta_}</p>
+            <h2 className={styles.resultTitle}>Producto Encontrado</h2>
+            <div className={styles.resultCard}>
+              <div className={styles.resultRow}>
+                <span className={styles.resultLabel}>Id:</span>
+                <span className={styles.resultValue}>{productoEncontrado.id_}</span>
+              </div>
+              <div className={styles.resultRow}>
+                <span className={styles.resultLabel}>Nombre:</span>
+                <span className={styles.resultValue}>{productoEncontrado.nombre_}</span>
+              </div>
+              <div className={styles.resultRow}>
+                <span className={styles.resultLabel}>Stock:</span>
+                <span className={styles.resultValue}>{productoEncontrado.stock_}</span>
+              </div>
+              <div className={styles.resultRow}>
+                <span className={styles.resultLabel}>Precio:</span>
+                <span className={styles.resultValue}>{productoEncontrado.precio_venta_}</span>
+              </div>
             </div>
           </div>
         )}

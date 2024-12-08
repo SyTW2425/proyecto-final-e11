@@ -462,18 +462,39 @@ const ComprasAdmin: React.FC = () => {
             </div>
           </form>
         )}
-        {compraEncontrado && (
+         {compraEncontrado && (
           <div className={styles.resultContainer}>
             <h2 className={styles.resultTitle}>Compra Encontrada</h2>
-            <div className={styles.resultContent}>
-              <p><strong>ID:</strong> {compraEncontrado.id_}</p>
-              <p><strong>Fecha:</strong> {compraEncontrado.fecha_}</p>
-              <p><strong>Proveedor:</strong> {compraEncontrado.proveedor_}</p>
-              <p><strong>Importe:</strong> {compraEncontrado.importe_}</p>
-              <p><strong>Productos:</strong> {compraEncontrado.productos_.join(', ')}</p>
+            <div className={styles.resultCard}>
+              <div className={styles.resultRow}>
+                <span className={styles.resultLabel}>Id:</span>
+                <span className={styles.resultValue}>{compraEncontrado.id_}</span>
+              </div>
+              <div className={styles.resultRow}>
+                <span className={styles.resultLabel}>Fecha:</span>
+                <span className={styles.resultValue}>{compraEncontrado.fecha_}</span>
+              </div>
+              <div className={styles.resultRow}>
+                <span className={styles.resultLabel}>Proveedor:</span>
+                <span className={styles.resultValue}>{obtenerNombreProveedor(compraEncontrado.proveedor_)}</span>
+              </div>
+              <div className={styles.resultRow}>
+                <span className={styles.resultLabel}>Importe:</span>
+                <span className={styles.resultValue}>{compraEncontrado.importe_}</span>
+              </div>
+              <div className={styles.resultRow}>
+                <span className={styles.resultLabel}>Productos:</span>
+                <span className={styles.resultValue}>
+                  <td>{compraEncontrado.productos_.map((producto: any) => (
+                  <p> Producto: {obtenerNombreProducto(producto.productoId)} - Cantidad: {producto.cantidad} - Precio: {producto.precio}</p>
+                  ))}</td>
+                </span>
+              </div>
+
             </div>
           </div>
         )}
+
 
         {/* Tabla de clientes */}
         <div className={styles.content}>

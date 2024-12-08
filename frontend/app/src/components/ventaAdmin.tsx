@@ -162,7 +162,7 @@ const VentasAdmin: React.FC = () => {
     e.preventDefault();
 
     if (!idEliminar) {
-      alert('Por favor, ingresa un ID de compra.');
+      alert('Por favor, ingresa un ID de venta.');
       return;
     }
 
@@ -287,13 +287,13 @@ const VentasAdmin: React.FC = () => {
             className={styles.actionButton}
             onClick={() => setMostrarFormularioEliminar(true)}
           >
-            Eliminar venta
+            Eliminar Venta
           </button>
 
           <button
             className={styles.actionButton}
             onClick={() => setMostrarFormularioBuscar(true)}
-          > Buscar compra</button>
+          > Buscar Venta</button>
         </div>
 
         {mostrarFormularioEliminar && (
@@ -467,13 +467,33 @@ const VentasAdmin: React.FC = () => {
         )}
         {ventaEncontrado && (
           <div className={styles.resultContainer}>
-            <h2 className={styles.resultTitle}>Compra Encontrada</h2>
-            <div className={styles.resultContent}>
-              <p><strong>ID:</strong> {ventaEncontrado.id_}</p>
-              <p><strong>Fecha:</strong> {ventaEncontrado.fecha_}</p>
-              <p><strong>Cliente:</strong> {ventaEncontrado.cliente_}</p>
-              <p><strong>Importe:</strong> {ventaEncontrado.importe_}</p>
-              <p><strong>Productos:</strong> {ventaEncontrado.productos_.join(', ')}</p>
+            <h2 className={styles.resultTitle}>Venta Encontrada</h2>
+            <div className={styles.resultCard}>
+              <div className={styles.resultRow}>
+                <span className={styles.resultLabel}>Id:</span>
+                <span className={styles.resultValue}>{ventaEncontrado.id_}</span>
+              </div>
+              <div className={styles.resultRow}>
+                <span className={styles.resultLabel}>Fecha:</span>
+                <span className={styles.resultValue}>{ventaEncontrado.fecha_}</span>
+              </div>
+              <div className={styles.resultRow}>
+                <span className={styles.resultLabel}>Cliente:</span>
+                <span className={styles.resultValue}>{obtenerNombreCliente(ventaEncontrado.cliente_)}</span>
+              </div>
+              <div className={styles.resultRow}>
+                <span className={styles.resultLabel}>Importe:</span>
+                <span className={styles.resultValue}>{ventaEncontrado.importe_}</span>
+              </div>
+              <div className={styles.resultRow}>
+                <span className={styles.resultLabel}>Productos:</span>
+                <span className={styles.resultValue}>
+                  <td>{ventaEncontrado.productos_.map((producto: any) => (
+                  <p> Producto: {obtenerNombreProducto(producto.productoId)} - Cantidad: {producto.cantidad} - Precio: {producto.precio}</p>
+                  ))}</td>
+                </span>
+              </div>
+
             </div>
           </div>
         )}

@@ -547,15 +547,33 @@ const ClienteAdmin: React.FC = () => {
         {clienteEncontrado && (
           <div className={styles.resultContainer}>
             <h2 className={styles.resultTitle}>Cliente Encontrado</h2>
-            <div className={styles.resultContent}>
-              <p><strong>DNI:</strong> {clienteEncontrado.id_}</p>
-              <p><strong>Nombre:</strong> {clienteEncontrado.nombre_}</p>
-              <p><strong>Contacto:</strong> {clienteEncontrado.contacto_}</p>
-              <p><strong>Compras:</strong> {clienteEncontrado.compras_.length > 0
-                ? clienteEncontrado.compras_.join(', ')
-                : 'Sin compras'}
-              </p>
-              <p><strong>Membresía:</strong> {clienteEncontrado.membresia_ ? 'Sí' : 'No'}</p>
+            <div className={styles.resultCard}>
+              <div className={styles.resultRow}>
+                <span className={styles.resultLabel}>DNI:</span>
+                <span className={styles.resultValue}>{clienteEncontrado.id_}</span>
+              </div>
+              <div className={styles.resultRow}>
+                <span className={styles.resultLabel}>Nombre:</span>
+                <span className={styles.resultValue}>{clienteEncontrado.nombre_}</span>
+              </div>
+              <div className={styles.resultRow}>
+                <span className={styles.resultLabel}>Contacto:</span>
+                <span className={styles.resultValue}>{clienteEncontrado.contacto_}</span>
+              </div>
+              <div className={styles.resultRow}>
+                <span className={styles.resultLabel}>Compras:</span>
+                <span className={styles.resultValue}>
+                  {clienteEncontrado.compras_.length > 0
+                    ? clienteEncontrado.compras_.join(', ')
+                    : 'Sin compras'}
+                </span>
+              </div>
+              <div className={styles.resultRow}>
+                <span className={styles.resultLabel}>Membresía:</span>
+                <span className={styles.resultValue}>
+                  {clienteEncontrado.membresia_ ? 'Sí' : 'No'}
+                </span>
+              </div>
             </div>
           </div>
         )}

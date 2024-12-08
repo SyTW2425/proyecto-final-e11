@@ -335,14 +335,27 @@ const ProveedorAdmin: React.FC = () => {
         {proveedorEncontrado && (
           <div className={styles.resultContainer}>
             <h2 className={styles.resultTitle}>Proveedor Encontrado</h2>
-            <div className={styles.resultContent}>
-              <p><strong>DNI:</strong> {proveedorEncontrado.id_}</p>
-              <p><strong>Nombre:</strong> {proveedorEncontrado.nombre_}</p>
-              <p><strong>Contacto:</strong> {proveedorEncontrado.contacto_}</p>
-              <p><strong>Compras:</strong> {proveedorEncontrado.productos_.length > 0
-                ? proveedorEncontrado.productos_.join(', ')
-                : 'Sin productos'}
-              </p>
+            <div className={styles.resultCard}>
+              <div className={styles.resultRow}>
+                <span className={styles.resultLabel}>DNI:</span>
+                <span className={styles.resultValue}>{proveedorEncontrado.id_}</span>
+              </div>
+              <div className={styles.resultRow}>
+                <span className={styles.resultLabel}>Nombre:</span>
+                <span className={styles.resultValue}>{proveedorEncontrado.nombre_}</span>
+              </div>
+              <div className={styles.resultRow}>
+                <span className={styles.resultLabel}>Contacto:</span>
+                <span className={styles.resultValue}>{proveedorEncontrado.contacto_}</span>
+              </div>
+              <div className={styles.resultRow}>
+                <span className={styles.resultLabel}>Productos:</span>
+                <span className={styles.resultValue}>
+                  {proveedorEncontrado.productos_.length > 0
+                    ? proveedorEncontrado.productos_.join(', ')
+                    : 'Sin productos'}
+                </span>
+              </div>
             </div>
           </div>
         )}
