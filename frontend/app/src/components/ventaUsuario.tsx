@@ -15,8 +15,23 @@ interface Ventas {
   }[]
 }
 
+interface Cliente {
+  _id: string;
+  id_: string;
+  nombre_: string;
+}
+
+interface Producto {
+  _id: string;
+  id_: number;
+  nombre_: string;
+}
+
+
 const VentasUsuario: React.FC = () => {
   const [ventas, setVentas] = useState<Ventas[]>([]);
+  const [clientes, setClientes] = useState<Cliente[]>([]);
+  const [productos, setProductos] = useState<Producto[]>([]);
   useEffect(() => {
     // Consumir API
     fetch('http://localhost:5000/ventas')
@@ -34,6 +49,37 @@ const VentasUsuario: React.FC = () => {
         console.error('Error al cargar los datos:', error);
         setVentas([]); // Fallback a un array vacío en caso de error
       });
+
+      fetch('http://localhost:5000/clientes')
+      .then((response) => response.json())
+      .then((data) => {
+        if (Array.isArray(data)) {
+          setClientes(data);
+        } else {
+          console.error('El formato de los datos no es válido:', data);
+          setClientes([]); // Fallback a un array vacío
+        }
+      })
+      .catch((error) => {
+        console.error('Error al cargar los datos de proveedores:', error);
+        setClientes([]);
+      });
+
+      fetch('http://localhost:5000/productos')
+      .then((response) => response.json())
+      .then((data) => {
+        if (Array.isArray(data)) {
+          setProductos(data);
+        } else {
+          console.error('El formato de los datos no es válido:', data);
+          setProductos([]); // Fallback a un array vacío
+        }
+      })
+      .catch((error) => {
+        console.error('Error al cargar los datos de los productos:', error);
+        setProductos([]);
+      });
+
   }, []);
 
   const navigate = useNavigate();
@@ -56,6 +102,16 @@ const VentasUsuario: React.FC = () => {
   const goToCalendario = () => {
     navigate('/calendario');
   }
+
+  const obtenerNombreCliente = (idCliente: string) => {
+    const cliente = clientes.find((prov) => prov._id === idCliente);
+    return cliente ? cliente.id_ : 'Desconocido';
+  };
+
+  const obtenerNombreProducto= (idProducto: string) => {
+    const producto = productos.find((prod) => prod._id === idProducto);
+    return producto ? producto.nombre_ : 'Desconocido';
+  };
 
   return (
     <div className={styles.container}>
@@ -115,12 +171,10 @@ const VentasUsuario: React.FC = () => {
                     <tr key={venta.id_}>
                       <td>{venta.id_}</td>
                       <td>{venta.fecha_}</td>
-                      <td>{venta.cliente_}</td>
+                      <td>{obtenerNombreCliente(venta.cliente_)}</td>
                       <td>{venta.importe_}</td>
                       <td>{venta.productos_.map((producto: any) => (
-                        <div key={producto.productoID_}>
-                          <p>{producto.productoId} - {producto.cantidad} - {producto.precio}</p>
-                        </div>
+                        <p> Producto: {obtenerNombreProducto(producto.productoId)} - Cantidad: {producto.cantidad} - Precio: {producto.precio}</p>
                       ))}</td>
                       
                     </tr>

@@ -4,6 +4,18 @@ import LogoutButton from './logout';
 import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
 
+interface Cliente {
+  _id: string;
+  id_: string;
+  nombre_: string;
+}
+
+interface Producto {
+  _id: string;
+  id_: number;
+  nombre_: string;
+}
+
 const VentasAdmin: React.FC = () => {
   const [ventas, setVentas] = useState<any[]>([]);
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
@@ -12,21 +24,31 @@ const VentasAdmin: React.FC = () => {
   const [mostrarFormularioBuscar, setMostrarFormularioBuscar] = useState(false); // Visibilidad del formulario de búsqueda
   const [idBuscar, setIdBuscar] = useState<string>(''); // DNI del cliente a buscar
   const [ventaEncontrado, setVentaEncontrado] = useState<any | null>(null); // Datos del cliente encontrado
+  const [clientes, setClientes] = useState<Cliente[]>([]);
+  const [productos, setProductos] = useState<Producto[]>([]);
+
 
   // Estado para controlar la visibilidad del formulario
   const [nuevoVenta, setNuevoVenta] = useState({
     id_: '',
     fecha_: '',
     cliente_: '',
-    importe_: '',
+    importe_: 0,
     productos_: [
       {
         productoID_: '',
-        cantidad_: '',
-        precio_: '',
+        cantidad_: 0,
+        precio_: 0,
       },
     ],
   });
+
+  const agregarProducto = () => {
+    setNuevoVenta((prevState) => ({
+      ...prevState,
+      productos_: [...prevState.productos_, { productoID_: '', cantidad_: 0, precio_: 0 }]
+    }));
+  };
 
   useEffect(() => {
     // Consumir API
@@ -45,25 +67,57 @@ const VentasAdmin: React.FC = () => {
         console.error('Error al cargar los datos:', error);
         setVentas([]); // Fallback a un array vacío en caso de error
       });
+
+    fetch('http://localhost:5000/clientes')
+      .then((response) => response.json())
+      .then((data) => {
+        if (Array.isArray(data)) {
+          setClientes(data);
+        } else {
+          console.error('El formato de los datos no es válido:', data);
+          setClientes([]); // Fallback a un array vacío
+        }
+      })
+      .catch((error) => {
+        console.error('Error al cargar los datos de clientes:', error);
+        setClientes([]);
+      });
+
+    fetch('http://localhost:5000/productos')
+      .then((response) => response.json())
+      .then((data) => {
+        if (Array.isArray(data)) {
+          setProductos(data);
+        } else {
+          console.error('El formato de los datos no es válido:', data);
+          setProductos([]); // Fallback a un array vacío
+        }
+      })
+      .catch((error) => {
+        console.error('Error al cargar los datos de los productos:', error);
+        setProductos([]);
+      });
+
   }, []);
 
-  const manejarCambioFormulario = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
+  const manejarCambioFormulario = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value, dataset } = e.target;
+    const productoIndex = dataset.index ? parseInt(dataset.index) : null;
 
-    if (name === 'productos_') {
-      try {
-        const productos = JSON.parse(value); // Si los datos llegan como JSON
-        if (Array.isArray(productos)) {
-          setNuevoVenta((prevState) => ({
-            ...prevState,
-            [name]: productos,
-          }));
-        } else {
-          alert('El campo productos debe ser un array válido en formato JSON');
-        }
-      } catch (error) {
-        alert('Error al parsear productos. Asegúrate de usar un formato JSON válido.');
-      }
+    if (productoIndex !== null && ['productoID_', 'cantidad_', 'precio_'].includes(name)) {
+      setNuevoVenta((prevState) => {
+        const nuevosProductos = [...prevState.productos_];
+        const productoActualizado = {
+          ...nuevosProductos[productoIndex],
+          [name]: name === 'cantidad_' ? parseInt(value) : value
+        };
+        nuevosProductos[productoIndex] = productoActualizado;
+
+        return {
+          ...prevState,
+          productos_: nuevosProductos
+        };
+      });
     } else {
       setNuevoVenta((prevState) => ({
         ...prevState,
@@ -126,6 +180,7 @@ const VentasAdmin: React.FC = () => {
         console.error('Error al eliminar la venta:', error);
         alert('Hubo un error al eliminar la venta');
       });
+      
   };
 
 
@@ -147,7 +202,7 @@ const VentasAdmin: React.FC = () => {
     axios
       .get(`http://localhost:5000/ventas/${idBuscar}`)
       .then((response) => {
-        setVentaEncontrado(response.data); 
+        setVentaEncontrado(response.data);
       })
       .catch((error) => {
         console.error('Error al buscar la venta:', error);
@@ -176,6 +231,16 @@ const VentasAdmin: React.FC = () => {
   const goToCalendario = () => {
     navigate('/calendario');
   }
+
+  const obtenerNombreCliente = (idCliente: string) => {
+    const cliente = clientes.find((prov) => prov._id === idCliente);
+    return cliente ? cliente.id_ : 'Desconocido';
+  };
+
+  const obtenerNombreProducto = (idProducto: string) => {
+    const producto = productos.find((prod) => prod._id === idProducto);
+    return producto ? producto.nombre_ : 'Desconocido';
+  };
 
 
   return (
@@ -301,16 +366,57 @@ const VentasAdmin: React.FC = () => {
                 className={styles.formInput}
                 required
               />
-              <div className={styles.formGroup}>
-                <label className={styles.formLabel}>Productos de la venta:</label>
-                <input
-                  type="text"
-                  name="productos_"
-                  value={JSON.stringify(nuevoVenta.productos_)}
-                  onChange={(e) => manejarCambioFormulario(e)}
-                  className={styles.formInput}
-                />
-              </div>
+              {nuevoVenta.productos_.map((producto, index) => (
+                <div key={index} className={styles.formGroup}>
+                  <label className={styles.formLabel}>Producto {index + 1}</label>
+
+                  {/* Campo de selección del producto */}
+                  <select
+                    name="productoID_"
+                    data-index={index}
+                    value={producto.productoID_}
+                    onChange={manejarCambioFormulario}
+                    className={styles.formInput}
+                  >
+                    <option value="">Seleccionar Producto</option>
+                    {productos.map((prod) => (
+                      <option key={prod.id_} value={prod.id_}>
+                        {prod.nombre_}
+                      </option>
+                    ))}
+                  </select>
+
+                  {/* Campo de cantidad */}
+                  <input
+                    type="number"
+                    name="cantidad_"
+                    data-index={index}
+                    value={producto.cantidad_ || ''}
+                    onChange={manejarCambioFormulario}
+                    className={styles.formInput}
+                    placeholder="Cantidad"
+                    min="1"
+                  />
+
+                  {/* Campo de precio */}
+                  <input
+                    type="number"
+                    name="precio_"
+                    data-index={index}
+                    value={producto.precio_ || ''}
+                    onChange={manejarCambioFormulario}
+                    className={styles.formInput}
+                    placeholder="Precio"
+                    min="0"
+                    step="0.01"
+                  />
+                </div>
+              ))}
+
+              <button type="button" onClick={agregarProducto} className={styles.formButton}>
+                Agregar Producto
+              </button>
+
             </div>
 
             <div className={styles.formButtonGroup}>
@@ -396,13 +502,10 @@ const VentasAdmin: React.FC = () => {
                     <tr key={venta.id_}>
                       <td>{venta.id_}</td>
                       <td>{venta.fecha_}</td>
-                      <td>{venta.cliente_}</td>
+                      <td>{obtenerNombreCliente(venta.cliente_)}</td>
                       <td>{venta.importe_}</td>
-                      {/* Mostramos los productos teniendo en cuenta que es una array con productoID, cantidad y precio*/}
                       <td>{venta.productos_.map((producto: any) => (
-                        <div key={producto.productoID_}>
-                          <p>{producto.productoId} - {producto.cantidad} - {producto.precio}</p>
-                        </div>
+                        <p> Producto: {obtenerNombreProducto(producto.productoId)} - Cantidad: {producto.cantidad} - Precio: {producto.precio}</p>
                       ))}</td>
                     </tr>
                   ))
