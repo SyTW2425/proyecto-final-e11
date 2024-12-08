@@ -28,8 +28,6 @@ const ComprasAdmin: React.FC = () => {
     ],
   });
 
-
-
   useEffect(() => {
     // Consumir API
     fetch('http://localhost:5000/compras')

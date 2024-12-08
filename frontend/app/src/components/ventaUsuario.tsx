@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styles from '../assets/styles/template.module.css';
 import LogoutButton from './logout';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 interface Ventas {
   id_: string;
@@ -14,7 +14,6 @@ interface Ventas {
     precio_: number;
   }[]
 }
-
 
 const VentasUsuario: React.FC = () => {
   const [ventas, setVentas] = useState<Ventas[]>([]);
@@ -71,6 +70,9 @@ const VentasUsuario: React.FC = () => {
           <li onClick={goToInventario} className={styles.menuItem}>Productos</li>
           <li onClick={goToCalendario} className={styles.menuItem}>Calendario</li>
         </ul>
+        <div className={styles.logoutButtonContainer}>
+          <LogoutButton />
+        </div>
       </aside>
 
       {/* Contenido principal */}
@@ -79,21 +81,19 @@ const VentasUsuario: React.FC = () => {
         <nav className={styles.navbar}>
           <div className={styles.navContent}>
             <span className={styles.title}>Ventas</span>
-            <div className={styles.logoutButtonContainer}>
-              <LogoutButton />
-            </div>
+            <Link to="/template" className={styles.navButton}>
+              <img
+                src="home.png"
+                alt="Template"
+                className={styles.navImage}
+              />
+            </Link>
           </div>
         </nav>
 
-        {/* Contenido de la página */}
-        <div className={styles.content}>
-          <h1>Página de ventas Usuario</h1>
-          <p>Bienvenido</p>
-        </div>
-
         {/* Tabla de clientes */}
         <div className={styles.content}>
-          <h1>Lista de ventas</h1>
+          <h1>Lista de Ventas</h1>
           <div className={styles.tableContainer}>
             <table className={styles.styledTable}>
               <thead>

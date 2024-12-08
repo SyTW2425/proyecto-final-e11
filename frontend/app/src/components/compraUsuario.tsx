@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styles from '../assets/styles/template.module.css';
 import LogoutButton from './logout';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 interface Compras {
   id_: string;
@@ -70,6 +70,9 @@ const ComprasUsuario: React.FC = () => {
           <li onClick={goToInventario} className={styles.menuItem}>Productos</li>
           <li onClick={goToCalendario} className={styles.menuItem}>Calendario</li>
         </ul>
+        <div className={styles.logoutButtonContainer}>
+          <LogoutButton />
+        </div>
       </aside>
 
       {/* Contenido principal */}
@@ -78,21 +81,19 @@ const ComprasUsuario: React.FC = () => {
         <nav className={styles.navbar}>
           <div className={styles.navContent}>
             <span className={styles.title}>Compras</span>
-            <div className={styles.logoutButtonContainer}>
-              <LogoutButton />
-            </div>
+            <Link to="/template" className={styles.navButton}>
+              <img
+                src="home.png"
+                alt="Template"
+                className={styles.navImage}
+              />
+            </Link>
           </div>
         </nav>
 
-        {/* Contenido de la página */}
-        <div className={styles.content}>
-          <h1>Página de compras Usuario</h1>
-          <p>Bienvenido</p>
-        </div>
-
         {/* Tabla de clientes */}
         <div className={styles.content}>
-          <h1>Lista de compras</h1>
+          <h1>Lista de Compras</h1>
           <div className={styles.tableContainer}>
             <table className={styles.styledTable}>
               <thead>

@@ -116,12 +116,6 @@ const ProveedorAdmin: React.FC = () => {
     // Aquí puedes implementar lógica para seleccionar y editar un cliente
   };
 
-
-  // const handleBuscarProveedor = () => {
-  //   alert('Función para buscar un cliente');
-  //   // Aquí puedes implementar lógica para buscar clientes
-  // };
-
   const manejarEnvioBuscarProveedor = (e: React.FormEvent) => {
     e.preventDefault();
 

@@ -4,16 +4,6 @@ import LogoutButton from './logout';
 import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
 
-
-
-/*interface Cliente {
-  id_: string;
-  nombre_: string;
-  contacto_: number;
-  compras_: string[];
-  membresia_: boolean;
-}*/
-
 const ClienteAdmin: React.FC = () => {
   const [clientes, setClientes] = useState<any[]>([]);
   const [mostrarFormulario, setMostrarFormulario] = useState(false);

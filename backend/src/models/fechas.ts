@@ -10,15 +10,18 @@
 import { Document, model, Schema } from 'mongoose';
 
 
-
 export interface  FechaInterface extends Document {
   fecha_ : Date;
+  descripcion_: string;
 }
-
 
 const FechaSchema = new Schema<FechaInterface>({
     fecha_: {
         type: Date,
+        required: true
+    },
+    descripcion_: {
+        type: String,
         required: true
     }
 });
