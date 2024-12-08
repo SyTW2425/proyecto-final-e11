@@ -15,8 +15,22 @@ interface Compras {
   }[]
 }
 
+interface Proveedor {
+  _id: string;
+  id_: string;
+  nombre_: string;
+}
+
+interface Producto {
+  _id: string;
+  id_: number;
+  nombre_: string;
+}
+
 const ComprasUsuario: React.FC = () => {
   const [compras, setCompras] = useState<Compras[]>([]);
+  const [proveedores, setProveedores] = useState<Proveedor[]>([]);
+  const [productos, setProductos] = useState<Producto[]>([]);
   useEffect(() => {
     // Consumir API
     fetch('http://localhost:5000/compras')
@@ -34,7 +48,39 @@ const ComprasUsuario: React.FC = () => {
         console.error('Error al cargar los datos:', error);
         setCompras([]); // Fallback a un array vacío en caso de error
       });
+
+    fetch('http://localhost:5000/proveedores')
+      .then((response) => response.json())
+      .then((data) => {
+        if (Array.isArray(data)) {
+          setProveedores(data);
+        } else {
+          console.error('El formato de los datos no es válido:', data);
+          setProveedores([]); // Fallback a un array vacío
+        }
+      })
+      .catch((error) => {
+        console.error('Error al cargar los datos de proveedores:', error);
+        setProveedores([]);
+      });
+
+      fetch('http://localhost:5000/productos')
+      .then((response) => response.json())
+      .then((data) => {
+        if (Array.isArray(data)) {
+          setProductos(data);
+        } else {
+          console.error('El formato de los datos no es válido:', data);
+          setProductos([]); // Fallback a un array vacío
+        }
+      })
+      .catch((error) => {
+        console.error('Error al cargar los datos de los productos:', error);
+        setProductos([]);
+      });
+
   }, []);
+
 
   const navigate = useNavigate();
 
@@ -56,6 +102,16 @@ const ComprasUsuario: React.FC = () => {
   const goToCalendario = () => {
     navigate('/calendario');
   }
+
+  const obtenerNombreProveedor = (idProveedor: string) => {
+    const proveedor = proveedores.find((prov) => prov._id === idProveedor);
+    return proveedor ? proveedor.id_ : 'Desconocido';
+  };
+
+  const obtenerNombreProducto= (idProducto: string) => {
+    const producto = productos.find((prod) => prod._id === idProducto);
+    return producto ? producto.nombre_ : 'Desconocido';
+  };
 
   return (
     <div className={styles.container}>
@@ -115,12 +171,10 @@ const ComprasUsuario: React.FC = () => {
                     <tr key={compra.id_}>
                       <td>{compra.id_}</td>
                       <td>{compra.fecha_}</td>
-                      <td>{compra.proveedor_}</td>
+                      <td>{obtenerNombreProveedor(compra.proveedor_)}</td>
                       <td>{compra.importe_}</td>
                       <td>{compra.productos_.map((producto: any) => (
-                        <div key={producto.productoID_}>
-                          <p>{producto.productoId} - {producto.cantidad} - {producto.precio}</p>
-                        </div>
+                        <p> Producto: {obtenerNombreProducto(producto.productoId)} - Cantidad: {producto.cantidad} - Precio: {producto.precio}</p>
                       ))}</td>
                     </tr>
                   ))
