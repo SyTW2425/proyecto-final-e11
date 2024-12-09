@@ -18,7 +18,7 @@ const ClienteAdmin: React.FC = () => {
     id_: '',
     nombre_: '',
     contacto_: '',
-    compras_: [] as number[],
+    compras_: '',
     membresia_: false,
   });
   const [dniEditar, setDniEditar] = useState<string>('');
@@ -28,7 +28,7 @@ const ClienteAdmin: React.FC = () => {
     id_: '',
     nombre_: '',
     contacto_: '',
-    compras_: [] as number[],
+    compras_: '',
     membresia_: false,
   });
   //const [dniAEliminar, setDniAEliminar] = useState<string>(''); // Estado para almacenar el DNI a eliminar
@@ -53,19 +53,15 @@ const ClienteAdmin: React.FC = () => {
       });
   }, []);
 
+
   const manejarCambioFormulario = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    if (name === 'compras_') {
-      setNuevoCliente((prevState) => ({
-        ...prevState,
-        [name]: value.split(',').map((item) => parseInt(item.trim(), 10)).filter((item) => !isNaN(item)),
-      }));
-    } else {
-      setNuevoCliente((prevState) => ({
-        ...prevState,
-        [name]: value,
-      }));
-    }
+
+    setNuevoCliente((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+
   };
 
   const manejarEnvioFormulario = (e: React.FormEvent) => {
@@ -75,26 +71,31 @@ const ClienteAdmin: React.FC = () => {
       alert('Por favor, rellena todos los campos');
       return;
     }
+    const comprasArray = nuevoCliente.compras_
+      .split(',')
+      .map((item: string) => parseInt(item.trim(), 10))
+      .filter((item: number) => !isNaN(item));
 
+    if (nuevoCliente.compras_.length === 0) {
+      alert('El campo "Compras" debe contener al menos un número válido.');
+      return;
+    }
     const nuevoCliente2 = {
-      id_: nuevoCliente.id_,
-      nombre_: nuevoCliente.nombre_,
-      contacto_: nuevoCliente.contacto_,
-      compras_: nuevoCliente.compras_,
-      membresia_: nuevoCliente.membresia_,
+      ...nuevoCliente,
+      compras_: comprasArray,
     };
-    alert(JSON.stringify(nuevoCliente2, null, 2))
+
+
     // Enviar el nuevo cliente al servidor como json
     axios.post('http://localhost:5000/clientes', nuevoCliente2)
       .then((response) => {
         // Añadir el nuevo cliente al estado
-        alert("Respuesta del backend:" + response.data);
         setClientes((prevClientes) => [...prevClientes, response.data]);
         alert('Cliente creado correctamente');
         setMostrarFormulario(false); // Ocultar el formulario después de enviar
       })
       .catch((error) => {
-        alert('Hubo un error al crear el cliente');
+        alert('Hubo un error al crear el cliente. Parámetros no válidos');
       });
   };
 
@@ -117,35 +118,30 @@ const ClienteAdmin: React.FC = () => {
         setDniEliminar(''); // Limpiar el campo
       })
       .catch((error) => {
-        console.error('Error al eliminar el cliente:', error);
-        alert('Hubo un error al eliminar el cliente');
+        alert('El cliente a eliminar no existe');
       });
   };
 
 
-  const handleEditarCliente = () => {
-    alert('Función para editar un cliente existente');
-    // Aquí puedes implementar lógica para seleccionar y editar un cliente
-  };
   const manejarCambioEdicion = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    if (name === 'compras_') {
-      setClienteAEditar((prevState: typeof clienteAEditar) => ({
-        ...prevState,
-        [name]: value.split(',').map((item) => parseInt(item.trim(), 10)).filter((item) => !isNaN(item)),
-      }));
-    } else if (name === 'membresia_') {
-      setClienteAEditar((prevState: typeof clienteAEditar) => ({
-        ...prevState,
-        [name]: e.target.checked,
-      }));
-    } else {
-      setClienteAEditar((prevState: typeof clienteAEditar) => ({
-        ...prevState,
-        [name]: value,
-      }));
-    }
+
+    setClienteAEditar((prevState: typeof clienteAEditar) => {
+      if (name === 'membresia_') {
+        return {
+          ...prevState,
+          [name]: e.target.checked
+        };
+      } else {
+        return {
+          ...prevState,
+          [name]: value
+        };
+      }
+    });
   };
+
+
 
   const manejarEnvioSolicitarDni = (e: React.FormEvent) => {
     e.preventDefault();
@@ -186,34 +182,48 @@ const ClienteAdmin: React.FC = () => {
       });
   };
 
-  const manejarEnvioEdicion = (e: React.FormEvent) => {
+
+  const manejarEnvioEdicion = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (
-      !clienteAEditar.id_ ||
-      !clienteAEditar.nombre_ ||
-      !clienteAEditar.contacto_
-    ) {
-      alert('Por favor, rellena todos los campos');
+    const { id_, nombre_, contacto_, compras_ } = clienteAEditar;
+    if (!id_ || !nombre_ || !contacto_) {
+      alert('Por favor, rellena todos los campos obligatorios (ID, nombre y contacto).');
       return;
     }
+    const comprasArray = compras_
+      .split(',')
+      .map((item: string) => parseInt(item.trim(), 10))
+      .filter((item: number) => !isNaN(item));
 
-    axios
-      .patch(`http://localhost:5000/clientes/${clienteAEditar.id_}`, clienteAEditar)
-      .then((response) => {
-        setClientes((prevClientes) =>
-          prevClientes.map((cliente) =>
-            cliente.id_ === clienteAEditar.id_ ? response.data : cliente
-          )
-        );
-        alert('Cliente actualizado correctamente');
-        setMostrarFormularioEditar(false);
-      })
-      .catch((error) => {
-        console.error('Error al editar el cliente:', error);
-        alert('Hubo un error al actualizar el cliente');
-      });
+    if (compras_.length === 0) {
+      alert('El campo "Compras" debe contener al menos un número válido.');
+      return;
+    }
+    const nuevoCliente2 = {
+      ...clienteAEditar,
+      compras_: comprasArray,
+    };
+
+    const clienteParaGuardar = { ...nuevoCliente2 };
+
+    try {
+      const response = await axios.patch(`http://localhost:5000/clientes/${id_}`, clienteParaGuardar);
+
+      setClientes((prevClientes) =>
+        prevClientes.map((cliente) =>
+          cliente.id_ === clienteAEditar.id_ ? response.data : cliente
+        )
+      );
+
+      alert('Cliente actualizado correctamente');
+      setMostrarFormularioEditar(false);
+    } catch (error) {
+      alert('Hubo un error al actualizar el cliente. Parámetros no válidos.');
+    }
   };
+
+
 
   const navigate = useNavigate();
 
@@ -235,6 +245,7 @@ const ClienteAdmin: React.FC = () => {
   const goToCalendario = () => {
     navigate('/calendario');
   }
+
 
   return (
     <div className={styles.container}>
@@ -270,6 +281,8 @@ const ClienteAdmin: React.FC = () => {
             </Link>
           </div>
         </nav>
+
+
 
         {/* Sección de botones */}
         <div className={styles.buttonContainer}>
@@ -363,7 +376,7 @@ const ClienteAdmin: React.FC = () => {
               <input
                 type="text"
                 name="compras_"
-                value={nuevoCliente.compras_.join(',')}
+                value={nuevoCliente.compras_}
                 onChange={(e) => manejarCambioFormulario(e)}
                 className={styles.formInput}
               />
@@ -474,7 +487,7 @@ const ClienteAdmin: React.FC = () => {
               <input
                 type="text"
                 name="compras_"
-                value={clienteAEditar.compras_.join(',')}
+                value={clienteAEditar.compras_}
                 onChange={manejarCambioEdicion}
                 className={styles.formInput}
               />

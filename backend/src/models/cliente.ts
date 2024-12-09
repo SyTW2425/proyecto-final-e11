@@ -84,10 +84,9 @@ const ClienteSchema = new Schema<ClienteDocumentInterface>({
         if (value.length === 0) {
           return true;
         }
-        // Busca la persona en la base de datos
+        // Busca la venta en la base de datos
         const venta = await ventaModel.find({ id_: { $in: value } });
-        // Devuelve true si la persona existe, false si no
-        return !!venta;
+        return venta.length === value.length;
       },
       message: props => `La venta asociada con ID ${props.value} no existe en la base de datos.`
     }
