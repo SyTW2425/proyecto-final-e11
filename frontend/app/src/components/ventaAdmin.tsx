@@ -141,18 +141,15 @@ const VentasAdmin: React.FC = () => {
       productos_: nuevoVenta.productos_,
     };
 
-    alert(JSON.stringify(nuevoVenta2, null, 2))
     // Enviar el nuevo cliente al servidor como json
     axios.post('http://localhost:5000/ventas', nuevoVenta2)
       .then((response) => {
-        // Añadir el nuevo cliente al estado
-        alert("Respuesta del backend:" + response.data);
         setVentas((prevVentas) => [...prevVentas, response.data]);
         alert('Compra creada correctamente');
         setMostrarFormulario(false); // Ocultar el formulario después de enviar
       })
       .catch((error) => {
-        alert('Hubo un error al crear la venta' + error);
+        alert('Hubo un error al crear la venta. Parámetros no válidos.');
       });
   };
 
@@ -175,17 +172,11 @@ const VentasAdmin: React.FC = () => {
         setIdEliminar(''); // Limpiar el campo
       })
       .catch((error) => {
-        console.error('Error al eliminar la venta:', error);
-        alert('Hubo un error al eliminar la venta');
+        alert('Hubo un error al eliminar la venta. ID no encontrado.');
       });
       
   };
 
-
-  const handleEditarVenta = () => {
-    alert('Función para editar una compra existente');
-    // Aquí puedes implementar lógica para seleccionar y editar un cliente
-  };
 
 
   const manejarEnvioBuscarVenta = (e: React.FormEvent) => {
@@ -278,9 +269,6 @@ const VentasAdmin: React.FC = () => {
         {/* Sección de botones */}
         <div className={styles.buttonContainer}>
           <button className={styles.actionButton} onClick={() => setMostrarFormulario(!mostrarFormulario)}>Crear nueva venta</button>
-          <button className={styles.actionButton} onClick={handleEditarVenta}>
-            Editar venta existente
-          </button>
           <button
             className={styles.actionButton}
             onClick={() => setMostrarFormularioEliminar(true)}

@@ -141,18 +141,15 @@ const ComprasAdmin: React.FC = () => {
       productos_: nuevoCompra.productos_,
     };
 
-    alert(JSON.stringify(nuevoCompra2, null, 2))
     // Enviar el nuevo cliente al servidor como json
     axios.post('http://localhost:5000/compras', nuevoCompra2)
       .then((response) => {
-        // Añadir el nuevo cliente al estado
-        alert("Respuesta del backend:" + response.data);
         setCompras((prevVentas) => [...prevVentas, response.data]);
         alert('Compra creada correctamente');
         setMostrarFormulario(false); // Ocultar el formulario después de enviar
       })
       .catch((error) => {
-        alert('Hubo un error al crear la compra' + error);
+        alert('Hubo un error al crear la compra. Parámetros no válidos');
       });
   };
 
@@ -176,14 +173,11 @@ const ComprasAdmin: React.FC = () => {
       })
       .catch((error) => {
         console.error('Error al eliminar la compra:', error);
-        alert('Hubo un error al eliminar la compra');
+        alert('Hubo un error al eliminar la compra. ID no válido');
       });
   };
 
-  const handleEditarCompra = () => {
-    alert('Función para editar una compra existente');
-    // Aquí puedes implementar lógica para seleccionar y editar un cliente
-  };
+ 
 
   const manejarEnvioBuscarCompra = (e: React.FormEvent) => {
     e.preventDefault();
@@ -274,9 +268,6 @@ const ComprasAdmin: React.FC = () => {
         {/* Sección de botones */}
         <div className={styles.buttonContainer}>
           <button className={styles.actionButton} onClick={() => setMostrarFormulario(!mostrarFormulario)}>Crear nueva compra</button>
-          <button className={styles.actionButton} onClick={handleEditarCompra}>
-            Editar compra existente
-          </button>
           <button
             className={styles.actionButton}
             onClick={() => setMostrarFormularioEliminar(true)}
