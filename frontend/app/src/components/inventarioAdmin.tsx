@@ -12,7 +12,7 @@ const InventarioAdmin: React.FC = () => {
   const [mostrarFormularioBuscar, setMostrarFormularioBuscar] = useState(false); // Visibilidad del formulario de búsqueda
   const [idBuscar, setIdBuscar] = useState<string>(''); // DNI del cliente a buscar
   const [productoEncontrado, setProductoEncontrado] = useState<any | null>(null); // Datos del cliente encontrado
-
+ 
   // Estado para controlar la visibilidad del formulario
   const [nuevoProducto, setNuevoProducto] = useState({
     id_: '',
@@ -21,6 +21,15 @@ const InventarioAdmin: React.FC = () => {
     precio_venta_: '',
   });
  
+  const [mostrarFormularioEditar, setMostrarFormularioEditar] = useState(false);
+  const [mostrarFormularioSolicitarID, setMostrarFormularioSolicitarID] = useState(false);
+  const [productoAEditar, setProductoAEditar] = useState<any | null>({
+    id_: '',
+    nombre_: '',
+    stock_: '',
+    precio_venta_: '',
+  });
+  const [IDEditar, setIDEditar] = useState<string>('');
   useEffect(() => {
     // Consumir API
     fetch('http://localhost:5000/productos')
@@ -38,21 +47,14 @@ const InventarioAdmin: React.FC = () => {
         console.error('Error al cargar los datos:', error);
         setProductos([]); // Fallback a un array vacío en caso de error
       });
-  }, []);
+  }, [productos]);
 
   const manejarCambioFormulario = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    if (name === 'compras_') {
-      setNuevoProducto((prevState) => ({
-        ...prevState,
-        [name]: value.split(',').map((item) => parseInt(item.trim(), 10)).filter((item) => !isNaN(item)),
-      }));
-    } else {
       setNuevoProducto((prevState) => ({
         ...prevState,
         [name]: value,
       }));
-    }
   };
 
   const manejarEnvioFormulario = (e: React.FormEvent) => {
@@ -69,18 +71,16 @@ const InventarioAdmin: React.FC = () => {
       stock_: nuevoProducto.stock_,
       precio_venta_: nuevoProducto.precio_venta_,
     };
-    alert(JSON.stringify(nuevoProducto2, null, 2))
     // Enviar el nuevo cliente al servidor como json
     axios.post('http://localhost:5000/productos', nuevoProducto2)
       .then((response) => {
         // Añadir el nuevo cliente al estado
-        alert("Respuesta del backend:" + response.data);
         setProductos((prevProductos) => [...prevProductos, response.data]);
         alert('Producto creado correctamente');
         setMostrarFormulario(false); // Ocultar el formulario después de enviar
       })
       .catch((error) => {
-        alert('Hubo un error al crear el cliente' + error);
+        alert('Hubo un error al crear el producto. Parámetros no válidos');
       });
   };
 
@@ -95,25 +95,84 @@ const InventarioAdmin: React.FC = () => {
     axios
       .delete(`http://localhost:5000/productos/${idEliminar}`)
       .then(() => {
+        
         setProductos((prevProductos) =>
           prevProductos.filter((producto) => producto.id_ !== idEliminar)
         );
         alert('Producto eliminado correctamente');
         setMostrarFormularioEliminar(false); // Ocultar formulario tras la eliminación
         setIdEliminar(''); // Limpiar el campo
+        //navigate(0);
       })
       .catch((error) => {
-        console.error('Error al eliminar el producto:', error);
         alert('Hubo un error al eliminar el producto');
       });
   };
 
 
-  const handleEditarProducto = () => {
-    alert('Función para editar un producto existente');
-    // Aquí puedes implementar lógica para seleccionar y editar un cliente
+  const manejarCambioEdicion = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+
+    setProductoAEditar((prevState: typeof productoAEditar) => {
+      
+        return {
+          ...prevState,
+          [name]: value
+        };
+      }
+    );
   };
 
+  const manejarEnvioSolicitarID = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!IDEditar) {
+      alert('Por favor, ingresa un ID válido.');
+      return;
+    }
+
+    const producto = productos.find((producto) => producto.id_ == IDEditar);
+    
+    if (producto) {
+      setProductoAEditar(producto);
+      setMostrarFormularioSolicitarID(false);
+      setMostrarFormularioEditar(true);
+    } else {
+      alert('Producto no encontrado.');
+    }
+  };
+
+  const manejarEnvioEdicion = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    const { id_, nombre_, stock_, precio_venta_ } = productoAEditar;
+    if (!id_ || !nombre_ || !stock_ || !precio_venta_) {
+      alert('Por favor, rellena todos los campos obligatorios (ID, nombre, stock y precio de venta).');
+      return;
+    }
+    
+    const nuevoProducto = {
+      id_,
+      nombre_,
+      stock_,
+      precio_venta_,
+    };
+
+    try {
+      const response = await axios.patch(`http://localhost:5000/productos/${id_}`, nuevoProducto);
+
+      setProductos((prevProductos) =>
+        prevProductos.map((producto) =>
+          producto.id_ === productoAEditar.id_ ? response.data : producto
+        )
+      );
+
+      alert('Producto actualizado correctamente');
+      setMostrarFormularioEditar(false);
+    } catch (error) {
+      alert('Hubo un error al actualizar el producto. Parámetros no válidos.');
+    }
+  };
 
   const manejarEnvioBuscarProducto = (e: React.FormEvent) => {
     e.preventDefault();
@@ -195,8 +254,11 @@ const InventarioAdmin: React.FC = () => {
         {/* Sección de botones */}
         <div className={styles.buttonContainer}>
           <button className={styles.actionButton} onClick={() => setMostrarFormulario(!mostrarFormulario)}>Crear nuevo producto</button>
-          <button className={styles.actionButton} onClick={handleEditarProducto}>
-            Editar producto existente
+          <button
+            className={styles.actionButton}
+            onClick={() => setMostrarFormularioSolicitarID(true)}
+          >
+            Editar producto
           </button>
           <button
             className={styles.actionButton}
@@ -210,7 +272,101 @@ const InventarioAdmin: React.FC = () => {
             onClick={() => setMostrarFormularioBuscar(true)}
           > Buscar producto</button>
         </div>
-
+        {mostrarFormularioSolicitarID && (
+          <form
+            onSubmit={manejarEnvioSolicitarID}
+            className={styles.formularioContainer}
+          >
+            <h2 className={styles.formTitle}>Editar Producto</h2>
+            <div className={styles.formGroup}>
+              <label className={styles.formLabel}>ID del Producto:</label>
+              <input
+                type="text"
+                name="IDEditar"
+                value={IDEditar}
+                onChange={(e) => setIDEditar(e.target.value)}
+                className={styles.formInput}
+                required
+              />
+            </div>
+            <div className={styles.formButtonGroup}>
+              <button type="submit" className={styles.formButton}>
+                Continuar
+              </button>
+              <button
+                type="button"
+                onClick={() => setMostrarFormularioSolicitarID(false)}
+                className={styles.formButtonCancel}
+              >
+                Cancelar
+              </button>
+            </div>
+          </form>
+        )}
+        {mostrarFormularioEditar && productoAEditar && (
+          <form
+            onSubmit={manejarEnvioEdicion}
+            className={styles.formularioContainer}
+          >
+            <h2 className={styles.formTitle}>Editar Producto</h2>
+            <div className={styles.formGroup}>
+              <label className={styles.formLabel}>ID:</label>
+              <input
+                type="text"
+                name="id_"
+                value={productoAEditar.id_}
+                onChange={manejarCambioEdicion}
+                className={styles.formInput}
+                required
+                readOnly
+              />
+            </div>
+            <div className={styles.formGroup}>
+              <label className={styles.formLabel}>Nombre:</label>
+              <input
+                type="text"
+                name="nombre_"
+                value={productoAEditar.nombre_}
+                onChange={manejarCambioEdicion}
+                className={styles.formInput}
+                required
+              />
+            </div>
+            <div className={styles.formGroup}>
+              <label className={styles.formLabel}>Stock:</label>
+              <input
+                type="number"
+                name="stock_"
+                value={productoAEditar.stock_}
+                onChange={manejarCambioEdicion}
+                className={styles.formInput}
+                required
+              />
+            </div>
+            <div className={styles.formGroup}>
+              <label className={styles.formLabel}>Precio de venta:</label>
+              <input
+                type="number"
+                name="precio_venta_"
+                value={productoAEditar.precio_venta_}
+                onChange={manejarCambioEdicion}
+                className={styles.formInput}
+              />
+            </div>
+            <div className={styles.formButtonGroup}>
+              <button type="submit" className={styles.formButton}>
+                Guardar Cambios
+              </button>
+              <button
+                type="button"
+                onClick={() => setMostrarFormularioEditar(false)}
+                className={styles.formButtonCancel}
+              >
+                Cancelar
+              </button>
+            </div>
+          </form>
+        )}
         {mostrarFormularioEliminar && (
           <form onSubmit={manejarEnvioEliminarProducto} className={styles.formularioContainer}>
             <h2 className={styles.formTitle}>Eliminar producto</h2>
@@ -356,7 +512,7 @@ const InventarioAdmin: React.FC = () => {
           </div>
         )}
 
-        {/* Tabla de clientes */}
+       
         <div className={styles.content}>
           <h1>Lista de Productos</h1>
           <div className={styles.tableContainer}>
