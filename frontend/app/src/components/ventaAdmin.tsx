@@ -27,7 +27,6 @@ const VentasAdmin: React.FC = () => {
   const [clientes, setClientes] = useState<Cliente[]>([]);
   const [productos, setProductos] = useState<Producto[]>([]);
 
-
   // Estado para controlar la visibilidad del formulario
   const [nuevoVenta, setNuevoVenta] = useState({
     id_: '',
@@ -125,7 +124,6 @@ const VentasAdmin: React.FC = () => {
       }));
     }
   };
-
 
   const manejarEnvioFormulario = (e: React.FormEvent) => {
     e.preventDefault();

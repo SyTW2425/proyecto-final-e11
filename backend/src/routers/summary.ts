@@ -14,6 +14,12 @@ import { productoModel } from '../models/producto.js';
 import { clienteModel } from '../models/cliente.js';
 
 export const summaryRouter = Express.Router();
+
+/**
+ * Obtiene un resumen de la tienda
+ * @param {Object} res - Objeto de respuesta
+ * @returns {Object} - Objeto JSON con el resumen de la tienda
+ */
 summaryRouter.get('/summary', async (_, res) => {
     try {
       const totalVentas = await ventaModel.aggregate([{ $group: { _id: null, importe_: { $sum: '$importe_' } } }]);
@@ -33,8 +39,8 @@ summaryRouter.get('/summary', async (_, res) => {
     }
   });
 
+
 export const obtenerDatosEstadisticas = async (_: Express.Request, res: Express.Response) => {
-    
     try {
       // Agrupar ventas por mes
       const ventasPorMes = await ventaModel.aggregate([
@@ -64,6 +70,3 @@ export const obtenerDatosEstadisticas = async (_: Express.Request, res: Express.
     }
   };
   summaryRouter.get('/estadisticas', obtenerDatosEstadisticas);
-  
-
-

@@ -22,8 +22,6 @@ const StockCalendarUsuario: React.FC = () => {
   const navigate = useNavigate();
   const [markDates, setMarkDates] = useState<any[]>([]);
 
-
-
   // Función para convertir las fechas de reposición a eventos del calendario
   const getEvents = () => {
     return markDates.map((item) => ({
@@ -34,7 +32,6 @@ const StockCalendarUsuario: React.FC = () => {
       style: { backgroundColor: '#ffcc00' }, 
     }));
   };
-
 
   const fetchMarkDates = async () => {
     try {
@@ -113,8 +110,6 @@ const StockCalendarUsuario: React.FC = () => {
             </Link>
           </div>
         </nav>
-
-
 
         <div className={styles.calendarContainer}>
           <div className={styles.calendarInfo}>

@@ -6,7 +6,6 @@ import { proveedorModel } from '../src/models/proveedor.js';
 import { productoModel } from '../src/models/producto.js';
 import { compraModel } from '../src/models/compra.js';
 
-// Sample data for setup
 const sampleProveedor = {
   id_: "A12345678",
   nombre_: 'ProveedorUno',
@@ -21,8 +20,6 @@ const sampleProducto = {
   precio_venta_: 50
 };
 
-
-
 before(async () => {
   await proveedorModel.create(sampleProveedor);
   await productoModel.create(sampleProducto);
@@ -36,8 +33,8 @@ after(async () => {
 
 let newCompra: any;
 
-
 describe('Model Compra', () => {
+  // Test for POST /compras (create a new purchase)
   describe('POST /compras', () => {
     it('should create a new purchase', async () => {
       newCompra = {
@@ -79,6 +76,7 @@ describe('Model Compra', () => {
     });
   });
 
+  // Test for GET /compras/:id (fetch a purchase by ID)
   describe('GET /compras/:id', () => {
     it('should return a purchase by specific ID', async () => {
       const res = await request(app).get('/compras/3000');
@@ -93,6 +91,7 @@ describe('Model Compra', () => {
     });
   });
 
+  // Test for DELETE /compras/:id (delete a purchase by ID)
   describe('DELETE /compras/:id', () => {
     it('should delete a purchase by ID', async () => {
       const res = await request(app).delete('/compras/3000');
@@ -107,6 +106,7 @@ describe('Model Compra', () => {
     });
   });
 
+  // Test for GET /compras (fetch all purchases)
   describe('GET /compras', () => {
     it('should return all purchases', async () => {
       newCompra = {
@@ -122,6 +122,7 @@ describe('Model Compra', () => {
     });
   });
 
+  // Test for stock udater
   describe('Stock update', () => {
     it('should update the stock of a product after a purchase', async () => {
       const updatedProducto = await productoModel.findOne({ id_: sampleProducto.id_ });

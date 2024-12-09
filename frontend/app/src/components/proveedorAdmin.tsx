@@ -22,7 +22,6 @@ const ProveedorAdmin: React.FC = () => {
   });
   //const [dniAEliminar, setDniAEliminar] = useState<string>(''); // Estado para almacenar el DNI a eliminar
 
-
   useEffect(() => {
     // Consumir API
     fetch('http://localhost:5000/proveedores')

@@ -6,7 +6,6 @@ import { ventaModel } from '../src/models/venta.js';
 import { clienteModel } from '../src/models/cliente.js';
 import { productoModel } from '../src/models/producto.js';
 
-// Sample data for setup
 const sampleCliente = {
   id_: "11111144A",
   nombre_: 'Juan',
@@ -36,7 +35,7 @@ after(async () => {
 let newVenta: any;
 
 describe('Model Venta', () => {
-
+  // Test for POST /ventas (create a new sell)
   describe('POST /ventas', () => {
     it('should create a new sell', async () => {
       newVenta = {
@@ -79,6 +78,7 @@ describe('Model Venta', () => {
     });
   });
 
+  // Test for GET /ventas/:id (fetch a sell by ID)
   describe('GET /ventas/:id', () => {
     it('should return a venta by specific ID', async () => {
       const res = await request(app).get('/ventas/5000');
@@ -91,6 +91,7 @@ describe('Model Venta', () => {
     });
   });
 
+  // Test for DELETE /ventas/:id (delete a sell by ID)
   describe('DELETE /ventas/:id', () => {
     it('should delete a venta by ID', async () => {
       const res = await request(app).delete('/ventas/5000');
@@ -103,6 +104,7 @@ describe('Model Venta', () => {
     });
   });
 
+  // Test for GET /ventas (fetch all ventas)
   describe('GET /ventas', () => {
     it('should return all ventas', async () => {
       await request(app).post('/ventas').send(newVenta);
@@ -111,6 +113,7 @@ describe('Model Venta', () => {
     });   
   });
 
+  // Test for stock updater
   describe('stock update', () => {
     it('should update the stock of a product after a sale', async () => {
       const res = await request(app).get('/productos/16000');

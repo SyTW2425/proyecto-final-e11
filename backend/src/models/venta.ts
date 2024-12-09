@@ -22,7 +22,7 @@ export interface VentaDocumentInterface extends Document {
   productos_: {
     productoID_: Schema.Types.ObjectId,
     cantidad_: number,
-    precio_: number                             // DE CADA PRODUCTO
+    precio_: number
   }[]
 }
 

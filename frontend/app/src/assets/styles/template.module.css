@@ -60,7 +60,6 @@
   transform: translateX(5px); /* Ligeramente a la derecha */
 }
 
-
 /* Contenido principal */
 .main {
   flex-grow: 1;
@@ -237,7 +236,6 @@
   background-color: #cc0000; /* Más oscuro al hacer clic */
   transform: scale(0.95); /* Ligeramente más pequeño al hacer clic */
 }
-
 
 .buttonContainer {
   display: flex;

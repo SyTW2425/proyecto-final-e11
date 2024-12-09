@@ -14,7 +14,12 @@ import { productoModel } from '../models/producto.js';
 
 export const ventaRouter = Express.Router();
 
-
+/**
+ * Obtiene las ventas de la base de datos
+ * @param {Object} req - Objeto de petición
+ * @param {Object} res - Objeto de respuesta
+ * @returns {Object} - Objeto JSON con las ventas encontradas o un mensaje de error
+ */
 ventaRouter.get('/ventas', async (req, res) => {
   req.query = { ...req.query };
   try {
@@ -27,7 +32,12 @@ ventaRouter.get('/ventas', async (req, res) => {
   }
 });
 
-
+/**
+ * Obtiene una venta de la base de datos por su ID
+ * @param {Object} req - Objeto de petición
+ * @param {Object} res - Objeto de respuesta
+ * @returns {Object} - Objeto JSON con la venta encontrada o un mensaje de error
+ */
 ventaRouter.get('/ventas/:id', async (req, res) => {
   try {
     let ventaEncontrado = await ventaModel.findOne({ id_: req.params.id });
@@ -37,7 +47,6 @@ ventaRouter.get('/ventas/:id', async (req, res) => {
     res.status(500).send({ msg: 'Error al buscar la venta', error: error });
   }
 });
-
 
 /**
  * Guarda una nueva compra en la base de datos
@@ -75,7 +84,6 @@ ventaRouter.post('/ventas', async (req: any, res: any) => {
         // Modificamos el stock del producto restando la cantidad vendida
         producto_elegido.stock_ -= producto.cantidad_;
         await producto_elegido.save();
-
 
         return {
           productoId: productoExistente._id,  // Usamos el _id de MongoDB encontrado
@@ -160,6 +168,12 @@ ventaRouter.post('/ventas', async (req: any, res: any) => {
 //   }
 // });
 
+/**
+ * Elimina una venta de la base de datos por su ID
+ * @param {Object} req - Objeto de petición
+ * @param {Object} res - Objeto de respuesta
+ * @returns {Object} - Objeto JSON con la venta eliminada o un mensaje de error
+ */
 ventaRouter.delete('/ventas/:id', async (req, res) => {
   try {
     const ventaEliminado = await ventaModel.findOneAndDelete({ 

@@ -39,8 +39,6 @@ after(async () => {
   await clienteModel.deleteOne({ id_: nuevoCliente.id_ });
 });
 
-
-// Tests
 describe('Model Cliente', () => {
   // Test for GET /clientes (fetch all clients)
   describe('GET /clientes', () => {
