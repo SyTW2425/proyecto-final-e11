@@ -26,9 +26,16 @@ const StockCalendarAdmin: React.FC = () => {
   const [fecha, setFecha] = useState('');
   const [descripcion, setDescripcion] = useState('');
   const [fechaEliminar, setFechaEliminar] = useState('');
+  const [descripcionEliminar, setDescripcionEliminar] = useState('');
   const [mostrarFormularioFecha, setMostrarFormularioFecha] = useState(false);
   const [mostrarFormularioEliminarFecha, setMostrarFormularioEliminarFecha] = useState(false);
-
+  
+  const handleEventSelect = (event: any) => {
+    // Rellenamos el formulario con la fecha y la descripción del evento seleccionado
+    setFechaEliminar(formatISO(event.start).split('T')[0]); // Guardamos solo la fecha sin la parte de la hora
+    setDescripcionEliminar(event.title); // La descripción es el título del evento
+    setMostrarFormularioEliminarFecha(true); // Mostramos el formulario para eliminar
+  };
 
   const manejarEnvioCrearFecha = (e: React.FormEvent) => {
     e.preventDefault();
@@ -78,18 +85,23 @@ const StockCalendarAdmin: React.FC = () => {
   const manejarEnvioEliminarFecha = (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!fechaEliminar) {
-      alert('Por favor, ingresa una fecha válida para eliminar.');
+    if (!fechaEliminar || !descripcionEliminar) {
+      alert('Por favor, ingresa una fecha y descripción válidas para eliminar.');
       return;
     }
 
-    // Aquí puedes agregar la lógica para eliminar la fecha del backend
     axios
-      .delete(`http://localhost:5000/fechas/${fechaEliminar}`)
+      .delete('http://localhost:5000/fechas', {
+        data: { 
+          fecha_: fechaEliminar,
+          descripcion_: descripcionEliminar
+        }
+      })
       .then(() => {
         alert('Fecha eliminada correctamente');
         setMostrarFormularioEliminarFecha(false);
         setFechaEliminar('');
+        setDescripcionEliminar('');
         fetchMarkDates();
       })
       .catch((error) => {
@@ -225,6 +237,7 @@ const StockCalendarAdmin: React.FC = () => {
             </div>
           </form>
         )}
+        {/* Formulario de eliminación */}
         {mostrarFormularioEliminarFecha && (
           <form onSubmit={manejarEnvioEliminarFecha} className={styles.formularioContainer}>
             <h2 className={styles.formTitle}>Eliminar Fecha</h2>
@@ -235,6 +248,17 @@ const StockCalendarAdmin: React.FC = () => {
                 name="fechaEliminar"
                 value={fechaEliminar}
                 onChange={(e) => setFechaEliminar(e.target.value)}
+                className={styles.formInput}
+                required
+              />
+            </div>
+            <div className={styles.formGroup}>
+              <label className={styles.formLabel}>Descripción a Eliminar:</label>
+              <input
+                type="text"
+                name="descripcionEliminar"
+                value={descripcionEliminar}
+                onChange={(e) => setDescripcionEliminar(e.target.value)}
                 className={styles.formInput}
                 required
               />
@@ -267,6 +291,7 @@ const StockCalendarAdmin: React.FC = () => {
               startAccessor="start"
               endAccessor="end"
               style={{ height: '80vh' }} // Altura del calendario
+              onSelectEvent={handleEventSelect}
             />
           </div>
         </div>

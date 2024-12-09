@@ -185,8 +185,9 @@
 
 /* Contenedor del formulario */
 .formularioContainer {
-  width: 400px;
-  margin: 50px auto;
+  width: 100%;
+  max-width: 400px;
+  margin: 20px auto;
   padding: 20px 30px;
   background-color: #ffffff;
   border: 2px solid #2d2d62;
@@ -237,16 +238,21 @@
 
 /* Botones */
 .actionButton {
-  padding: 15px 25px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%; /* Los botones ocupan todo el espacio disponible en pantallas pequeñas */
+  min-width: 150px; /* Asegura que los botones no sean demasiado pequeños */
+  max-width: 300px; /* Evita que los botones crezcan demasiado */
+  text-align: center;
+  padding: 15px 20px; /* Espaciado interno */
   font-size: 1rem;
   color: #ffffff;
   background-color: #2d2d62;
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
-  flex: 1;
-  text-align: center;
+  transition: background-color 0.3s ease, transform 0.2s;
 }
 
 .actionButton:hover {
@@ -256,13 +262,13 @@
 
 @media (max-width: 768px) {
   .buttonContainer {
-    flex-direction: column; /* Apila los botones verticalmente */
-    gap: 15px; /* Espaciado entre botones en pantallas pequeñas */
+    flex-direction: column; /* Los botones se apilan verticalmente */
+    gap: 10px; /* Espacio entre los botones */
   }
 
   .actionButton {
-    flex: unset; /* Permite que los botones tengan tamaño automático en móviles */
-    width: 100%; /* Ocupa todo el ancho del contenedor */
+    width: 100%; /* Los botones ocupan todo el ancho disponible */
+    max-width: none; /* Sin límite de ancho máximo */
   }
 }
 
@@ -302,6 +308,7 @@
   background-color: #e4e3e3;
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  flex-wrap: wrap; /* Permite que los botones se ajusten cuando no hay suficiente espacio */
 }
 
 .formButton,
@@ -422,8 +429,9 @@
 }
 
 .resultContainer {
-  width: 400px;
-  margin: 50px auto;
+  width: 100%;
+  max-width: 400px;
+  margin: 20px auto;
   padding: 20px 30px;
   background-color: #ffffff;
   border: 2px solid #2d2d62;
@@ -434,6 +442,13 @@
   transition: border-color 0.3s;
 
 }
+
+@media (max-width: 768px) {
+  .resultContainer {
+    padding: 10px;
+  }
+}
+
 
 .resultTitle {
   font-size: 1.5em;

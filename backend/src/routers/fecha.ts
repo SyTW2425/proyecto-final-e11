@@ -46,18 +46,33 @@ fechaRouter.post('/fechas', async (req, res) => {
   }
 });
 
-/**
- * Elimina una fecha de la base de datos
- * @param {Object} req - Objeto de petición
- * @param {Object} res - Objeto de respuesta
- * @returns {Object} - Objeto JSON con la fecha eliminada o un mensaje de error
- */
-fechaRouter.delete('/fechas/:fecha', async (req, res) => {
+
+fechaRouter.delete('/fechas', async (req, res) => {
+  const { fecha_, descripcion_ } = req.body;
   try {
-    const fechaEliminada = await fechaModel.findOneAndDelete({ fecha_: req.params.fecha });
+    const fechaEliminada = await fechaModel.findOneAndDelete({
+      fecha_: fecha_,
+      descripcion_: descripcion_,
+    });
     let condition: boolean = fechaEliminada === null;
     res.status(condition ? 404 : 200).send(condition ? { msg: 'No se encontró la fecha' } : fechaEliminada);
   } catch (error) {
     res.status(500).send({ msg: 'Error al eliminar la fecha', error: error });
   }
 });
+
+// /**
+//  * Elimina una fecha de la base de datos
+//  * @param {Object} req - Objeto de petición
+//  * @param {Object} res - Objeto de respuesta
+//  * @returns {Object} - Objeto JSON con la fecha eliminada o un mensaje de error
+//  */
+// fechaRouter.delete('/fechas/:fecha', async (req, res) => {
+//   try {
+//     const fechaEliminada = await fechaModel.findOneAndDelete({ fecha_: req.params.fecha });
+//     let condition: boolean = fechaEliminada === null;
+//     res.status(condition ? 404 : 200).send(condition ? { msg: 'No se encontró la fecha' } : fechaEliminada);
+//   } catch (error) {
+//     res.status(500).send({ msg: 'Error al eliminar la fecha', error: error });
+//   }
+// });
