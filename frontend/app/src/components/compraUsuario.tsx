@@ -81,7 +81,6 @@ const ComprasUsuario: React.FC = () => {
 
   }, []);
 
-
   const navigate = useNavigate();
 
   const goToClientes = () => {

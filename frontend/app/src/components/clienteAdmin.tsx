@@ -147,7 +147,6 @@ const ClienteAdmin: React.FC = () => {
     }
   };
 
-
   const manejarEnvioSolicitarDni = (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -186,7 +185,6 @@ const ClienteAdmin: React.FC = () => {
         alert('Cliente no encontrado');
       });
   };
-
 
   const manejarEnvioEdicion = (e: React.FormEvent) => {
     e.preventDefault();
@@ -238,7 +236,6 @@ const ClienteAdmin: React.FC = () => {
     navigate('/calendario');
   }
 
-
   return (
     <div className={styles.container}>
       {/* Menú lateral */}
@@ -273,8 +270,6 @@ const ClienteAdmin: React.FC = () => {
             </Link>
           </div>
         </nav>
-
-
 
         {/* Sección de botones */}
         <div className={styles.buttonContainer}>

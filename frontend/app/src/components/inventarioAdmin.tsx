@@ -21,7 +21,6 @@ const InventarioAdmin: React.FC = () => {
     precio_venta_: '',
   });
  
-
   useEffect(() => {
     // Consumir API
     fetch('http://localhost:5000/productos')

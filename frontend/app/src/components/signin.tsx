@@ -62,7 +62,6 @@ const SignIn: React.FC = () => {
     }
   };
   
-
   return (
     <div className={styles.backgroundContainer}>
     <form onSubmit={handleSubmit}>

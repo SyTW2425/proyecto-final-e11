@@ -180,12 +180,10 @@ const ComprasAdmin: React.FC = () => {
       });
   };
 
-
   const handleEditarCompra = () => {
     alert('Función para editar una compra existente');
     // Aquí puedes implementar lógica para seleccionar y editar un cliente
   };
-
 
   const manejarEnvioBuscarCompra = (e: React.FormEvent) => {
     e.preventDefault();
