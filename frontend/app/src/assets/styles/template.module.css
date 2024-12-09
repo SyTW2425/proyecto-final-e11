@@ -1,8 +1,15 @@
 /* Contenedor principal */
 .container {
   display: flex;
+  flex-direction: row;
   min-height: 100vh;
   background-color: #f4f7fc; /* Fondo neutro */
+}
+
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column; /* La barra lateral se moverá arriba en pantallas pequeñas */
+  }
 }
 
 /* Menú lateral */
@@ -16,6 +23,13 @@
   padding: 20px 0;
   box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
   min-height: 100%;
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    width: 100%; /* La barra lateral ocupa todo el ancho */
+    min-height: auto; /* Ajusta la altura automáticamente */
+  }
 }
 
 .logo {
@@ -68,6 +82,12 @@
   padding: 20px;
 }
 
+@media (max-width: 768px) {
+  .main {
+    padding: 10px; /* Reduce el espaciado */
+  }
+}
+
 /* Barra de navegación */
 .navbar {
   background-color: #1e1e45;
@@ -78,6 +98,13 @@
   border-radius: 8px; /* Bordes redondeados */
   margin-bottom: 20px; 
 
+}
+
+@media (max-width: 768px) {
+  .navbar {
+    flex-direction: column; /* Reorganiza los elementos */
+    align-items: flex-start;
+  }
 }
 
 .navButton {
@@ -128,6 +155,14 @@
   box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.15); /* Sombra más intensa */
 }
 
+@media (max-width: 768px) {
+  .styledTable th,
+  .styledTable td {
+    padding: 10px; /* Ajusta el espaciado */
+    font-size: 0.8rem; /* Reduce aún más el texto */
+  }
+}
+
 .styledTable thead {
   background-color: #2d2d62;
   color: #ffffff;
@@ -158,6 +193,12 @@
   border-radius: 12px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
   text-align: center;
+}
+
+@media (max-width: 768px) {
+  .formularioContainer {
+    padding: 10px;
+  }
 }
 
 /* Título del formulario */
@@ -204,11 +245,25 @@
   border-radius: 5px;
   cursor: pointer;
   transition: background-color 0.3s ease;
+  flex: 1;
+  text-align: center;
 }
 
 .actionButton:hover {
   background-color: #1e1e45;
   transform: scale(1.05);
+}
+
+@media (max-width: 768px) {
+  .buttonContainer {
+    flex-direction: column; /* Apila los botones verticalmente */
+    gap: 15px; /* Espaciado entre botones en pantallas pequeñas */
+  }
+
+  .actionButton {
+    flex: unset; /* Permite que los botones tengan tamaño automático en móviles */
+    width: 100%; /* Ocupa todo el ancho del contenedor */
+  }
 }
 
 .logoutButtonContainer {
@@ -239,6 +294,7 @@
 
 .buttonContainer {
   display: flex;
+  gap: 10px;
   justify-content: space-between;
   align-items: center;
   margin: 20px 30px;
@@ -289,18 +345,23 @@
 
 /* Summary.module.css */
 .summary {
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Distribución uniforme */
   gap: 20px;
 }
 
 .card {
-  flex: 1;
   padding: 20px;
   background-color: #f4f7fc;
   border-radius: 12px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
   text-align: center;
+}
+
+@media (max-width: 768px) {
+  .card {
+    padding: 10px;
+  }
 }
 
 .card h3 {
@@ -312,6 +373,13 @@
   font-size: 1.5rem;
   font-weight: bold;
   color: #1e1e45;
+}
+
+@media (max-width: 768px) {
+  .summary {
+    grid-template-columns: 1fr; /* Una columna en pantallas pequeñas */
+    gap: 15px;
+  }
 }
 
 .stockWarning {
