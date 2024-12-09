@@ -8,6 +8,7 @@
  *  > Valerio Luis Cabrera   (alu0101476049@ull.edu.es)
  */
 import { Document, model, Schema } from 'mongoose';
+import { productoModel } from './producto.js';
 
 /**
  * Interfaz que representa un proveedor
@@ -72,7 +73,19 @@ const ProveedorSchema = new Schema<ProveedorDocumentInterface>({
   productos_: {
     type: [Number],
     required: true,
-    default: []
+    default: [],
+    validate: {
+      validator: async function(value: number[]): Promise<boolean> {
+        // Si compras_ está vacío, return true
+        if (value.length === 0) {
+          return true;
+        }
+        // Busca la venta en la base de datos
+        const producto = await productoModel.find({ id_: { $in: value } });
+        return producto.length === value.length;
+      },
+      message: props => `El producto asociado con ID ${props.value} no existe en la base de datos.`
+    }
   }
 });
 

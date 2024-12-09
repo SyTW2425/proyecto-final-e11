@@ -12,13 +12,22 @@ const ProveedorAdmin: React.FC = () => {
   const [mostrarFormularioBuscar, setMostrarFormularioBuscar] = useState(false); // Visibilidad del formulario de búsqueda
   const [dniBuscar, setDniBuscar] = useState<string>(''); // DNI del cliente a buscar
   const [proveedorEncontrado, setProveedorEncontrado] = useState<any | null>(null); // Datos del cliente encontrado
+  const [mostrarFormularioSolicitarID, setMostrarFormularioSolicitarID] = useState(false);
+  const [mostrarFormularioEditar, setMostrarFormularioEditar] = useState(false);
+  const [proveedorAEditar, setProveedorAEditar] = useState<any | null>({
+    id_: '',
+    nombre_: '',
+    contacto_: '',
+    productos_: '',
+  });
+  const [IDEditar, setIDEditar] = useState<string>('');
 
   // Estado para controlar la visibilidad del formulario
   const [nuevoProveedor, setNuevoProveedor] = useState({
     id_: '',
     nombre_: '',
     contacto_: '',
-    productos_: [] as number[]
+    productos_: '',
   });
   //const [dniAEliminar, setDniAEliminar] = useState<string>(''); // Estado para almacenar el DNI a eliminar
 
@@ -43,17 +52,10 @@ const ProveedorAdmin: React.FC = () => {
 
   const manejarCambioFormulario = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    if (name === 'productos_') {
-      setNuevoProveedor((prevState) => ({
-        ...prevState,
-        [name]: value.split(',').map((item) => parseInt(item.trim(), 10)).filter((item) => !isNaN(item)),
-      }));
-    } else {
       setNuevoProveedor((prevState) => ({
         ...prevState,
         [name]: value,
       }));
-    }
   };
 
   const manejarEnvioFormulario = (e: React.FormEvent) => {
@@ -63,27 +65,97 @@ const ProveedorAdmin: React.FC = () => {
       alert('Por favor, rellena todos los campos');
       return;
     }
+    const productosArray = nuevoProveedor.productos_
+      .split(',')
+      .map((item: string) => parseInt(item.trim(), 10))
+      .filter((item: number) => !isNaN(item));
 
-    const nuevoProveedor2 = {
-      id_: nuevoProveedor.id_,
-      nombre_: nuevoProveedor.nombre_,
-      contacto_: nuevoProveedor.contacto_,
-      productos_: nuevoProveedor.productos_
-    };
-    alert(JSON.stringify(nuevoProveedor2, null, 2))
+      const nuevoProveedor2 = {
+        ...nuevoProveedor,
+        productos_: productosArray,
+      };
     // Enviar el nuevo cliente al servidor como json
     axios.post('http://localhost:5000/proveedores', nuevoProveedor2)
       .then((response) => {
         // Añadir el nuevo cliente al estado
-        alert("Respuesta del backend:" + response.data);
         setProveedores((prevProveedores) => [...prevProveedores, response.data]);
-        alert('Cliente creado correctamente');
+        alert('Proveedor creado correctamente');
         setMostrarFormulario(false); // Ocultar el formulario después de enviar
       })
       .catch((error) => {
-        alert('Hubo un error al crear el proveedor');
+        alert('Hubo un error al crear el proveedor. Parámetros no válidos.');
       });
   };
+
+  const manejarCambioEdicion = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+
+    setProveedorAEditar((prevState: typeof proveedorAEditar) => {
+        return {
+          ...prevState,
+          [name]: value
+        };
+    });
+  };
+
+  const manejarEnvioSolicitarID = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!IDEditar) {
+      alert('Por favor, ingresa un ID válido.');
+      return;
+    }
+
+    const proveedor = proveedores.find((proveedor) => proveedor.id_ === IDEditar);
+    if (proveedor) {
+      setProveedorAEditar(proveedor);
+      setMostrarFormularioSolicitarID(false);
+      setMostrarFormularioEditar(true);
+    } else {
+      alert('Proveedor no encontrado.');
+    }
+  };
+
+  const manejarEnvioEdicion = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    const { id_, nombre_, contacto_, productos_ } = proveedorAEditar;
+    if (!id_ || !nombre_ || !contacto_) {
+      alert('Por favor, rellena todos los campos obligatorios (ID, nombre y contacto).');
+      return;
+    }
+    const productosArray = productos_
+      .split(',')
+      .map((item: string) => parseInt(item.trim(), 10))
+      .filter((item: number) => !isNaN(item));
+
+    if (productos_.length === 0) {
+      alert('El campo "Productos" debe contener al menos un número válido.');
+      return;
+    }
+    const nuevoProveedor2 = {
+      ...proveedorAEditar,
+      productos_: productosArray,
+    };
+
+    const proveedorParaGuardar = { ...nuevoProveedor2 };
+
+    try {
+      const response = await axios.patch(`http://localhost:5000/proveedores/${id_}`, proveedorParaGuardar);
+
+      setProveedores((prevProveedores) =>
+        prevProveedores.map((proveedores) =>
+          proveedores.id_ === proveedorAEditar.id_ ? response.data : proveedores
+        )
+      );
+
+      alert('Proveedor actualizado correctamente');
+      setMostrarFormularioEditar(false);
+    } catch (error) {
+      alert('Hubo un error al actualizar el proveedor. Parámetros no válidos.');
+    }
+  };
+
 
   const manejarEnvioEliminarProveedor = (e: React.FormEvent) => {
     e.preventDefault();
@@ -105,15 +177,10 @@ const ProveedorAdmin: React.FC = () => {
       })
       .catch((error) => {
         console.error('Error al eliminar el proveedor:', error);
-        alert('Hubo un error al eliminar el proveedor');
+        alert('Hubo un error al eliminar el proveedor. Proveedor no encontrado');
       });
   };
 
-
-  const handleEditarProveedor = () => {
-    alert('Función para editar un proveedor existente');
-    // Aquí puedes implementar lógica para seleccionar y editar un cliente
-  };
 
   const manejarEnvioBuscarProveedor = (e: React.FormEvent) => {
     e.preventDefault();
@@ -195,8 +262,11 @@ const ProveedorAdmin: React.FC = () => {
         {/* Sección de botones */}
         <div className={styles.buttonContainer}>
           <button className={styles.actionButton} onClick={() => setMostrarFormulario(!mostrarFormulario)}>Crear nuevo proveedor</button>
-          <button className={styles.actionButton} onClick={handleEditarProveedor}>
-            Editar proveedor existente
+          <button
+            className={styles.actionButton}
+            onClick={() => setMostrarFormularioSolicitarID(true)}
+          >
+            Editar proveedor
           </button>
           <button
             className={styles.actionButton}
@@ -280,7 +350,7 @@ const ProveedorAdmin: React.FC = () => {
               <input
                 type="text"
                 name="productos_"
-                value={nuevoProveedor.productos_.join(',')}
+                value={nuevoProveedor.productos_}
                 onChange={(e) => manejarCambioFormulario(e)}
                 className={styles.formInput}
               />
@@ -299,6 +369,118 @@ const ProveedorAdmin: React.FC = () => {
             </div>
           </form>
         )}
+
+{mostrarFormularioSolicitarID && (
+          <form
+            onSubmit={manejarEnvioSolicitarID}
+            className={styles.formularioContainer}
+          >
+            <h2 className={styles.formTitle}>Editar Proveedor</h2>
+            <div className={styles.formGroup}>
+              <label className={styles.formLabel}>DNI del Proveedor:</label>
+              <input
+                type="text"
+                name="IDEditar"
+                value={IDEditar}
+                onChange={(e) => setIDEditar(e.target.value)}
+                className={styles.formInput}
+                required
+              />
+            </div>
+            <div className={styles.formButtonGroup}>
+              <button type="submit" className={styles.formButton}>
+                Continuar
+              </button>
+              <button
+                type="button"
+                onClick={() => setMostrarFormularioSolicitarID(false)}
+                className={styles.formButtonCancel}
+              >
+                Cancelar
+              </button>
+            </div>
+          </form>
+        )}
+        {mostrarFormularioEditar && proveedorAEditar && (
+          <form
+            onSubmit={manejarEnvioEdicion}
+            className={styles.formularioContainer}
+          >
+            <h2 className={styles.formTitle}>Editar Proveedor</h2>
+            <div className={styles.formGroup}>
+              <label className={styles.formLabel}>ID:</label>
+              <input
+                type="text"
+                name="id_"
+                value={proveedorAEditar.id_}
+                onChange={manejarCambioEdicion}
+                className={styles.formInput}
+                required
+                readOnly
+              />
+            </div>
+            <div className={styles.formGroup}>
+              <label className={styles.formLabel}>Nombre:</label>
+              <input
+                type="text"
+                name="nombre_"
+                value={proveedorAEditar.nombre_}
+                onChange={manejarCambioEdicion}
+                className={styles.formInput}
+                required
+              />
+            </div>
+            <div className={styles.formGroup}>
+              <label className={styles.formLabel}>Contacto:</label>
+              <input
+                type="number"
+                name="contacto_"
+                value={proveedorAEditar.contacto_}
+                onChange={manejarCambioEdicion}
+                className={styles.formInput}
+                required
+              />
+            </div>
+            <div className={styles.formGroup}>
+              <label className={styles.formLabel}>Productos:</label>
+              <input
+                type="text"
+                name="productos_"
+                value={proveedorAEditar.productos_}
+                onChange={manejarCambioEdicion}
+                className={styles.formInput}
+              />
+            </div>
+            <div className={styles.formGroupCheckbox}>
+              <label className={styles.formLabel}>Membresía:</label>
+              <input
+                type="checkbox"
+                name="membresia_"
+                checked={proveedorAEditar.membresia_}
+                onChange={(e) =>
+                  setProveedorAEditar((prevState: typeof proveedorAEditar) => ({
+                    ...prevState,
+                    membresia_: e.target.checked,
+                  }))
+                }
+                className={styles.formCheckbox}
+              />
+            </div>
+            <div className={styles.formButtonGroup}>
+              <button type="submit" className={styles.formButton}>
+                Guardar Cambios
+              </button>
+              <button
+                type="button"
+                onClick={() => setMostrarFormularioEditar(false)}
+                className={styles.formButtonCancel}
+              >
+                Cancelar
+              </button>
+            </div>
+          </form>
+        )}
+        
 
         {mostrarFormularioBuscar && (
           <form onSubmit={manejarEnvioBuscarProveedor} className={styles.formularioContainer}>
@@ -359,7 +541,7 @@ const ProveedorAdmin: React.FC = () => {
           </div>
         )}
 
-        {/* Tabla de clientes */}
+       
         <div className={styles.content}>
           <h1>Lista de Proveedores</h1>
           <div className={styles.tableContainer}>
