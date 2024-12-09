@@ -25,7 +25,6 @@ const nuevoProducto = {
     stock_: 20
 };
   
-
 before(async () => {
   await productoModel.create(primerProducto);
   await productoModel.create(segundoProducto);
@@ -37,9 +36,8 @@ after(async () => {
   await productoModel.deleteOne({ id_: nuevoProducto.id_ });
 });
   
-// Tests
 describe('Model Producto', () => {
-
+  // Test for GET /productos (fetch all products)
   describe('GET /productos', () => {
     it('should return all products', async () => {
       const res = await request(app).get('/productos');
@@ -48,7 +46,7 @@ describe('Model Producto', () => {
 
   });
 
- 
+  // Test for GET /productos/:id (fetch a product by ID)
   describe('GET /productos/:id', () => {
     it('should return a product by specific ID', async () => {
       const res = await request(app).get('/productos/1000');
@@ -63,7 +61,7 @@ describe('Model Producto', () => {
     });
   });
 
- 
+  // Test for POST /productos (create a new product)
   describe('POST /productos', () => {
     it('should create a new product', async () => {
       const res = await request(app).post('/productos').send(nuevoProducto);
@@ -99,6 +97,7 @@ describe('Model Producto', () => {
     });
   });
 
+  // Test for DELETE /productos/:id (delete a product by ID)
   describe('DELETE /productos/:id', () => {
     it('should delete a product by ID', async () => {
       const res = await request(app).delete(`/productos/${segundoProducto.id_}`);

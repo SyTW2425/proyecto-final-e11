@@ -14,6 +14,7 @@ import jwt from 'jsonwebtoken';
 
 export const usuarioRouter = Express.Router();
 
+// Hay que cambiar este comentario
 usuarioRouter.get('/usuarios/claves', async (req: any, res: any) => {
   try {
     // Obtener los parámetros de la consulta
@@ -44,7 +45,12 @@ usuarioRouter.get('/usuarios/claves', async (req: any, res: any) => {
   }
 });
 
-
+/**
+ * Obtiene los usuarios de la base de datos
+ * @param {Object} req - Objeto de petición
+ * @param {Object} res - Objeto de respuesta
+ * @returns {Object} - Objeto JSON con los usuarios encontrados o un mensaje de error
+ */
 usuarioRouter.get('/usuarios', async (req, res) => {
   req.query = { ...req.query };
   try {
@@ -57,7 +63,12 @@ usuarioRouter.get('/usuarios', async (req, res) => {
   }
 });
 
-
+/**
+ * Obtiene un usuario de la base de datos por su id
+ * @param {Object} req - Objeto de petición
+ * @param {Object} res - Objeto de respuesta
+ * @returns {Object} - Objeto JSON con el usuario encontrado o un mensaje de error
+ */
 usuarioRouter.get('/usuarios/:id', async (req, res) => {
   try {
     let usuarioEncontrado = await usuarioModel.findOne({ id_: req.params.id });
@@ -67,10 +78,6 @@ usuarioRouter.get('/usuarios/:id', async (req, res) => {
     res.status(500).send({ msg: 'Error al buscar al usuario', error: error });
   }
 });
-
-
-
-
 
 /**
  * Guarda un cliente en la base de datos
@@ -101,7 +108,6 @@ usuarioRouter.post('/usuarios', async (req: any, res : any) => {
       claves_: [req.body.claves_[0], contrasena_cifrada],
       rol_
     });
-
 
     await usuario.save();
     res.status(201).send(usuario);
@@ -136,7 +142,12 @@ usuarioRouter.post('/login', async (req: any, res: any) => {
   res.status(200).json({ token, user: { nombre_usuario: user.claves_[0], contrasena: user.claves_[1]}, rol: user.rol_ });
 });
 
-
+/**
+ * Actualiza un usuario en la base de datos
+ * @param {Object} req - Objeto de petición
+ * @param {Object} res - Objeto de respuesta
+ * @returns {Object} - Objeto JSON con el usuario actualizado o un mensaje de error
+ */
 usuarioRouter.patch('/usuarios/:id', async (req, res) => {
   try {
     const usuarioActualizado = await usuarioModel.findOneAndUpdate({ id_: req.params.id }, req.body , { new: true, runValidators: true});
@@ -147,6 +158,12 @@ usuarioRouter.patch('/usuarios/:id', async (req, res) => {
   }
 });
 
+/**
+ * Elimina un usuario de la base de datos
+ * @param {Object} req - Objeto de petición
+ * @param {Object} res - Objeto de respuesta
+ * @returns {Object} - Objeto JSON con el usuario eliminado o un mensaje de error
+ */
 usuarioRouter.delete('/usuarios/:id', async (req, res) => {
   try {
     const usuarioEliminado = await usuarioModel.findOneAndDelete({ id_: req.params.id });

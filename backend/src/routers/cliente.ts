@@ -12,7 +12,12 @@ import { clienteModel } from '../models/cliente.js'
 
 export const clienteRouter = Express.Router();
 
-
+/**
+ * Busca a todos los clientes en la base de datos
+ * @param {Object} req - Objeto de petición
+ * @param {Object} res - Objeto de respuesta
+ * @returns {Object} - Objeto JSON con los clientes encontrados o un mensaje de error
+ */
 clienteRouter.get('/clientes', async (req, res) => {
   req.query = { ...req.query };
   try {
@@ -25,7 +30,12 @@ clienteRouter.get('/clientes', async (req, res) => {
   }
 });
 
-
+/**
+ * Busca un cliente en la base de datos por su id
+ * @param {Object} req - Objeto de petición
+ * @param {Object} res - Objeto de respuesta
+ * @returns {Object} - Objeto JSON con el cliente encontrado o un mensaje de error
+ */
 clienteRouter.get('/clientes/:id', async (req, res) => {
   try {
     let clienteEncontrado = await clienteModel.findOne({ id_: req.params.id });
@@ -35,7 +45,6 @@ clienteRouter.get('/clientes/:id', async (req, res) => {
     res.status(500).send({ msg: 'Error al buscar al cliente', error: error });
   }
 });
-
 
 /**
  * Guarda un cliente en la base de datos
@@ -53,7 +62,12 @@ clienteRouter.post('/clientes', async (req, res) => {
   }
 });
 
-
+/**
+ * Actualiza un cliente en la base de datos
+ * @param {Object} req - Objeto de petición
+ * @param {Object} res - Objeto de respuesta
+ * @returns {Object} - Objeto JSON con el cliente actualizado o un mensaje de error
+ */
 clienteRouter.patch('/clientes/:id', async (req, res) => {
   try {
     const clienteActualizado = await clienteModel.findOneAndUpdate({ id_: req.params.id }, req.body , { new: true, runValidators: true});
@@ -64,6 +78,12 @@ clienteRouter.patch('/clientes/:id', async (req, res) => {
   }
 });
 
+/**
+ * Elimina un cliente de la base de datos
+ * @param {Object} req - Objeto de petición
+ * @param {Object} res - Objeto de respuesta
+ * @returns {Object} - Objeto JSON con el cliente eliminado o un mensaje de error
+ */
 clienteRouter.delete('/clientes/:id', async (req, res) => {
   try {
     const clienteEliminado = await clienteModel.findOneAndDelete({ id_: req.params.id });

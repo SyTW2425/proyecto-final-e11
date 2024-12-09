@@ -12,7 +12,12 @@ import { proveedorModel } from '../models/proveedor.js'
 
 export const proveedorRouter = Express.Router();
 
-
+/**
+ * Busca los proveedores en la base de datos
+ * @param {Object} req - Objeto de petición
+ * @param {Object} res - Objeto de respuesta
+ * @returns {Object} - Objeto JSON con los proveedores encontrados o un mensaje de error
+ */
 proveedorRouter.get('/proveedores', async (req, res) => {
   req.query = { ...req.query };
   try {
@@ -25,7 +30,12 @@ proveedorRouter.get('/proveedores', async (req, res) => {
   }
 });
 
-
+/**
+ * Busca un proveedor en la base de datos por su id
+ * @param {Object} req - Objeto de petición
+ * @param {Object} res - Objeto de respuesta
+ * @returns {Object} - Objeto JSON con el proveedor encontrado o un mensaje de error
+ */
 proveedorRouter.get('/proveedores/:id', async (req, res) => {
   try {
     let proveedorEncontrado = await proveedorModel.findOne({ id_: req.params.id });
@@ -35,7 +45,6 @@ proveedorRouter.get('/proveedores/:id', async (req, res) => {
     res.status(500).send({ msg: 'Error al buscar al proveedor', error: error });
   }
 });
-
 
 /**
  * Guarda un proveedor en la base de datos
@@ -53,7 +62,12 @@ proveedorRouter.post('/proveedores', async (req, res) => {
   }
 });
 
-
+/**
+ * Actualiza un proveedor en la base de datos por su id
+ * @param {Object} req - Objeto de petición
+ * @param {Object} res - Objeto de respuesta
+ * @returns {Object} - Objeto JSON con el proveedor actualizado o un mensaje de error
+ */
 proveedorRouter.patch('/proveedores/:id', async (req, res) => {
   try {
     const proveedorActualizado = await proveedorModel.findOneAndUpdate({ id_: req.params.id }, req.body , { new: true, runValidators: true});
@@ -64,6 +78,12 @@ proveedorRouter.patch('/proveedores/:id', async (req, res) => {
   }
 });
 
+/**
+ * Elimina un proveedor en la base de datos por su id
+ * @param {Object} req - Objeto de petición
+ * @param {Object} res - Objeto de respuesta
+ * @returns {Object} - Objeto JSON con el proveedor eliminado o un mensaje de error
+ */
 proveedorRouter.delete('/proveedores/:id', async (req, res) => {
   try {
     const proveedorEliminado = await proveedorModel.findOneAndDelete({ id_: req.params.id });

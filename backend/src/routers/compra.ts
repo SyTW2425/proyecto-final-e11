@@ -14,7 +14,12 @@ import { productoModel } from '../models/producto.js';
 
 export const compraRouter = Express.Router();
 
-
+/**
+ * Busca todas las compras en la base de datos
+ * @param {Object} req - Objeto de petición
+ * @param {Object} res - Objeto de respuesta
+ * @returns {Object} - Objeto JSON con las compras encontradas o un mensaje de error
+ */
 compraRouter.get('/compras', async (req, res) => {
   req.query = { ...req.query };
   try {
@@ -27,7 +32,12 @@ compraRouter.get('/compras', async (req, res) => {
   }
 });
 
-
+/**
+ * Busca una compra en la base de datos por su id
+ * @param {Object} req - Objeto de petición
+ * @param {Object} res - Objeto de respuesta
+ * @returns {Object} - Objeto JSON con la compra encontrada o un mensaje de error
+ */
 compraRouter.get('/compras/:id', async (req, res) => {
   try {
     let compraEncontrado = await compraModel.findOne({ id_: req.params.id });
@@ -37,7 +47,6 @@ compraRouter.get('/compras/:id', async (req, res) => {
     res.status(500).send({ msg: 'Error al buscar la compra', error: error });
   }
 });
-
 
 /**
  * Guarda una nueva compra en la base de datos
@@ -157,6 +166,12 @@ compraRouter.post('/compras', async (req: any, res: any) => {
 //   }
 // });
 
+/**
+ * Elimina una compra de la base de datos
+ * @param {Object} req - Objeto de petición
+ * @param {Object} res - Objeto de respuesta
+ * @returns {Object} - Objeto JSON con la compra eliminada o un mensaje de error
+ */
 compraRouter.delete('/compras/:id', async (req, res) => {
   try {
     const compraEliminado = await compraModel.findOneAndDelete({ id_: req.params.id });

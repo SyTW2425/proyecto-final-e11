@@ -9,22 +9,29 @@
  */
 import { Document, model, Schema } from 'mongoose';
 
-
+/**
+ * Interfaz que representa una fecha
+ */
 export interface  FechaInterface extends Document {
   fecha_ : Date;
   descripcion_: string;
 }
 
+/**
+ * Esquema de una fecha
+ */
 const FechaSchema = new Schema<FechaInterface>({
-    fecha_: {
-        type: Date,
-        required: true
-    },
-    descripcion_: {
-        type: String,
-        required: true
-    }
+  fecha_: {
+    type: Date,
+    required: true
+  },
+  descripcion_: {
+    type: String,
+    required: true
+  }
 });
 
-
+/**
+ * Exportación del modelo de la fecha
+ */
 export const fechaModel = model<FechaInterface>('Fechas', FechaSchema);

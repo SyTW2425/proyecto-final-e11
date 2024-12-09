@@ -12,7 +12,12 @@ import { productoModel } from '../models/producto.js'
 
 export const productoRouter = Express.Router();
 
-
+/**
+ * Busca todos los productos en la base de datos
+ * @param {Object} req - Objeto de petición
+ * @param {Object} res - Objeto de respuesta
+ * @returns {Object} - Objeto JSON con los productos encontrados o un mensaje de error
+ */
 productoRouter.get('/productos', async (req, res) => {
   req.query = { ...req.query };
   try {
@@ -25,7 +30,12 @@ productoRouter.get('/productos', async (req, res) => {
   }
 });
 
-
+/**
+ * Busca un producto en la base de datos por su id
+ * @param {Object} req - Objeto de petición
+ * @param {Object} res - Objeto de respuesta
+ * @returns {Object} - Objeto JSON con el producto encontrado o un mensaje de error
+ */
 productoRouter.get('/productos/:id', async (req, res) => {
   try {
     let productoEncontrado = await productoModel.findOne({ id_: req.params.id });
@@ -35,7 +45,6 @@ productoRouter.get('/productos/:id', async (req, res) => {
     res.status(500).send({ msg: 'Error al buscar al producto', error: error });
   }
 });
-
 
 /**
  * Guarda un producto en la base de datos
@@ -53,7 +62,12 @@ productoRouter.post('/productos', async (req, res) => {
   }
 });
 
-
+/**
+ * Actualiza un producto en la base de datos
+ * @param {Object} req - Objeto de petición
+ * @param {Object} res - Objeto de respuesta
+ * @returns {Object} - Objeto JSON con el producto actualizado o un mensaje de error
+ */
 productoRouter.patch('/productos/:id', async (req, res) => {
   try {
     const productoActualizado = await productoModel.findOneAndUpdate({ id_: req.params.id }, req.body , { new: true, runValidators: true});
@@ -64,6 +78,12 @@ productoRouter.patch('/productos/:id', async (req, res) => {
   }
 });
 
+/**
+ * Elimina un producto de la base de datos
+ * @param {Object} req - Objeto de petición
+ * @param {Object} res - Objeto de respuesta
+ * @returns {Object} - Objeto JSON con el producto eliminado o un mensaje de error
+ */
 productoRouter.delete('/productos/:id', async (req, res) => {
   try {
     const productoEliminado = await productoModel.findOneAndDelete({ id_: req.params.id });
@@ -74,6 +94,12 @@ productoRouter.delete('/productos/:id', async (req, res) => {
   }
 });
 
+/**
+ * Obtiene los 3 productos con menor stock
+ * @param {Object} req - Objeto de petición
+ * @param {Object} res - Objeto de respuesta
+ * @returns {Object} - Objeto JSON con los productos con menor stock o un mensaje de error
+ */
 const obtenerProductosMenorStock = async (_: Express.Request, res: Express.Response) => {
   try {
     const productos = await productoModel.find({})
@@ -86,4 +112,7 @@ const obtenerProductosMenorStock = async (_: Express.Request, res: Express.Respo
   }
 };
 
+/**
+ * Ruta para obtener los 3 productos con menor stock
+ */
 productoRouter.get('/menorStock', obtenerProductosMenorStock);
