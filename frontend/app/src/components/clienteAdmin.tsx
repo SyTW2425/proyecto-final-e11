@@ -76,10 +76,10 @@ const ClienteAdmin: React.FC = () => {
       .map((item: string) => parseInt(item.trim(), 10))
       .filter((item: number) => !isNaN(item));
 
-    if (nuevoCliente.compras_.length === 0) {
-      alert('El campo "Compras" debe contener al menos un número válido.');
-      return;
-    }
+    // if (nuevoCliente.compras_.length === 0) {
+    //   alert('El campo "Compras" debe contener al menos un número válido.');
+    //   return;
+    // }
     const nuevoCliente2 = {
       ...nuevoCliente,
       compras_: comprasArray,
