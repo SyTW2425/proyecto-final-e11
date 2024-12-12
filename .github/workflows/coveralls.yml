@@ -1,4 +1,4 @@
-name: Coveralls
+name: Backend Coverage
 
 on:
   push:
@@ -7,25 +7,34 @@ on:
     branches: [ "dev", "main" ]
 
 jobs:
-  build:
+  backend-coverage:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Cloning repo
-      uses: actions/checkout@v4
-      
-    - name: Use Node.js 21.x
-      uses: actions/setup-node@v4
-      with:
-        node-version: 21.x
-      
-    - name: Installing dependencies
-      run: npm install
-      
-    - name: Generating coverage information
-      run: npm run coverage
-      
-    - name: Coveralls GitHub Action
-      uses: coverallsapp/github-action@v2.2.3
-      with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Clone repository
+        uses: actions/checkout@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 21
+
+      - name: Start MongoDB
+        uses: supercharge/mongodb-github-action@1.10.0
+        with:
+          mongodb-version: '5.0'
+
+      - name: Install Dependencies
+        run: npm install
+        working-directory: ./backend
+
+      - name: Run Coverage
+        env:
+          MONGODB_URL: ${{ env.MONGODB_URL }}
+        run: npm run coverage
+        working-directory: ./backend
+
+      - name: Coveralls GitHub Action
+        uses: coverallsapp/github-action@v2.2.3
+        with:
+          github-token: ${{ secrets.COVERALLS_REPO_TOKEN }}
