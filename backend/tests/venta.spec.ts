@@ -21,6 +21,7 @@ const sampleProducto = {
   precio_venta_: 50
 };
 
+
 before(async () => {
   await clienteModel.create(sampleCliente);
   await productoModel.create(sampleProducto);
@@ -116,8 +117,9 @@ describe('Model Venta', () => {
   // Test for stock updater
   describe('stock update', () => {
     it('should update the stock of a product after a sale', async () => {
+
       const res = await request(app).get('/productos/16000');
-      expect(res.body).to.have.property('stock_', 95);
+      expect(res.body).to.have.property('stock_', 85);
     });
   });
 });

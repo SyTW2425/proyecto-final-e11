@@ -155,27 +155,32 @@ const ComprasAdmin: React.FC = () => {
 
   const manejarEnvioEliminarCompra = (e: React.FormEvent) => {
     e.preventDefault();
-
+  
     if (!idEliminar) {
       alert('Por favor, ingresa un ID de compra.');
       return;
     }
-
+  
     axios
       .delete(`http://localhost:5000/compras/${idEliminar}`)
       .then(() => {
-        setCompras((prevCompras) =>
-          prevCompras.filter((compra) => compra.id_ !== idEliminar)
-        );
         alert('Compra eliminada correctamente');
         setMostrarFormularioEliminar(false); // Ocultar formulario tras la eliminación
         setIdEliminar(''); // Limpiar el campo
+  
+        // Recargar la lista de compras actualizada desde la API
+        return axios.get('http://localhost:5000/compras');
+      })
+      .then((response) => {
+        // Actualizar el estado con las compras más recientes
+        setCompras(response.data);
       })
       .catch((error) => {
         console.error('Error al eliminar la compra:', error);
         alert('Hubo un error al eliminar la compra. ID no válido');
       });
   };
+  
 
  
 

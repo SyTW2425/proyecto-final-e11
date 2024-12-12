@@ -8,14 +8,14 @@ const primerProveedor = {
   id_: "A11111111",
   nombre_: 'Juan',
   contacto_: 678901234,
-  productos_: [1, 2]
+  productos_: [1, 5]
 };
 
 const segundoProveedor = {
   id_: "B22222222",
   nombre_: 'Pedro',
   contacto_: 612345678,
-  productos_: [2, 3]
+  productos_: [1, 5]
 };
 
 before(async () => {
@@ -59,7 +59,7 @@ describe('Model Proveedor', () => {
           id_: "A33333333",
           nombre_: "Antonio",
           contacto_: 678901234,
-          productos_: [1, 2]
+          productos_: [1]
         });
       expect(res.status).to.equal(200);
       await proveedorModel.deleteOne({ id_: "A33333333" });

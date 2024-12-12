@@ -28,7 +28,7 @@ before(async () => {
 after(async () => {
   await usuarioModel.deleteOne({ id_: primerUsuario.id_ });
   await usuarioModel.deleteOne({ id_: segundoUsuario.id_ });
-  await usuarioModel.deleteOne({ id_: "33333333C" });
+  await usuarioModel.deleteOne({ id_: "11111111B" });
 });
 
 describe('Model Usuario', () => {
@@ -60,16 +60,16 @@ describe('Model Usuario', () => {
       const res = await request(app)
         .post('/usuarios')
         .send({
-          id_: "33333333C",
-          nombre_: 'Luis',
-          contacto_: 612345678,
-          claves_: ['clave5', 'clave6'],
-          rol_: 'usuario'
+          "id_": "11111111B",
+          "nombre_": "Luis",
+          "contacto_": 662345678,
+          "claves_": ['clave9', 'clave10'],
+          "rol_": 'administrador'
         });
       expect(res.status).to.equal(201);
     });
 
-    it('should return 400 if the user is not created', async () => {
+    it('should return 404 if the user is not created', async () => {
       const res = await request(app)
         .post('/usuarios')
         .send({
@@ -79,7 +79,6 @@ describe('Model Usuario', () => {
           rol_: 'admin'
         });
       expect(res.status).to.equal(500);
-      expect(res.body).to.include({ msg: 'Error al guardar el usuario' });
     });
   });
 

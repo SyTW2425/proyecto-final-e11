@@ -10,7 +10,7 @@ const sampleProveedor = {
   id_: "A12345678",
   nombre_: 'ProveedorUno',
   contacto_: 623456789,
-  productos_: [1001, 1002]
+  productos_: [1, 5]
 };
 
 const sampleProducto = { 
@@ -18,6 +18,13 @@ const sampleProducto = {
   nombre_: 'Producto', 
   stock_: 100,
   precio_venta_: 50
+};
+
+const sampleProducto2 = {
+  id_: 15001,
+  nombre_: 'Producto2',
+  stock_: 200,
+  precio_venta_: 60
 };
 
 before(async () => {
@@ -29,9 +36,13 @@ after(async () => {
   await proveedorModel.deleteOne({ id_: sampleProveedor.id_ });
   await productoModel.deleteOne({ id_: sampleProducto.id_ });
   await compraModel.deleteOne({ id_: 3000 });
+  await productoModel.deleteOne({ id_: sampleProducto2.id_ });
+  await compraModel.deleteOne({ id_: newCompra2.id_ });
+
 });
 
 let newCompra: any;
+let newCompra2: any;
 
 describe('Model Compra', () => {
   // Test for POST /compras (create a new purchase)
@@ -125,8 +136,17 @@ describe('Model Compra', () => {
   // Test for stock udater
   describe('Stock update', () => {
     it('should update the stock of a product after a purchase', async () => {
-      const updatedProducto = await productoModel.findOne({ id_: sampleProducto.id_ });
-      expect(updatedProducto!.stock_).to.equal(sampleProducto.stock_ + newCompra.productos_[0].cantidad_);
+      newCompra2 = {
+        id_: 3000,
+        fecha_: new Date("2021-02-01"),
+        proveedor_: sampleProveedor.id_,
+        importe_: 2000,
+        productos_: [{ productoID_: sampleProducto2.id_, cantidad_: 5, precio_: 40 }]
+      };
+      await request(app).post('/productos').send(sampleProducto2);
+      await request(app).post('/compras').send(newCompra2);
+      const updatedProducto = await productoModel.findOne({ id_: sampleProducto2.id_ });
+      expect(updatedProducto!.stock_).to.equal(sampleProducto2.stock_ + newCompra2.productos_[0].cantidad_);
     });
   });
 });

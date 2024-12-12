@@ -11,14 +11,14 @@
 import { connect } from 'mongoose';
 import express from 'express';
 import dotenv from 'dotenv';
-import { usuarioRouter } from './routers/usuario.js';
-import { clienteRouter } from './routers/cliente.js';
-import { proveedorRouter } from './routers/proveedor.js';
-import { productoRouter } from './routers/producto.js';
-import { compraRouter } from './routers/compra.js';
-import { ventaRouter } from './routers/ventas.js';
-import { summaryRouter } from './routers/summary.js';
-import { fechaRouter } from './routers/fecha.js';
+import { usuarioRouter } from './routes/usuario.js';
+import { clienteRouter } from './routes/cliente.js';
+import { proveedorRouter } from './routes/proveedor.js';
+import { productoRouter } from './routes/producto.js';
+import { compraRouter } from './routes/compra.js';
+import { ventaRouter } from './routes/ventas.js';
+import { summaryRouter } from './routes/summary.js';
+import { fechaRouter } from './routes/fecha.js';
 import cors from 'cors';
 
 // Load environment variables from .env file

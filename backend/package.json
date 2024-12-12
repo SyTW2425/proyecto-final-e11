@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "tsc && mocha --exit dist/test/**/*.js",
+    "test": "tsc && mocha --exit dist/tests/**/*.js",
     "start": "node ./dist/index.js",
     "coverage": "nyc npm test && nyc report --reporter=text-lcov | coveralls && rm -rf .ny"
   },

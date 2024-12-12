@@ -164,18 +164,22 @@ const VentasAdmin: React.FC = () => {
     axios
       .delete(`http://localhost:5000/ventas/${idEliminar}`)
       .then(() => {
-        setVentas((prevVentas) =>
-          prevVentas.filter((venta) => venta.id_ !== idEliminar)
-        );
         alert('Venta eliminada correctamente');
         setMostrarFormularioEliminar(false); // Ocultar formulario tras la eliminación
         setIdEliminar(''); // Limpiar el campo
+
+        // Recargar la lista de ventas actualizada desde la API
+        return axios.get('http://localhost:5000/ventas');
+      })
+      .then((response) => {
+        // Actualizar el estado con las ventas más recientes
+        setVentas(response.data);
       })
       .catch((error) => {
         alert('Hubo un error al eliminar la venta. ID no encontrado.');
       });
-      
-  };
+};
+
 
 
 
