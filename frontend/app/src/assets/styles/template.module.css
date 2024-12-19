@@ -1,0 +1,485 @@
+/* Contenedor principal */
+.container {
+  display: flex;
+  flex-direction: row;
+  min-height: 100vh;
+  background-color: #f4f7fc; /* Fondo neutro */
+}
+
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column; /* La barra lateral se moverá arriba en pantallas pequeñas */
+  }
+}
+
+/* Menú lateral */
+.sidebar {
+  width: 250px;
+  background: linear-gradient(180deg, #2d2d62, #1e1e45); /* Degradado azul oscuro */
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px 0;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+  min-height: 100%;
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    width: 100%; /* La barra lateral ocupa todo el ancho */
+    min-height: auto; /* Ajusta la altura automáticamente */
+  }
+}
+
+.logo {
+  font-size: 1.8rem;
+  font-weight: bold;
+  margin-bottom: 30px;
+  text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.3);
+  color: #ffffff;
+  font-family: 'Poppins', sans-serif;
+  text-align: center;
+}
+
+.logo::after {
+  content: ''; /* Línea separadora */
+  display: block;
+  width: 80%;
+  height: 2px; /* Grosor de la línea */
+  background-color: #ffffff; /* Color blanco */
+  margin: 10px auto 30px; /* Separación superior e inferior */
+}
+
+.menu {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+}
+
+.menuItem {
+  padding: 18px 25px; /* Espaciado interno */
+  font-size: 1.2rem; /* Tamaño de texto más grande */
+  font-weight: 500; /* Texto seminegrita */
+  text-align: left; /* Alineación a la izquierda */
+  color: #ffffff;
+  border-radius: 8px; /* Bordes redondeados */
+  cursor: pointer;
+  transition: all 0.3s ease; /* Animación suave */
+}
+
+.menuItem:hover {
+  background-color: rgba(255, 255, 255, 0.3); /* Fondo más claro al pasar el ratón */
+  transform: translateX(5px); /* Ligeramente a la derecha */
+}
+
+/* Contenido principal */
+.main {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+}
+
+@media (max-width: 768px) {
+  .main {
+    padding: 10px; /* Reduce el espaciado */
+  }
+}
+
+/* Barra de navegación */
+.navbar {
+  background-color: #1e1e45;
+  padding: 15px 30px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  border-radius: 8px; /* Bordes redondeados */
+  margin-bottom: 20px; 
+
+}
+
+@media (max-width: 768px) {
+  .navbar {
+    flex-direction: column; /* Reorganiza los elementos */
+    align-items: flex-start;
+  }
+}
+
+.navButton {
+  margin-left: auto; /* Para posicionarlo a la derecha */
+  text-decoration: none;
+}
+
+.navContent {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.navImage {
+  width: 40px; /* Ajusta el tamaño de la imagen */
+  height: 40px;
+  cursor: pointer;
+  /* LO hacemos responsive */
+  @media (max-width: 768px) {
+    width: 30px;
+    height: 30px;
+  }
+}
+
+.title {
+  font-size: 1.5rem;
+  color: #ffffff;
+  font-weight: bold;
+  text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Tabla estilizada */
+.tableContainer {
+  margin: 20px auto;
+  overflow-x: auto;
+  border-radius: 12px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: #ffffff; /* Fondo blanco */
+}
+
+.styledTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: Arial, sans-serif;
+  text-align: left;
+  border-radius: 16px; /* Más redondeada */
+  box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.15); /* Sombra más intensa */
+}
+
+@media (max-width: 768px) {
+  .styledTable th,
+  .styledTable td {
+    padding: 10px; /* Ajusta el espaciado */
+    font-size: 0.8rem; /* Reduce aún más el texto */
+  }
+}
+
+.styledTable thead {
+  background-color: #2d2d62;
+  color: #ffffff;
+}
+
+.styledTable th,
+.styledTable td {
+  padding: 15px;
+  border: 1px solid #ddd;
+  text-align: center; /* Centrado */
+}
+
+.styledTable tbody tr:nth-child(even) {
+  background-color: #f4f7fc;
+}
+
+.styledTable tbody tr:hover {
+  background-color: #eef2ff; /* Efecto hover */
+}
+
+/* Contenedor del formulario */
+.formularioContainer {
+  width: 100%;
+  /* Ajustamos para que sea responsive*/
+  
+  max-width: 400px;
+  margin: 20px auto;
+  padding: 20px 20px;
+  background-color: #ffffff;
+  border: 2px solid #2d2d62;
+  border-radius: 12px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+/* Título del formulario */
+.formTitle {
+  font-size: 1.5rem;
+  color: #2d2d62;
+  margin-bottom: 20px;
+}
+
+/* Grupos de formulario */
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 15px;
+  text-align: left;
+}
+
+.formLabel {
+  font-weight: bold;
+  margin-bottom: 8px;
+  color: #2d2d62;
+}
+
+.formInput {
+  padding: 10px;
+  font-size: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  outline: none;
+  transition: border-color 0.3s;
+}
+
+.formInput:focus {
+  border-color: #2d2d62;
+}
+
+@media (max-width: 768px) {
+  .formularioContainer {
+    max-width: 90%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px;
+  }
+}
+
+
+/* Botones */
+.actionButton {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%; /* Los botones ocupan todo el espacio disponible en pantallas pequeñas */
+  min-width: 150px; /* Asegura que los botones no sean demasiado pequeños */
+  max-width: 300px; /* Evita que los botones crezcan demasiado */
+  text-align: center;
+  padding: 15px 20px; /* Espaciado interno */
+  font-size: 1rem;
+  color: #ffffff;
+  background-color: #2d2d62;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s;
+}
+
+.actionButton:hover {
+  background-color: #1e1e45;
+  transform: scale(1.05);
+}
+
+@media (max-width: 1000px) {
+  .buttonContainer {
+    flex-direction: column; /* Los botones se apilan verticalmente */
+    gap: 10px; /* Espacio entre los botones */
+  }
+
+  .actionButton {
+    max-width: none; /* Sin límite de ancho máximo */
+  }
+}
+
+.logoutButtonContainer {
+  margin-top: auto; /* Empuja el contenedor hacia abajo */
+}
+
+.logoutButtonContainer button {
+  background-color: #ff4d4d; /* Rojo llamativo */
+  color: white; /* Texto en blanco para contraste */
+  border: none; /* Sin borde */
+  border-radius: 8px; /* Bordes redondeados */
+  padding: 10px 20px; /* Espaciado interno */
+  font-size: 16px; /* Tamaño de fuente adecuado */
+  font-weight: bold; /* Texto en negrita */
+  cursor: pointer; /* Cambiar el cursor a mano al pasar */
+  transition: background-color 0.3s ease, transform 0.2s ease; /* Animaciones */
+}
+
+.logoutButtonContainer button:hover {
+  background-color: #ff3333; /* Más oscuro al pasar el mouse */
+  transform: scale(1.05); /* Ligeramente más grande al pasar el mouse */
+}
+
+.logoutButtonContainer button:active {
+  background-color: #cc0000; /* Más oscuro al hacer clic */
+  transform: scale(0.95); /* Ligeramente más pequeño al hacer clic */
+}
+
+.buttonContainer {
+  display: flex;
+  gap: 10px;
+  justify-content: space-between;
+  align-items: center;
+  margin: 20px 30px;
+  padding: 20px;
+  background-color: #e4e3e3;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  flex-wrap: wrap; /* Permite que los botones se ajusten cuando no hay suficiente espacio */
+}
+
+.formButton,
+.formButtonCancel {
+  padding: 10px 20px;
+  font-size: 1rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.formButton {
+  background-color: #2d2d62;
+  color: #ffffff;
+}
+
+.formButton:hover {
+  background-color: #1e1e45;
+}
+
+.formButtonCancel {
+  background-color: #cccccc;
+  color: #ffffff;
+}
+
+.formButtonCancel:hover {
+  background-color: #aaaaaa;
+}
+
+.formButtonGroup {
+  display: flex;
+  justify-content: space-between;
+}
+
+.username {
+  font-weight: bold;
+  color: #6f579b; /* Color destacado */
+  font-size: 2.5rem; /* Tamaño ligeramente mayor */
+}
+
+/* Summary.module.css */
+.summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Distribución uniforme */
+  gap: 20px;
+}
+
+.card {
+  padding: 20px;
+  background-color: #f4f7fc;
+  border-radius: 12px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+@media (max-width: 768px) {
+  .card {
+    padding: 10px;
+  }
+}
+
+.card h3 {
+  font-size: 1.2rem;
+  color: #2d2d62;
+}
+
+.card p {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #1e1e45;
+}
+
+@media (max-width: 768px) {
+  .summary {
+    grid-template-columns: 1fr; /* Una columna en pantallas pequeñas */
+    gap: 15px;
+  }
+}
+
+.stockWarning {
+  background-color: #f8d7da;
+  color: #721c24;
+  padding: 15px;
+  margin-bottom: 20px;
+  border: 1px solid #f5c6cb;
+  border-radius: 5px;
+  font-weight: bold;
+}
+
+.stockWarning p {
+  margin: 0;
+}
+/* Añadir esta clase para el contenedor del calendario */
+.calendarWrapper {
+  width: 80%; /* Ajusta el ancho según sea necesario */
+  margin: 0 auto; /* Centra el calendario */
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: white; /* Fondo blanco para el contenedor */
+}
+
+.customCalendar {
+  height: 500px; /* O ajusta la altura como prefieras */
+}
+
+/* Si deseas que sea responsivo y se ajuste bien en pantallas más pequeñas */
+@media (max-width: 768px) {
+  .calendarWrapper {
+    width: 95%; /* Aumenta el ancho en pantallas pequeñas */
+    padding: 10px;
+  }
+
+  .customCalendar {
+    height: 400px; /* Ajusta la altura en dispositivos más pequeños */
+  }
+}
+
+.resultContainer {
+  width: 100%;
+  max-width: 400px;
+  margin: 20px auto;
+  padding: 20px 30px;
+  background-color: #ffffff;
+  border: 2px solid #2d2d62;
+  border-radius: 12px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  outline: none;
+  transition: border-color 0.3s;
+
+}
+
+@media (max-width: 768px) {
+  .resultContainer {
+    padding: 10px;
+  }
+}
+
+
+.resultTitle {
+  font-size: 1.5em;
+  margin-bottom: 10px;
+  color: #2d2d62;;
+}
+
+.resultCard {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.resultRow {
+  display: flex;
+  justify-content: space-between;
+  padding: 5px 0;
+  border-bottom: 1px solid #ffffff;
+}
+
+.resultLabel {
+  font-weight: bold;
+  color:#2d2d62;;
+}
+
+.resultValue {
+  color: #2d2d62;;
+}

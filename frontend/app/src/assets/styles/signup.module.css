@@ -1,0 +1,96 @@
+/* Fondo del contenedor principal */
+.signupContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  /*background-color: #f5f2e8; /* Color de fondo similar al de la imagen */
+  font-family: Arial, sans-serif;
+}
+
+.backgroundContainer {
+  width: 100%;
+  height: 100vh; 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-image: url('../img/fondo-login.jpg'); 
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.signupContainer h1 {
+  font-size: 2.5rem;
+  color: #ffffff; /* Color del título Connectory */
+  margin-bottom: 20px;
+}
+
+/* Estilo de la caja del formulario */
+.signupBox {
+  background-color: #f0e4c9; /* Color de fondo claro de la caja */
+  padding: 20px;
+  border-radius: 10px;
+  width: 300px;
+  text-align: center;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.signupBox h2 {
+  font-size: 1.5rem;
+  color: #2d2d2d;
+  margin-bottom: 20px;
+}
+
+/* Estilo de los campos de entrada */
+.inputContainer {
+  margin-bottom: 15px;
+}
+
+.inputContainer input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 1rem;
+  box-sizing: border-box;
+}
+
+.inputContainer input::placeholder {
+  color: #888;
+}
+
+/* Estilo del botón de registro */
+.signupButton {
+  background-color: #2d2d62; /* Color azul oscuro */
+  color: #fff;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  width: 100%;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-top: 10px;
+  font-weight: bold;
+}
+
+.signupButton:hover {
+  background-color: #1e1e45; /* Sombra más oscura en hover */
+}
+
+/* Estilo del enlace de login */
+.loginLink {
+  margin-top: 15px;
+  color: #2d2d62;
+}
+
+.loginLink a {
+  color: #2d2d62;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.loginLink a:hover {
+  text-decoration: underline;
+}

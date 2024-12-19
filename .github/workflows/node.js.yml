@@ -1,0 +1,33 @@
+name: Tests
+
+on:
+  push:
+    branches: [ "dev", "main" ]
+  pull_request:
+    branches: [ "dev", "main" ]
+
+jobs:
+  backend-tests: 
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [21.x]
+      max-parallel: 1 # Limita la ejecución a una versión de Node.js a la vez
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+    - name: Start MongoDB
+      uses: supercharge/mongodb-github-action@1.10.0
+      with:
+        mongodb-version: '5.0'
+    - name: Install Dependencies
+      run: npm ci
+      working-directory: ./backend
+    - name: Test Backend
+      run: npm test
+      working-directory: ./backend
